@@ -4,76 +4,66 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>CarWash — Gastos</title>
-    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@400;500&display=swap" rel="stylesheet">
     <style>
-        :root { --bg: #0a0e14; --card: #111720; --accent: #00c6ff; --text: #e8f1ff; }
-        
+        /* Estilos base para ocupar toda la pantalla */
         html, body { 
-            background: var(--bg); 
-            margin: 0 !important; 
-            padding: 0 !important; 
-            height: 100vh;
-            width: 100vw;
-            overflow: hidden; 
+            margin: 0; 
+            padding: 0; 
+            height: 100vh; 
+            width: 100vw; 
+            background-color: #0a0e14; /* Fondo oscuro del menú */
+            font-family: sans-serif;
+            overflow: hidden;
         }
-        
-        .container { 
+
+        .main-wrapper {
             display: flex;
             flex-direction: column;
             height: 100vh;
             width: 100vw;
-            background: var(--bg); /* Fondo oscuro total */
-            box-sizing: border-box;
+        }
+
+        /* Barra superior con el botón de volver */
+        .top-bar {
             padding: 15px;
-        }
-        
-        .header-area {
             text-align: center;
-            padding-bottom: 10px;
+            background: #111720;
+            border-bottom: 1px solid #1e2d3d;
         }
 
-        h2 { 
-            font-family: 'Bebas Neue', sans-serif; 
-            color: var(--accent); 
-            margin: 5px 0;
-            font-size: 28px;
-            letter-spacing: 2px;
-        }
-        
-        .btn-back { 
-            text-decoration: none; 
-            color: var(--accent); 
-            font-size: 14px; 
+        .top-bar a {
+            color: #00c6ff;
+            text-decoration: none;
             font-weight: bold;
-            text-transform: uppercase;
+            font-size: 14px;
         }
 
-        .iframe-container {
-            flex-grow: 1; /* Esto obliga a que el formulario use todo el alto disponible */
+        /* Contenedor del Tally: AQUÍ está el truco */
+        .tally-content {
+            flex-grow: 1; /* Esto estira el formulario hasta el fondo */
             width: 100%;
-            border-radius: 15px;
-            border: 1px solid #1e2d3d;
-            overflow: hidden;
-            background: var(--card); /* Fondo oscuro para que el Tally resalte */
+            height: 100%;
+            background: #1a1a1a; /* Fondo gris muy oscuro para que resalte el Tally */
         }
-        
-        iframe { 
-            width: 100% !important; 
+
+        iframe {
+            width: 100% !important;
             height: 100% !important;
-            border: none !important; 
+            border: none !important;
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <div class="header-area">
-            <a href="index.html" class="btn-back">← Volver al Menú</a>
-            <h2>Registro de Gastos</h2>
+
+    <div class="main-wrapper">
+        <div class="top-bar">
+            <a href="index.html">← VOLVER AL MENÚ PRINCIPAL</a>
         </div>
-        
-        <div class="iframe-container">
-            <iframe src="https://tally.so/r/KYlPGD" title="Formulario de Gastos"></iframe>
+
+        <div class="tally-content">
+            <iframe src="https://tally.so/r/KYlPGD"></iframe>
         </div>
     </div>
+
 </body>
 </html>
