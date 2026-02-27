@@ -8,25 +8,23 @@
     <style>
         :root { --bg: #0a0e14; --card: #111720; --accent: #00c6ff; --text: #e8f1ff; }
         
-        /* Eliminamos cualquier espacio en blanco alrededor */
         html, body { 
             background: var(--bg); 
             margin: 0 !important; 
             padding: 0 !important; 
-            height: 100%;
-            width: 100%;
-            overflow: hidden; /* Evita doble scroll */
+            height: 100vh;
+            width: 100vw;
+            overflow: hidden; 
         }
         
-        /* Contenedor principal a pantalla completa */
         .container { 
             display: flex;
             flex-direction: column;
-            height: 100vh; /* 100% del alto de la pantalla */
-            width: 100vw;  /* 100% del ancho de la pantalla */
-            background: var(--card);
+            height: 100vh;
+            width: 100vw;
+            background: var(--bg); /* Fondo oscuro total */
             box-sizing: border-box;
-            padding: 10px;
+            padding: 15px;
         }
         
         .header-area {
@@ -38,25 +36,25 @@
             font-family: 'Bebas Neue', sans-serif; 
             color: var(--accent); 
             margin: 5px 0;
-            font-size: 24px;
-            letter-spacing: 1px;
+            font-size: 28px;
+            letter-spacing: 2px;
         }
         
         .btn-back { 
             text-decoration: none; 
             color: var(--accent); 
-            font-size: 13px; 
+            font-size: 14px; 
             font-weight: bold;
+            text-transform: uppercase;
         }
 
-        /* El iframe ahora FORZOSAMENTE llenará todo el espacio restante */
         .iframe-container {
-            flex-grow: 1;
+            flex-grow: 1; /* Esto obliga a que el formulario use todo el alto disponible */
             width: 100%;
             border-radius: 15px;
             border: 1px solid #1e2d3d;
             overflow: hidden;
-            background: #ffffff;
+            background: var(--card); /* Fondo oscuro para que el Tally resalte */
         }
         
         iframe { 
@@ -69,12 +67,12 @@
 <body>
     <div class="container">
         <div class="header-area">
-            <a href="index.html" class="btn-back">← VOLVER AL MENÚ</a>
-            <h2>REGISTRO DE GASTOS</h2>
+            <a href="index.html" class="btn-back">← Volver al Menú</a>
+            <h2>Registro de Gastos</h2>
         </div>
         
         <div class="iframe-container">
-            <iframe src="https://tally.so/r/KYlPGD?transparentBackground=1"></iframe>
+            <iframe src="https://tally.so/r/KYlPGD" title="Formulario de Gastos"></iframe>
         </div>
     </div>
 </body>
