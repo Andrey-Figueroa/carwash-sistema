@@ -1,0 +1,528 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Sistema CarWash — Menú</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      *,
+      *::before,
+      *::after {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+
+      :root {
+        --bg: #0a0e14;
+        --card: #111720;
+        --card-hover: #161f2c;
+        --border: #1e2d3d;
+        --accent: #00c6ff;
+        --accent2: #0072ff;
+        --text: #e8f1ff;
+        --muted: #5a7a99;
+      }
+
+      body {
+        background: var(--bg);
+        font-family: "DM Sans", sans-serif;
+        color: var(--text);
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        padding: 0 0 80px;
+        overflow-x: hidden;
+      }
+
+      /* ── HEADER ── */
+      .header {
+        width: 100%;
+        position: relative;
+        height: 220px;
+        overflow: hidden;
+        display: flex;
+        align-items: flex-end;
+        justify-content: center;
+        padding-bottom: 32px;
+      }
+
+      .header-bg {
+        position: absolute;
+        inset: 0;
+        background:
+          linear-gradient(180deg, transparent 20%, var(--bg) 100%),
+          linear-gradient(135deg, #001529 0%, #003566 50%, #0072ff22 100%);
+      }
+
+      .drops {
+        position: absolute;
+        inset: 0;
+        overflow: hidden;
+        pointer-events: none;
+      }
+      .drop {
+        position: absolute;
+        top: -20px;
+        width: 2px;
+        border-radius: 50px;
+        background: linear-gradient(to bottom, transparent, var(--accent));
+        opacity: 0;
+        animation: fall linear infinite;
+      }
+      @keyframes fall {
+        0% {
+          transform: translateY(0);
+          opacity: 0;
+        }
+        10% {
+          opacity: 0.6;
+        }
+        90% {
+          opacity: 0.3;
+        }
+        100% {
+          transform: translateY(260px);
+          opacity: 0;
+        }
+      }
+
+      .header-content {
+        position: relative;
+        text-align: center;
+      }
+
+      .badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        background: rgba(0, 198, 255, 0.1);
+        border: 1px solid rgba(0, 198, 255, 0.25);
+        border-radius: 50px;
+        padding: 4px 14px;
+        font-size: 11px;
+        font-weight: 500;
+        letter-spacing: 2px;
+        text-transform: uppercase;
+        color: var(--accent);
+        margin-bottom: 10px;
+      }
+
+      h1 {
+        font-family: "Bebas Neue", sans-serif;
+        font-size: clamp(36px, 8vw, 56px);
+        letter-spacing: 4px;
+        line-height: 1;
+        background: linear-gradient(135deg, #fff 30%, var(--accent));
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+      }
+
+      .subtitle {
+        font-size: 13px;
+        color: var(--muted);
+        letter-spacing: 1px;
+        margin-top: 6px;
+      }
+
+      /* ── DATETIME ── */
+      .datetime {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+        background: rgba(0, 198, 255, 0.05);
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        padding: 12px 20px;
+        width: calc(100% - 40px);
+        max-width: 640px;
+        margin-bottom: 20px;
+      }
+      .datetime-item {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        color: var(--muted);
+        font-size: 13px;
+      }
+      .datetime-item span {
+        color: var(--text);
+        font-weight: 500;
+      }
+      .datetime-sep {
+        width: 1px;
+        height: 20px;
+        background: var(--border);
+      }
+
+      /* ── GRID & CARDS ── */
+      .divider {
+        width: 100%;
+        max-width: 640px;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 0 24px;
+        margin: 8px 0 28px;
+      }
+      .divider span {
+        font-size: 10px;
+        letter-spacing: 3px;
+        text-transform: uppercase;
+        color: var(--muted);
+      }
+      .divider::before,
+      .divider::after {
+        content: "";
+        flex: 1;
+        height: 1px;
+        background: linear-gradient(to right, transparent, var(--border));
+      }
+
+      .grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 14px;
+        width: 100%;
+        max-width: 640px;
+        padding: 0 20px;
+      }
+
+      .card {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+        background: var(--card);
+        border: 1px solid var(--border);
+        border-radius: 18px;
+        padding: 24px 20px;
+        text-decoration: none;
+        color: var(--text);
+        transition: all 0.2s ease;
+        opacity: 0;
+        animation: slideUp 0.4s ease forwards;
+      }
+
+      .card:hover {
+        transform: translateY(-3px);
+        border-color: var(--accent);
+        background: var(--card-hover);
+      }
+
+      .card.full {
+        grid-column: 1 / -1;
+      }
+
+      .icon-wrap {
+        width: 50px;
+        height: 50px;
+        border-radius: 12px;
+        background: rgba(0, 198, 255, 0.1);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 24px;
+      }
+
+      .card-title {
+        font-size: 15px;
+        font-weight: 600;
+      }
+      .card-sub {
+        font-size: 12px;
+        color: var(--muted);
+      }
+
+      /* ── CALCULADORA FLOTANTE ── */
+      .calc-float-btn {
+        position: fixed;
+        bottom: 25px;
+        right: 25px;
+        background: var(--card);
+        border: 1px solid var(--accent);
+        border-radius: 50px;
+        padding: 10px 18px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        cursor: pointer;
+        color: var(--text);
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.5);
+        z-index: 99;
+        transition: all 0.3s;
+      }
+      .calc-float-btn:hover {
+        transform: scale(1.05);
+        background: var(--accent);
+        color: #000;
+      }
+
+      .calc-modal {
+        display: none;
+        position: fixed;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.85);
+        backdrop-filter: blur(8px);
+        z-index: 1000;
+        align-items: center;
+        justify-content: center;
+      }
+      .calc-body {
+        background: var(--card);
+        padding: 20px;
+        border-radius: 24px;
+        border: 1px solid var(--border);
+        width: 320px;
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+      }
+      .calc-screen {
+        width: 100%;
+        height: 70px;
+        background: #000;
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        margin-bottom: 15px;
+        text-align: right;
+        padding: 15px;
+        color: var(--accent);
+        font-size: 32px;
+        font-family: "Bebas Neue", sans-serif;
+      }
+      .calc-buttons {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 10px;
+      }
+      .calc-btn {
+        padding: 18px;
+        border-radius: 12px;
+        border: 1px solid var(--border);
+        background: var(--bg);
+        color: white;
+        font-weight: bold;
+        cursor: pointer;
+      }
+      .calc-btn.op {
+        color: var(--accent);
+      }
+      .calc-btn.equal {
+        background: var(--accent);
+        color: #000;
+      }
+
+      @keyframes slideUp {
+        from {
+          opacity: 0;
+          transform: translateY(15px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="header">
+      <div class="header-bg"></div>
+      <div class="drops" id="drops"></div>
+      <div class="header-content">
+        <div class="badge">Sistema CarWash</div>
+        <h1>REGISTRO DE SERVICIO</h1>
+        <p class="subtitle">Gestión operativa SusAmigos</p>
+      </div>
+    </div>
+
+    <div class="datetime">
+      <div class="datetime-item">📅 <span id="fecha"></span></div>
+      <div class="datetime-sep"></div>
+      <div class="datetime-item">🕐 <span id="hora"></span></div>
+    </div>
+
+    <div class="divider"><span>Flujo de Trabajo</span></div>
+
+    <div class="grid">
+      <a
+        class="card full"
+        href="https://docs.google.com/spreadsheets/d/1VGBiKE8xOYRk22-EZFMGdXVPosUvXbHj-aeEOOQYzr4/edit?usp=drive_link"
+      >
+        <div class="icon-wrap">📊</div>
+        <div class="card-text">
+          <div class="card-title">Control General</div>
+          <div class="card-sub">Google Sheets</div>
+        </div>
+      </a>
+
+      <a
+        class="card"
+        href="https://tally.so/r/VL0erv"
+        style="animation-delay: 0.1s"
+      >
+        <div class="icon-wrap">📋</div>
+        <div class="card-text">
+          <div class="card-title">Tomar Orden</div>
+          <div class="card-sub">Atención a nuevo carro</div>
+        </div>
+      </a>
+
+      <a
+        class="card"
+        href="https://tally.so/r/5BzDQv"
+        style="animation-delay: 0.2s"
+      >
+        <div class="icon-wrap">🛒</div>
+        <div class="card-text">
+          <div class="card-title">Venta de Productos</div>
+          <div class="card-sub">Registrar venta</div>
+        </div>
+      </a>
+
+      <a
+        class="card"
+        href="https://tally.so/r/eqR1eQ"
+        style="animation-delay: 0.3s"
+      >
+        <div class="icon-wrap">💰</div>
+        <div class="card-text">
+          <div class="card-title">Completar Transacción</div>
+          <div class="card-sub">Finalizar cobro</div>
+        </div>
+      </a>
+
+      <a
+        class="card"
+        href="https://tally.so/r/eqa4vo"
+        style="animation-delay: 0.4s"
+      >
+        <div class="icon-wrap">🚗</div>
+        <div class="card-text">
+          <div class="card-title">Estado del Vehículo</div>
+          <div class="card-sub">Registrar estado</div>
+        </div>
+      </a>
+
+      <a
+        class="card"
+        href="https://tally.so/r/zxqaAg"
+        style="animation-delay: 0.5s"
+      >
+        <div class="icon-wrap">🚐</div>
+        <div class="card-text">
+          <div class="card-title">Servicio a Domicilio</div>
+          <div class="card-sub">Atención a domicilio</div>
+        </div>
+      </a>
+
+      <a class="card" href="gastos.html" style="animation-delay: 0.6s">
+        <div class="icon-wrap">💸</div>
+        <div class="card-text">
+          <div class="card-title">Registrar Gastos</div>
+          <div class="card-sub">Salidas de dinero</div>
+        </div>
+      </a>
+
+      <a
+        class="card full"
+        href="https://tally.so/r/BzxN0Y"
+        style="animation-delay: 0.7s"
+      >
+        <div class="icon-wrap">🔒</div>
+        <div class="card-text">
+          <div class="card-title">Cierre de Operaciones</div>
+          <div class="card-sub">Cerrar caja y arqueo</div>
+        </div>
+      </a>
+    </div>
+
+    <button class="calc-float-btn" onclick="openCalc()">
+      <span>🧮 Calculadora</span>
+    </button>
+
+    <div id="calcModal" class="calc-modal">
+      <div class="calc-body">
+        <input type="text" id="screen" class="calc-screen" disabled value="0" />
+        <div class="calc-buttons">
+          <button class="calc-btn" onclick="clearCalc()">C</button>
+          <button class="calc-btn op" onclick="press('/')">/</button>
+          <button class="calc-btn op" onclick="press('*')">×</button>
+          <button class="calc-btn" onclick="closeCalc()">❌</button>
+          <button class="calc-btn" onclick="press('7')">7</button>
+          <button class="calc-btn" onclick="press('8')">8</button>
+          <button class="calc-btn" onclick="press('9')">9</button>
+          <button class="calc-btn op" onclick="press('-')">-</button>
+          <button class="calc-btn" onclick="press('4')">4</button>
+          <button class="calc-btn" onclick="press('5')">5</button>
+          <button class="calc-btn" onclick="press('6')">6</button>
+          <button class="calc-btn op" onclick="press('+')">+</button>
+          <button class="calc-btn" onclick="press('1')">1</button>
+          <button class="calc-btn" onclick="press('2')">2</button>
+          <button class="calc-btn" onclick="press('3')">3</button>
+          <button class="calc-btn equal" onclick="calculate()">=</button>
+          <button
+            class="calc-btn"
+            style="grid-column: span 2"
+            onclick="press('0')"
+          >
+            0
+          </button>
+          <button class="calc-btn" onclick="press('.')">.</button>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      // Lluvia animada
+      const container = document.getElementById("drops");
+      for (let i = 0; i < 20; i++) {
+        const d = document.createElement("div");
+        d.className = "drop";
+        d.style.left = Math.random() * 100 + "%";
+        d.style.animationDuration = Math.random() * 2 + 1 + "s";
+        d.style.animationDelay = Math.random() * 2 + "s";
+        container.appendChild(d);
+      }
+
+      // Tiempo real
+      function updateTime() {
+        const now = new Date();
+        document.getElementById("fecha").textContent = now.toLocaleDateString(
+          "es-CR",
+          { weekday: "long", day: "numeric", month: "long" },
+        );
+        document.getElementById("hora").textContent =
+          now.toLocaleTimeString("es-CR");
+      }
+      setInterval(updateTime, 1000);
+      updateTime();
+
+      // Lógica Calculadora
+      const modal = document.getElementById("calcModal");
+      const screen = document.getElementById("screen");
+      function openCalc() {
+        modal.style.display = "flex";
+      }
+      function closeCalc() {
+        modal.style.display = "none";
+      }
+      function press(v) {
+        screen.value === "0" ? (screen.value = v) : (screen.value += v);
+      }
+      function clearCalc() {
+        screen.value = "0";
+      }
+      function calculate() {
+        try {
+          screen.value = eval(screen.value);
+        } catch {
+          screen.value = "Error";
+        }
+      }
+    </script>
+  </body>
+</html>
