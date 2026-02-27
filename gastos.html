@@ -2,69 +2,80 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>CarWash — Gastos</title>
     <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@400;500&display=swap" rel="stylesheet">
     <style>
-        :root { --bg: #0a0e14; --card: #111720; --accent: #00c6ff; --text: #e8f1ff; --border: #1e2d3d; }
+        :root { --bg: #0a0e14; --card: #111720; --accent: #00c6ff; --text: #e8f1ff; }
         
-        body { 
+        /* Eliminamos cualquier espacio en blanco alrededor */
+        html, body { 
             background: var(--bg); 
-            color: var(--text); 
-            font-family: 'DM Sans', sans-serif; 
-            margin: 0;
-            padding: 10px; 
-            display: flex;
-            justify-content: center;
+            margin: 0 !important; 
+            padding: 0 !important; 
+            height: 100%;
+            width: 100%;
+            overflow: hidden; /* Evita doble scroll */
         }
         
+        /* Contenedor principal a pantalla completa */
         .container { 
-            width: 100%; 
-            max-width: 1200px; /* Mucho más ancho para cubrir casi toda la pantalla */
-            background: var(--card); 
-            padding: 20px; 
-            border-radius: 20px; 
-            border: 1px solid var(--border); 
-            text-align: center;
-            min-height: 95vh; /* Ocupa casi todo el alto de la pantalla */
             display: flex;
             flex-direction: column;
+            height: 100vh; /* 100% del alto de la pantalla */
+            width: 100vw;  /* 100% del ancho de la pantalla */
+            background: var(--card);
+            box-sizing: border-box;
+            padding: 10px;
         }
         
+        .header-area {
+            text-align: center;
+            padding-bottom: 10px;
+        }
+
         h2 { 
             font-family: 'Bebas Neue', sans-serif; 
-            letter-spacing: 2px; 
             color: var(--accent); 
-            margin: 10px 0;
-            font-size: 28px;
+            margin: 5px 0;
+            font-size: 24px;
+            letter-spacing: 1px;
         }
         
         .btn-back { 
-            display: inline-block; 
-            margin-bottom: 10px; 
             text-decoration: none; 
             color: var(--accent); 
-            font-size: 14px; 
+            font-size: 13px; 
+            font-weight: bold;
         }
 
-        /* Este es el cambio clave para que el Tally cubra todo */
-        .iframe-wrapper {
-            flex-grow: 1; /* Hace que el formulario use todo el espacio sobrante */
+        /* El iframe ahora FORZOSAMENTE llenará todo el espacio restante */
+        .iframe-container {
+            flex-grow: 1;
             width: 100%;
-            border-radius: 12px;
-            overflow: hidden; 
-            border: 1px solid var(--border);
-            background: #ffffff; /* Fondo blanco para que el formulario se vea claro */
+            border-radius: 15px;
+            border: 1px solid #1e2d3d;
+            overflow: hidden;
+            background: #ffffff;
         }
         
         iframe { 
-            width: 100%; 
-            height: 100%;
-            border: none; 
+            width: 100% !important; 
+            height: 100% !important;
+            border: none !important; 
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <a href="index.html" class="btn-back">← Volver al Menú</a>
-        <h2>Registro de Gastos</h2>
+        <div class="header-area">
+            <a href="index.html" class="btn-back">← VOLVER AL MENÚ</a>
+            <h2>REGISTRO DE GASTOS</h2>
+        </div>
+        
+        <div class="iframe-container">
+            <iframe src="https://tally.so/r/KYlPGD?transparentBackground=1"></iframe>
+        </div>
+    </div>
+</body>
+</html>
