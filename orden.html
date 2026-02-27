@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>CarWash — Orden</title>
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        :root { --bg: #0a0e14; --card: #111720; --accent: #00c6ff; --text: #e8f1ff; --border: #1e2d3d; }
+        html, body { background: var(--bg); margin: 0 !important; padding: 0 !important; height: 100vh; width: 100vw; overflow: hidden; }
+        .container { display: flex; flex-direction: column; height: 100vh; width: 100vw; background: var(--bg); box-sizing: border-box; padding: 15px; }
+        .header-area { display: flex; align-items: center; justify-content: space-between; padding-bottom: 15px; }
+        .btn-back { text-decoration: none; color: var(--text); font-size: 13px; font-weight: bold; text-transform: uppercase; background: rgba(0, 198, 255, 0.1); padding: 8px 15px; border-radius: 8px; border: 1px solid var(--accent); transition: all 0.3s ease; display: flex; align-items: center; gap: 5px; }
+        .btn-back:hover { background: var(--accent); color: var(--bg); box-shadow: 0 0 15px rgba(0, 198, 255, 0.4); }
+        h2 { font-family: 'Bebas Neue', sans-serif; color: var(--accent); margin: 0; font-size: 24px; letter-spacing: 2px; flex-grow: 1; text-align: center; margin-right: 100px; }
+        .iframe-container { flex-grow: 1; width: 100%; border-radius: 15px; border: 1px solid var(--border); overflow: hidden; background: var(--card); }
+        iframe { width: 100% !important; height: 100% !important; border: none !important; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header-area">
+            <a href="index.html" class="btn-back"><span>←</span> VOLVER</a>
+            <h2>TOMAR ORDEN</h2>
+        </div>
+        <div class="iframe-container">
+            <iframe src="https://tally.so/r/tu-codigo-de-orden"></iframe>
+        </div>
+    </div>
+</body>
+</html>
