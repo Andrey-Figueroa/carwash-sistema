@@ -36,6 +36,7 @@
         .card-sub { font-size: 12px; color: var(--muted); }
 
         @keyframes slideUp { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes pulse2 { 0%,100%{box-shadow:0 0 0 0 rgba(0,230,118,0.5)} 50%{box-shadow:0 0 0 5px rgba(0,230,118,0)} }
 
         /* ── HAMBURGER MENU (bottom-right) ── */
         .fab-wrap { position: fixed; bottom: 25px; right: 25px; z-index: 200; }
@@ -186,6 +187,17 @@
         <a class="card" href="domicilio.html"><div class="icon-wrap">🚐</div><div class="card-text"><div class="card-title">Servicio Domicilio</div></div></a>
         <a class="card" href="gastos.html"><div class="icon-wrap">💸</div><div class="card-text"><div class="card-title">Registrar Gastos</div></div></a>
         <a class="card full" href="cierre.html"><div class="icon-wrap">🔒</div><div class="card-text"><div class="card-title">Cierre de Operaciones</div></div></a>
+        <a class="card full" href="pizarra.html" style="border-color:rgba(0,212,255,0.25);background:linear-gradient(135deg,rgba(0,212,255,0.07),rgba(0,100,200,0.05));">
+            <div class="icon-wrap" style="background:rgba(0,212,255,0.15);font-size:28px;">🗺️</div>
+            <div class="card-text">
+                <div class="card-title" style="color:#00d4ff;font-size:16px;">Pizarra del Local</div>
+                <div class="card-sub">Estado en tiempo real de los vehículos</div>
+            </div>
+            <div style="margin-left:auto;display:flex;align-items:center;gap:6px;font-size:11px;color:#00d4ff;background:rgba(0,212,255,0.1);border:1px solid rgba(0,212,255,0.2);border-radius:20px;padding:4px 12px;white-space:nowrap;">
+                <div style="width:6px;height:6px;border-radius:50%;background:#00e676;animation:pulse2 2s infinite"></div>
+                En vivo
+            </div>
+        </a>
     </div>
 
     <!-- ══ HAMBURGER FAB (bottom-right) ══ -->
