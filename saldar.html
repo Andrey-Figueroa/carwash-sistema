@@ -175,14 +175,6 @@
                         <span class="symbol">₡</span>
                     </div>
                 </div>
-                <div class="monto-field" id="campo-Tarjeta de regalo">
-                    <label class="form-label">Monto en tarjeta de regalo <span class="req">*</span></label>
-                    <div class="input-wrap">
-                        <input class="form-input" type="number" id="monto-Tarjeta de regalo" placeholder="0" min="0" oninput="actualizarTotal()">
-                        <span class="symbol">₡</span>
-                    </div>
-                </div>
-
                 <!-- TOTAL -->
                 <div class="total-row" id="totalRow" style="display:none;">
                     <span>💰 Total</span>
@@ -252,7 +244,7 @@
         // ⚠️ REEMPLAZA con tu webhook de n8n
         const N8N_WEBHOOK_URL = "https://n8n-production-6cc7.up.railway.app/webhook-test/saldar-cuenta";
 
-        const metodos = ["Tarjeta crédito / débito", "Efectivo", "SINPE Móvil", "Tarjeta de regalo"];
+        const metodos = ["Tarjeta crédito / débito", "Efectivo", "SINPE Móvil"];
 
         function onOrdenInput(val) {
             document.getElementById("mainSection").classList.toggle("visible", val.trim() !== "" && parseInt(val) > 0);
@@ -325,7 +317,7 @@
             const monto_efectivo = parseFloat(document.getElementById("monto-Efectivo")?.value) || 0;
             const monto_sinpe    = parseFloat(document.getElementById("monto-SINPE Móvil")?.value) || 0;
         ;
-            const total          = monto_tarjeta + monto_cxc + monto_efectivo + monto_sinpe + monto_regalo;
+            const total          = monto_tarjeta + monto_efectivo + monto_sinpe;
             const metodos_usados = seleccionados.map(ch => ch.value).join(", ");
 
             const payload = {
@@ -333,10 +325,8 @@
                 metodo_pago:             metodos_usados,
                 total,
                 monto_tarjeta:           monto_tarjeta  || "",
-                monto_cuenta_por_cobrar: monto_cxc      || "",
                 monto_efectivo:          monto_efectivo || "",
                 monto_sinpe:             monto_sinpe    || "",
-                monto_tarjeta_regalo:    monto_regalo   || "",
                 responsable:             responsableEl.value,
                 plan_puntos:             fidelEl.value
             };
