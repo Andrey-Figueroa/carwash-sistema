@@ -10,7 +10,6 @@
         :root { --bg: #0a0e14; --card: #111720; --card-hover: #161f2c; --border: #1e2d3d; --accent: #00c6ff; --text: #e8f1ff; --muted: #5a7a99; }
         body { background: var(--bg); font-family: "DM Sans", sans-serif; color: var(--text); min-height: 100vh; display: flex; flex-direction: column; align-items: center; padding: 0 0 80px; overflow-x: hidden; }
 
-        /* HEADER */
         .header { width: 100%; position: relative; height: 220px; overflow: hidden; display: flex; align-items: flex-end; justify-content: center; padding-bottom: 32px; }
         .header-bg { position: absolute; inset: 0; background: linear-gradient(180deg, transparent 20%, var(--bg) 100%), linear-gradient(135deg, #001529 0%, #003566 50%, #0072ff22 100%); }
         .drops { position: absolute; inset: 0; overflow: hidden; pointer-events: none; }
@@ -20,13 +19,11 @@
         .badge { display: inline-flex; align-items: center; gap: 6px; background: rgba(0, 198, 255, 0.1); border: 1px solid rgba(0, 198, 255, 0.25); border-radius: 50px; padding: 4px 14px; font-size: 11px; font-weight: 500; letter-spacing: 2px; text-transform: uppercase; color: var(--accent); margin-bottom: 10px; }
         h1 { font-family: "Bebas Neue", sans-serif; font-size: clamp(36px, 8vw, 56px); letter-spacing: 4px; line-height: 1; background: linear-gradient(135deg, #fff 30%, var(--accent)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
 
-        /* DATETIME */
         .datetime { display: flex; align-items: center; gap: 16px; background: rgba(0, 198, 255, 0.05); border: 1px solid var(--border); border-radius: 12px; padding: 12px 20px; width: calc(100% - 40px); max-width: 640px; margin-bottom: 20px; }
         .datetime-item { display: flex; align-items: center; gap: 8px; color: var(--muted); font-size: 13px; }
         .datetime-item span { color: var(--text); font-weight: 500; }
         .datetime-sep { width: 1px; height: 20px; background: var(--border); }
 
-        /* GRID */
         .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; width: 100%; max-width: 640px; padding: 0 20px; }
         .card { display: flex; align-items: center; gap: 16px; background: var(--card); border: 1px solid var(--border); border-radius: 18px; padding: 24px 20px; text-decoration: none; color: var(--text); transition: all 0.2s ease; animation: slideUp 0.4s ease forwards; }
         .card:hover { transform: translateY(-3px); border-color: var(--accent); background: var(--card-hover); }
@@ -38,66 +35,31 @@
         @keyframes slideUp { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
         @keyframes pulse2 { 0%,100%{box-shadow:0 0 0 0 rgba(0,230,118,0.5)} 50%{box-shadow:0 0 0 5px rgba(0,230,118,0)} }
 
-        /* ── HAMBURGER MENU (bottom-right) ── */
         .fab-wrap { position: fixed; bottom: 25px; right: 25px; z-index: 200; }
-        .fab-btn {
-            display: flex; align-items: center; gap: 10px;
-            background: var(--card); border: 1px solid var(--accent);
-            border-radius: 50px; padding: 11px 20px; cursor: pointer;
-            color: var(--text); font-size: 14px; font-weight: 500;
-            transition: all 0.2s ease; white-space: nowrap;
-            box-shadow: 0 4px 20px rgba(0,198,255,0.15);
-        }
+        .fab-btn { display: flex; align-items: center; gap: 10px; background: var(--card); border: 1px solid var(--accent); border-radius: 50px; padding: 11px 20px; cursor: pointer; color: var(--text); font-size: 14px; font-weight: 500; transition: all 0.2s ease; white-space: nowrap; box-shadow: 0 4px 20px rgba(0,198,255,0.15); }
         .fab-btn:hover { background: var(--card-hover); box-shadow: 0 4px 24px rgba(0,198,255,0.3); }
         .hamburger { display: flex; flex-direction: column; gap: 4px; }
         .hamburger span { display: block; width: 18px; height: 2px; background: var(--accent); border-radius: 2px; transition: all 0.2s; }
 
-        .fab-menu {
-            position: absolute; bottom: calc(100% + 12px); right: 0;
-            background: var(--card); border: 1px solid var(--border);
-            border-radius: 18px; overflow: hidden; min-width: 220px;
-            box-shadow: 0 8px 32px rgba(0,0,0,0.5);
-            opacity: 0; transform: translateY(10px) scale(0.97);
-            pointer-events: none; transition: all 0.22s cubic-bezier(.4,0,.2,1);
-            transform-origin: bottom right;
-        }
-        .fab-wrap:hover .fab-menu,
-        .fab-wrap.open .fab-menu {
-            opacity: 1; transform: translateY(0) scale(1); pointer-events: auto;
-        }
+        .fab-menu { position: absolute; bottom: calc(100% + 12px); right: 0; background: var(--card); border: 1px solid var(--border); border-radius: 18px; overflow: hidden; min-width: 220px; box-shadow: 0 8px 32px rgba(0,0,0,0.5); opacity: 0; transform: translateY(10px) scale(0.97); pointer-events: none; transition: all 0.22s cubic-bezier(.4,0,.2,1); transform-origin: bottom right; }
+        .fab-wrap:hover .fab-menu, .fab-wrap.open .fab-menu { opacity: 1; transform: translateY(0) scale(1); pointer-events: auto; }
         .fab-wrap:hover .hamburger span:nth-child(1) { transform: translateY(6px) rotate(45deg); }
         .fab-wrap:hover .hamburger span:nth-child(2) { opacity: 0; }
         .fab-wrap:hover .hamburger span:nth-child(3) { transform: translateY(-6px) rotate(-45deg); }
 
-        .fab-item {
-            display: flex; align-items: center; gap: 12px;
-            padding: 14px 18px; cursor: pointer; color: var(--text);
-            text-decoration: none; font-size: 14px; font-weight: 500;
-            border-bottom: 1px solid var(--border); transition: background 0.15s;
-        }
+        .fab-item { display: flex; align-items: center; gap: 12px; padding: 14px 18px; cursor: pointer; color: var(--text); text-decoration: none; font-size: 14px; font-weight: 500; border-bottom: 1px solid var(--border); transition: background 0.15s; }
         .fab-item:last-child { border-bottom: none; }
         .fab-item:hover { background: var(--card-hover); color: var(--accent); }
         .fab-item .fi { font-size: 18px; width: 28px; text-align: center; }
 
-        /* ── SOPORTE GEAR (bottom-left) ── */
-        .soporte-btn {
-            position: fixed; bottom: 25px; left: 25px; z-index: 200;
-            display: flex; align-items: center; gap: 10px;
-            background: var(--card); border: 1px solid #2a3d52;
-            border-radius: 50px; padding: 11px 20px; cursor: pointer;
-            color: var(--muted); font-size: 14px; font-weight: 500;
-            transition: all 0.2s ease;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.3);
-        }
+        .soporte-btn { position: fixed; bottom: 25px; left: 25px; z-index: 200; display: flex; align-items: center; gap: 10px; background: var(--card); border: 1px solid #2a3d52; border-radius: 50px; padding: 11px 20px; cursor: pointer; color: var(--muted); font-size: 14px; font-weight: 500; transition: all 0.2s ease; box-shadow: 0 4px 20px rgba(0,0,0,0.3); }
         .soporte-btn:hover { color: var(--text); border-color: var(--accent); box-shadow: 0 4px 24px rgba(0,198,255,0.2); }
         .gear-icon { font-size: 18px; transition: transform 0.5s ease; display: inline-block; }
         .soporte-btn:hover .gear-icon { transform: rotate(90deg); }
 
-        /* ── MODALS ── */
         .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.85); backdrop-filter: blur(8px); z-index: 1000; align-items: center; justify-content: center; }
         .modal.show { display: flex; }
 
-        /* CALC */
         .calc-body { background: var(--card); padding: 20px; border-radius: 24px; border: 1px solid var(--border); width: 320px; }
         .calc-screen { width: 100%; height: 70px; background: #000; color: var(--accent); font-size: 32px; text-align: right; padding: 15px; margin-bottom: 15px; border-radius: 12px; border: 1px solid var(--border); font-family: monospace; }
         .calc-buttons { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
@@ -107,7 +69,6 @@
         .calc-btn.equal { background: var(--accent); color: #000; font-weight: 700; }
         .calc-btn.equal:hover { background: #00aadd; }
 
-        /* SOPORTE MODAL */
         .modal-box { background: var(--card); border: 1px solid var(--border); border-radius: 24px; width: 420px; max-width: calc(100vw - 40px); overflow: hidden; }
         .modal-header { padding: 22px 24px 18px; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; }
         .modal-header h2 { font-size: 18px; font-weight: 600; display: flex; align-items: center; gap: 10px; }
@@ -116,36 +77,16 @@
         .modal-body { padding: 24px; display: flex; flex-direction: column; gap: 16px; }
         .form-group { display: flex; flex-direction: column; gap: 6px; }
         .form-label { font-size: 12px; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: 1px; }
-        .form-select, .form-input, .form-textarea {
-            background: var(--bg); border: 1px solid var(--border); border-radius: 10px;
-            color: var(--text); padding: 10px 14px; font-size: 14px; font-family: inherit;
-            outline: none; transition: border-color 0.2s;
-        }
+        .form-select, .form-input, .form-textarea { background: var(--bg); border: 1px solid var(--border); border-radius: 10px; color: var(--text); padding: 10px 14px; font-size: 14px; font-family: inherit; outline: none; transition: border-color 0.2s; }
         .form-select:focus, .form-input:focus, .form-textarea:focus { border-color: var(--accent); }
         .form-textarea { resize: vertical; min-height: 100px; }
         .form-select option { background: var(--card); }
-        .btn-send {
-            background: var(--accent); color: #000; border: none; border-radius: 12px;
-            padding: 13px; font-size: 15px; font-weight: 700; cursor: pointer;
-            font-family: inherit; transition: background 0.2s;
-        }
+        .btn-send { background: var(--accent); color: #000; border: none; border-radius: 12px; padding: 13px; font-size: 15px; font-weight: 700; cursor: pointer; font-family: inherit; transition: background 0.2s; }
         .btn-send:hover { background: #00aadd; }
         .success-msg { display: none; text-align: center; padding: 30px 20px; }
         .success-msg .check { font-size: 48px; margin-bottom: 12px; }
         .success-msg p { color: var(--muted); font-size: 14px; margin-top: 6px; }
 
-        /* CUENTAS MODAL */
-        .cuentas-list { display: flex; flex-direction: column; gap: 10px; max-height: 350px; overflow-y: auto; }
-        .cuenta-item { background: var(--bg); border: 1px solid var(--border); border-radius: 12px; padding: 14px 16px; display: flex; justify-content: space-between; align-items: center; }
-        .cuenta-item .cn { font-weight: 600; font-size: 14px; }
-        .cuenta-item .cd { font-size: 12px; color: var(--muted); margin-top: 2px; }
-        .cuenta-item .ca { font-size: 16px; font-weight: 700; color: #ff7b7b; }
-        .btn-saldar { background: rgba(0,198,255,0.1); border: 1px solid rgba(0,198,255,0.3); color: var(--accent); border-radius: 8px; padding: 6px 14px; font-size: 12px; font-weight: 600; cursor: pointer; font-family: inherit; transition: all 0.15s; }
-        .btn-saldar:hover { background: rgba(0,198,255,0.2); }
-        .empty-state { text-align: center; padding: 40px 20px; color: var(--muted); font-size: 14px; }
-        .empty-state .ei { font-size: 40px; margin-bottom: 10px; }
-
-        /* HORARIO MODAL */
         .horario-table { width: 100%; border-collapse: collapse; font-size: 13px; }
         .horario-table th { color: var(--accent); font-weight: 600; padding: 10px 12px; border-bottom: 1px solid var(--border); text-align: left; font-size: 11px; text-transform: uppercase; letter-spacing: 1px; }
         .horario-table td { padding: 10px 12px; border-bottom: 1px solid rgba(30,45,61,0.5); }
@@ -154,9 +95,6 @@
         .turno-m { background: rgba(255,200,50,0.15); color: #ffc832; }
         .turno-t { background: rgba(0,198,255,0.12); color: var(--accent); }
         .turno-libre { background: rgba(90,122,153,0.15); color: var(--muted); }
-
-        /* SALDAR MODAL */
-        .saldar-form { display: flex; flex-direction: column; gap: 14px; }
     </style>
 </head>
 <body>
@@ -200,12 +138,14 @@
         </a>
     </div>
 
-    <!-- ══ HAMBURGER FAB (bottom-right) ══ -->
+    <!-- ══ HAMBURGER FAB ══ -->
     <div class="fab-wrap" id="fabWrap">
         <div class="fab-menu">
             <a class="fab-item" onclick="openCalc()"><span class="fi">🧮</span> Calculadora</a>
-            <a class="fab-item" onclick="openSaldar()"><span class="fi">💳</span> Saldar cuenta por cobrar</a>
-            <a class="fab-item" onclick="openCuentas()"><span class="fi">📄</span> Ver cuentas por cobrar</a>
+            <!-- ✅ ACTUALIZADO: abre saldar.html -->
+            <a class="fab-item" href="saldar.html"><span class="fi">💳</span> Saldar cuenta por cobrar</a>
+            <!-- ✅ ACTUALIZADO: abre Google Sheets directo — reemplaza el link con tu hoja de CXC -->
+            <a class="fab-item" href="https://docs.google.com/spreadsheets/d/1VGBiKE8xOYRk22-EZFMGdXVPosUvXbHj-aeEOOQYzr4/edit#gid=REEMPLAZA_CON_ID_DE_HOJA_CXC" target="_blank"><span class="fi">📄</span> Ver cuentas por cobrar</a>
             <a class="fab-item" onclick="openHorario()"><span class="fi">📅</span> Ver horario próxima semana</a>
         </div>
         <button class="fab-btn">
@@ -214,7 +154,7 @@
         </button>
     </div>
 
-    <!-- ══ SOPORTE GEAR (bottom-left) ══ -->
+    <!-- ══ SOPORTE GEAR ══ -->
     <button class="soporte-btn" onclick="openSoporte()">
         <span class="gear-icon">⚙️</span> Soporte
     </button>
@@ -236,86 +176,6 @@
                 <button class="calc-btn equal" onclick="calculate()">=</button>
                 <button class="calc-btn" style="grid-column:span 2" onclick="press('0')">0</button>
                 <button class="calc-btn" onclick="press('.')">.</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- ══ MODAL: SALDAR CUENTA ══ -->
-    <div id="saldarModal" class="modal">
-        <div class="modal-box">
-            <div class="modal-header">
-                <h2>💳 Saldar Cuenta por Cobrar</h2>
-                <button class="modal-close" onclick="closeModal('saldarModal')">✕</button>
-            </div>
-            <div class="modal-body">
-                <div class="saldar-form">
-                    <div class="form-group">
-                        <label class="form-label">Cliente</label>
-                        <select class="form-select" id="saldarCliente">
-                            <option value="">Seleccionar cliente...</option>
-                            <option>Juan Mora — ₡12,500</option>
-                            <option>Ana Solís — ₡8,000</option>
-                            <option>Carlos Brenes — ₡23,750</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label class="form-label">Monto a pagar (₡)</label>
-                        <input class="form-input" type="number" placeholder="0" id="saldarMonto" />
-                    </div>
-                    <div class="form-group">
-                        <label class="form-label">Método de pago</label>
-                        <select class="form-select">
-                            <option>Efectivo</option>
-                            <option>Sinpe Móvil</option>
-                            <option>Tarjeta</option>
-                            <option>Transferencia</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label class="form-label">Observaciones (opcional)</label>
-                        <input class="form-input" type="text" placeholder="Ej: Pago parcial, factura #..." />
-                    </div>
-                    <button class="btn-send" onclick="confirmarSaldar()">✅ Confirmar Pago</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- ══ MODAL: VER CUENTAS ══ -->
-    <div id="cuentasModal" class="modal">
-        <div class="modal-box">
-            <div class="modal-header">
-                <h2>📄 Cuentas por Cobrar</h2>
-                <button class="modal-close" onclick="closeModal('cuentasModal')">✕</button>
-            </div>
-            <div class="modal-body">
-                <div class="cuentas-list">
-                    <div class="cuenta-item">
-                        <div><div class="cn">Juan Mora</div><div class="cd">Lavado completo · hace 3 días</div></div>
-                        <div style="text-align:right">
-                            <div class="ca">₡12,500</div>
-                            <button class="btn-saldar" onclick="closeModal('cuentasModal');openSaldar()">Saldar</button>
-                        </div>
-                    </div>
-                    <div class="cuenta-item">
-                        <div><div class="cn">Ana Solís</div><div class="cd">Encerado + lavado · hace 5 días</div></div>
-                        <div style="text-align:right">
-                            <div class="ca">₡8,000</div>
-                            <button class="btn-saldar" onclick="closeModal('cuentasModal');openSaldar()">Saldar</button>
-                        </div>
-                    </div>
-                    <div class="cuenta-item">
-                        <div><div class="cn">Carlos Brenes</div><div class="cd">Detailing interior · hace 1 semana</div></div>
-                        <div style="text-align:right">
-                            <div class="ca">₡23,750</div>
-                            <button class="btn-saldar" onclick="closeModal('cuentasModal');openSaldar()">Saldar</button>
-                        </div>
-                    </div>
-                </div>
-                <div style="margin-top:16px;padding-top:14px;border-top:1px solid var(--border);display:flex;justify-content:space-between;font-size:14px;">
-                    <span style="color:var(--muted)">Total pendiente</span>
-                    <span style="font-weight:700;color:#ff7b7b">₡44,250</span>
-                </div>
             </div>
         </div>
     </div>
@@ -344,7 +204,7 @@
                         <tr><td>Viernes</td><td>Ana S.</td><td><span class="turno-tag turno-m">Mañana</span></td><td>7:00 – 13:00</td></tr>
                         <tr><td>Viernes</td><td>María R.</td><td><span class="turno-tag turno-t">Tarde</span></td><td>13:00 – 19:00</td></tr>
                         <tr><td>Sábado</td><td>Juan M.</td><td><span class="turno-tag turno-m">Mañana</span></td><td>7:00 – 13:00</td></tr>
-                        <tr><td>Domingo</td><td colspan="3"><span class="turno-tag turno-libre">Día libre</span></td></tr>
+                        <tr><td>Domingo</td><td colspan="3"><span class="turno-tag turno-libre">Día libre</span></span></td></tr>
                     </tbody>
                 </table>
             </div>
@@ -387,7 +247,7 @@
                 </div>
                 <div class="form-group">
                     <label class="form-label">Descripción del error</label>
-                    <textarea class="form-textarea" id="descError" placeholder="Describe qué pasó, qué esperabas que pasara y cualquier detalle útil..."></textarea>
+                    <textarea class="form-textarea" id="descError" placeholder="Describe qué pasó..."></textarea>
                 </div>
                 <div class="form-group">
                     <label class="form-label">Tu nombre (opcional)</label>
@@ -405,7 +265,6 @@
     </div>
 
     <script>
-        /* Rain drops */
         const container = document.getElementById("drops");
         for (let i = 0; i < 20; i++) {
             const d = document.createElement("div"); d.className = "drop";
@@ -414,7 +273,6 @@
             container.appendChild(d);
         }
 
-        /* Clock */
         function updateTime() {
             const now = new Date();
             document.getElementById("fecha").textContent = now.toLocaleDateString("es-CR", { weekday: "long", day: "numeric", month: "long" });
@@ -422,7 +280,6 @@
         }
         setInterval(updateTime, 1000); updateTime();
 
-        /* Modal helpers */
         function closeModal(id) {
             document.getElementById(id).classList.remove("show");
             if (id === "soporteModal") {
@@ -434,29 +291,15 @@
             m.addEventListener("click", e => { if (e.target === m) closeModal(m.id); });
         });
 
-        /* Open modals */
         function openCalc() { document.getElementById("calcModal").classList.add("show"); }
-        function openSaldar() { document.getElementById("saldarModal").classList.add("show"); }
-        function openCuentas() { document.getElementById("cuentasModal").classList.add("show"); }
         function openHorario() { document.getElementById("horarioModal").classList.add("show"); }
         function openSoporte() { document.getElementById("soporteModal").classList.add("show"); }
 
-        /* Calculator */
         const screen = document.getElementById("screen");
         function press(v) { screen.value === "0" ? (screen.value = v) : (screen.value += v); }
         function clearCalc() { screen.value = "0"; }
         function calculate() { try { screen.value = eval(screen.value); } catch { screen.value = "Error"; } }
 
-        /* Saldar */
-        function confirmarSaldar() {
-            const c = document.getElementById("saldarCliente").value;
-            const m = document.getElementById("saldarMonto").value;
-            if (!c || !m) { alert("Por favor complete todos los campos requeridos."); return; }
-            alert("✅ Pago registrado exitosamente.");
-            closeModal("saldarModal");
-        }
-
-        /* Soporte */
         function enviarReporte() {
             const tipo = document.getElementById("tipoError").value;
             const desc = document.getElementById("descError").value.trim();
