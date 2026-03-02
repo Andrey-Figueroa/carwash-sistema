@@ -4,260 +4,667 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>CarWash — Saldar Cuenta</title>
-    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet">
     <style>
         *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
         :root {
-            --bg: #0a0e14;
-            --card: #111720;
-            --border: #1e2d3d;
-            --accent: #00c6ff;
-            --text: #e8f1ff;
-            --muted: #5a7a99;
-            --green: #00e676;
+            --bg: #080b0f;
+            --surface: #0e1318;
+            --surface2: #141c24;
+            --border: #1f2d3a;
+            --border2: #263544;
+            --accent: #c8ff00;
+            --accent-dim: rgba(200,255,0,0.1);
+            --accent-mid: rgba(200,255,0,0.25);
+            --text: #ddeeff;
+            --text2: #6a8ba8;
+            --red: #ff4d6a;
+            --red-dim: rgba(255,77,106,0.1);
         }
-        html, body { background: var(--bg); font-family: 'DM Sans', sans-serif; color: var(--text); min-height: 100vh; }
-        .container { display: flex; flex-direction: column; min-height: 100vh; padding: 16px; max-width: 560px; margin: 0 auto; padding-bottom: 40px; }
 
-        .header-area { display: flex; align-items: center; padding-bottom: 20px; position: relative; }
-        .btn-back { text-decoration: none; color: var(--text); font-size: 13px; font-weight: 600; background: rgba(0,198,255,0.1); padding: 8px 15px; border-radius: 8px; border: 1px solid var(--accent); z-index: 10; transition: background 0.2s; }
-        .btn-back:hover { background: rgba(0,198,255,0.2); }
-        h2 { font-family: 'Bebas Neue', sans-serif; color: var(--accent); font-size: 22px; letter-spacing: 2px; position: absolute; width: 100%; text-align: center; left: 0; pointer-events: none; }
+        html, body {
+            background: var(--bg);
+            font-family: 'Syne', sans-serif;
+            color: var(--text);
+            min-height: 100vh;
+        }
 
-        .form-card { background: var(--card); border: 1px solid var(--border); border-radius: 20px; padding: 26px 22px; display: flex; flex-direction: column; gap: 22px; }
-        .form-title { font-family: 'Bebas Neue', sans-serif; font-size: 20px; letter-spacing: 1.5px; padding-bottom: 4px; border-bottom: 1px solid var(--border); }
-        .section-label { font-size: 11px; font-weight: 700; color: var(--accent); text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: -8px; }
-        .form-group { display: flex; flex-direction: column; gap: 8px; }
-        .form-label { font-size: 13px; font-weight: 600; color: var(--text); display: flex; align-items: center; gap: 5px; }
-        .req { color: var(--accent); font-size: 16px; line-height: 1; }
+        /* Noise texture overlay */
+        body::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+            pointer-events: none;
+            z-index: 0;
+            opacity: 0.5;
+        }
 
-        .form-input { background: var(--bg); border: 1px solid var(--border); border-radius: 10px; color: var(--text); padding: 12px 14px; font-size: 15px; font-family: inherit; outline: none; transition: border-color 0.2s, box-shadow 0.2s; width: 100%; }
-        .form-input:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(0,198,255,0.1); }
-        .form-input::placeholder { color: var(--muted); }
-        
+        .page {
+            position: relative;
+            z-index: 1;
+            max-width: 520px;
+            margin: 0 auto;
+            padding: 20px 16px 60px;
+            display: flex;
+            flex-direction: column;
+            gap: 0;
+        }
+
+        /* ── HEADER ── */
+        .top-bar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding-bottom: 28px;
+        }
+
+        .btn-back {
+            display: inline-flex;
+            align-items: center;
+            gap: 7px;
+            text-decoration: none;
+            color: var(--text2);
+            font-size: 12px;
+            font-weight: 700;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            border: 1px solid var(--border2);
+            padding: 8px 14px;
+            border-radius: 6px;
+            transition: all 0.2s;
+        }
+        .btn-back:hover { color: var(--text); border-color: var(--accent); }
+
+        .page-title {
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            color: var(--text2);
+        }
+
+        /* ── CARD ── */
+        .card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            overflow: hidden;
+        }
+
+        .card-header {
+            padding: 22px 24px 18px;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .card-icon {
+            width: 40px;
+            height: 40px;
+            background: var(--accent-dim);
+            border: 1px solid rgba(200,255,0,0.3);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            flex-shrink: 0;
+        }
+
+        .card-header-text h1 {
+            font-size: 17px;
+            font-weight: 800;
+            color: var(--text);
+            letter-spacing: 0.5px;
+        }
+        .card-header-text p {
+            font-size: 12px;
+            color: var(--text2);
+            margin-top: 2px;
+        }
+
+        .card-body {
+            padding: 24px;
+            display: flex;
+            flex-direction: column;
+            gap: 28px;
+        }
+
+        /* ── SECTION ── */
+        .section { display: flex; flex-direction: column; gap: 14px; }
+        .section-title {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 10px;
+            font-weight: 700;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: var(--accent);
+        }
+        .section-title::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: var(--border);
+        }
+
+        /* ── FIELD ── */
+        .field { display: flex; flex-direction: column; gap: 7px; }
+        .field-label {
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--text2);
+            letter-spacing: 0.5px;
+        }
+        .field-label .req { color: var(--accent); margin-left: 3px; }
+
         .input-wrap { position: relative; }
-        .input-wrap .symbol { position: absolute; right: 14px; top: 50%; transform: translateY(-50%); color: var(--muted); font-size: 15px; pointer-events: none; }
-        .input-wrap .form-input { padding-right: 36px; }
+        .input-wrap .prefix {
+            position: absolute;
+            left: 13px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-family: 'Space Mono', monospace;
+            font-size: 13px;
+            color: var(--text2);
+            pointer-events: none;
+        }
+        .input-wrap input { padding-left: 32px !important; }
 
-        .field-hint { font-size: 11px; color: var(--muted); margin-top: -4px; }
+        input[type="number"], input[type="text"] {
+            width: 100%;
+            background: var(--bg);
+            border: 1px solid var(--border2);
+            border-radius: 10px;
+            color: var(--text);
+            padding: 12px 14px;
+            font-size: 15px;
+            font-family: 'Space Mono', monospace;
+            outline: none;
+            transition: border-color 0.2s, box-shadow 0.2s;
+            -moz-appearance: textfield;
+        }
+        input[type="number"]::-webkit-outer-spin-button,
+        input[type="number"]::-webkit-inner-spin-button { -webkit-appearance: none; }
+        input:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(200,255,0,0.08); }
+        input::placeholder { color: var(--border2); }
 
-        /* SECCIONES BLOQUEADAS */
-        .locked-section { display: none; flex-direction: column; gap: 18px; animation: fadeIn 0.25s ease; }
-        .locked-section.visible { display: flex; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(-6px); } to { opacity: 1; transform: translateY(0); } }
+        /* ── LOCKED ── */
+        .locked { display: none; flex-direction: column; gap: 28px; }
+        .locked.on {
+            display: flex;
+            animation: slideDown 0.25s ease;
+        }
+        @keyframes slideDown {
+            from { opacity: 0; transform: translateY(-8px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
 
-        /* CHIPS CHECKBOX */
-        .chips-list { display: flex; flex-direction: column; gap: 9px; }
-        .chip-label { cursor: pointer; }
-        .chip-label input { display: none; }
-        .chip { display: flex; align-items: center; gap: 10px; padding: 12px 16px; border-radius: 10px; border: 1px solid var(--border); background: var(--bg); color: var(--muted); font-size: 14px; font-weight: 500; transition: all 0.18s ease; user-select: none; }
-        .chip:hover { border-color: rgba(0,198,255,0.4); color: var(--text); }
-        .chip-label input:checked + .chip { background: rgba(0,198,255,0.12); border-color: var(--accent); color: var(--accent); font-weight: 600; }
-        .chip-box { width: 18px; height: 18px; border-radius: 5px; border: 2px solid var(--border); flex-shrink: 0; display: flex; align-items: center; justify-content: center; transition: all 0.18s; font-size: 11px; font-weight: 700; color: #000; }
-        .chip-label input:checked + .chip .chip-box { border-color: var(--accent); background: var(--accent); }
-        .chip-label input:checked + .chip .chip-box::after { content: "✓"; }
+        /* ── METODOS ── */
+        .metodos-grid { display: flex; flex-direction: column; gap: 8px; }
 
-        /* RADIO CHIPS */
-        .chips-wrap { display: flex; flex-wrap: wrap; gap: 9px; }
-        .radio-label { cursor: pointer; }
-        .radio-label input { display: none; }
-        .radio-chip { display: inline-flex; align-items: center; padding: 8px 16px; border-radius: 50px; border: 1px solid var(--border); background: var(--bg); color: var(--muted); font-size: 13px; font-weight: 500; transition: all 0.18s; user-select: none; }
-        .radio-chip:hover { border-color: rgba(0,198,255,0.4); color: var(--text); }
-        .radio-label input:checked + .radio-chip { background: rgba(0,198,255,0.12); border-color: var(--accent); color: var(--accent); font-weight: 600; }
+        .metodo-item { display: flex; flex-direction: column; gap: 8px; }
 
-        /* FIDELIZACIÓN SÍ/NO */
-        .fidel-wrap { display: flex; gap: 10px; }
+        .metodo-toggle { cursor: pointer; }
+        .metodo-toggle input { display: none; }
+
+        .metodo-row {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 13px 16px;
+            border-radius: 10px;
+            border: 1px solid var(--border2);
+            background: var(--bg);
+            transition: all 0.18s;
+            user-select: none;
+        }
+        .metodo-toggle:hover .metodo-row { border-color: rgba(200,255,0,0.3); }
+        .metodo-toggle input:checked + .metodo-row {
+            border-color: var(--accent);
+            background: var(--accent-dim);
+        }
+
+        .metodo-check {
+            width: 20px; height: 20px;
+            border-radius: 6px;
+            border: 2px solid var(--border2);
+            flex-shrink: 0;
+            display: flex; align-items: center; justify-content: center;
+            transition: all 0.18s;
+            font-size: 11px;
+        }
+        .metodo-toggle input:checked + .metodo-row .metodo-check {
+            background: var(--accent);
+            border-color: var(--accent);
+            color: #000;
+        }
+
+        .metodo-name {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text2);
+            transition: color 0.18s;
+        }
+        .metodo-toggle input:checked + .metodo-row .metodo-name { color: var(--accent); }
+
+        .metodo-monto {
+            display: none;
+            animation: slideDown 0.2s ease;
+        }
+        .metodo-monto.on { display: block; }
+        .metodo-monto input {
+            border-radius: 0 0 10px 10px;
+            border-top: 1px dashed var(--border2);
+        }
+
+        /* ── TOTAL ── */
+        .total-box {
+            display: none;
+            background: var(--accent-dim);
+            border: 1px solid rgba(200,255,0,0.3);
+            border-radius: 10px;
+            padding: 14px 18px;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .total-box.on { display: flex; animation: slideDown 0.2s ease; }
+        .total-label { font-size: 12px; font-weight: 700; color: var(--text2); text-transform: uppercase; letter-spacing: 1px; }
+        .total-value { font-family: 'Space Mono', monospace; font-size: 20px; font-weight: 700; color: var(--accent); }
+
+        /* ── RESPONSABLE CHIPS ── */
+        .resp-grid { display: flex; flex-wrap: wrap; gap: 8px; }
+        .resp-label { cursor: pointer; }
+        .resp-label input { display: none; }
+        .resp-chip {
+            padding: 9px 18px;
+            border-radius: 50px;
+            border: 1px solid var(--border2);
+            background: var(--bg);
+            color: var(--text2);
+            font-size: 13px;
+            font-weight: 600;
+            transition: all 0.18s;
+            user-select: none;
+        }
+        .resp-label:hover .resp-chip { border-color: rgba(200,255,0,0.4); color: var(--text); }
+        .resp-label input:checked + .resp-chip {
+            border-color: var(--accent);
+            background: var(--accent-dim);
+            color: var(--accent);
+        }
+
+        /* ── FIDELIZACION ── */
+        .fidel-grid { display: flex; gap: 10px; }
         .fidel-label { cursor: pointer; flex: 1; }
         .fidel-label input { display: none; }
-        .fidel-chip { display: flex; align-items: center; justify-content: center; gap: 8px; padding: 12px; border-radius: 10px; border: 1px solid var(--border); background: var(--bg); color: var(--muted); font-size: 14px; font-weight: 600; transition: all 0.18s; user-select: none; }
-        .fidel-label.si input:checked + .fidel-chip { background: rgba(0,230,118,0.12); border-color: var(--green); color: var(--green); }
-        .fidel-label.no input:checked + .fidel-chip { background: rgba(255,92,92,0.1); border-color: #ff5c5c; color: #ff5c5c; }
+        .fidel-chip {
+            display: flex; align-items: center; justify-content: center;
+            gap: 8px; padding: 14px;
+            border-radius: 10px;
+            border: 1px solid var(--border2);
+            background: var(--bg);
+            color: var(--text2);
+            font-size: 14px; font-weight: 700;
+            transition: all 0.18s;
+            user-select: none;
+        }
+        .fidel-label.si input:checked + .fidel-chip {
+            border-color: var(--accent);
+            background: var(--accent-dim);
+            color: var(--accent);
+        }
+        .fidel-label.no input:checked + .fidel-chip {
+            border-color: var(--red);
+            background: var(--red-dim);
+            color: var(--red);
+        }
 
-        /* MONTOS CONDICIONALES */
-        .monto-field { display: none; flex-direction: column; gap: 8px; animation: fadeIn 0.2s ease; }
-        .monto-field.visible { display: flex; }
+        /* ── ERROR ── */
+        .error-box {
+            display: none;
+            background: var(--red-dim);
+            border: 1px solid rgba(255,77,106,0.3);
+            border-radius: 10px;
+            padding: 12px 16px;
+            font-size: 13px;
+            color: var(--red);
+            text-align: center;
+        }
 
-        /* TOTAL */
-        .total-row { display: flex; justify-content: space-between; align-items: center; background: rgba(0,198,255,0.07); border: 1px solid rgba(0,198,255,0.2); border-radius: 10px; padding: 12px 16px; font-size: 15px; font-weight: 600; }
-        .total-row span:last-child { color: var(--accent); font-size: 18px; }
-
-        .divider { height: 1px; background: var(--border); }
-
-        .error-banner { display: none; background: rgba(255,80,80,0.1); border: 1px solid rgba(255,80,80,0.3); border-radius: 10px; color: #ff7b7b; padding: 12px 16px; font-size: 13px; text-align: center; }
-
-        .btn-submit { background: var(--green); color: #000; border: none; border-radius: 12px; padding: 15px; font-size: 16px; font-weight: 700; cursor: pointer; font-family: inherit; transition: background 0.2s, transform 0.1s; display: flex; align-items: center; justify-content: center; gap: 8px; width: 100%; }
+        /* ── SUBMIT ── */
+        .btn-submit {
+            width: 100%;
+            padding: 16px;
+            background: var(--accent);
+            color: #000;
+            border: none;
+            border-radius: 12px;
+            font-family: 'Syne', sans-serif;
+            font-size: 15px;
+            font-weight: 800;
+            letter-spacing: 1px;
+            cursor: pointer;
+            text-transform: uppercase;
+            transition: background 0.2s, transform 0.1s, box-shadow 0.2s;
+            box-shadow: 0 4px 20px rgba(200,255,0,0.2);
+        }
+        .btn-submit:hover { background: #d8ff20; box-shadow: 0 4px 30px rgba(200,255,0,0.35); }
         .btn-submit:active { transform: scale(0.98); }
 
-        .success-screen { display: none; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 60px 20px; gap: 14px; }
-        .success-screen .icon { font-size: 64px; }
-        .success-screen h3 { font-family: 'Bebas Neue', sans-serif; font-size: 30px; letter-spacing: 2px; }
-        .success-screen p { color: var(--muted); font-size: 14px; line-height: 1.7; }
-        .btn-nuevo { margin-top: 10px; background: rgba(0,198,255,0.1); border: 1px solid var(--accent); color: var(--accent); border-radius: 12px; padding: 12px 28px; font-size: 15px; font-weight: 600; cursor: pointer; font-family: inherit; }
+        /* ── SUCCESS ── */
+        .success-screen {
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            padding: 70px 20px;
+            gap: 16px;
+            animation: slideDown 0.3s ease;
+        }
+
+        .success-icon {
+            width: 80px; height: 80px;
+            background: var(--accent-dim);
+            border: 2px solid var(--accent);
+            border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 36px;
+            margin-bottom: 8px;
+        }
+
+        .success-screen h2 {
+            font-size: 28px;
+            font-weight: 800;
+            letter-spacing: 1px;
+        }
+
+        .success-detail {
+            color: var(--text2);
+            font-size: 14px;
+            line-height: 1.8;
+        }
+
+        .success-detail strong { color: var(--accent); font-family: 'Space Mono', monospace; }
+
+        .success-actions { display: flex; flex-direction: column; gap: 10px; width: 100%; max-width: 300px; margin-top: 10px; }
+
+        .btn-nuevo {
+            background: var(--accent);
+            color: #000;
+            border: none;
+            border-radius: 10px;
+            padding: 13px 24px;
+            font-family: 'Syne', sans-serif;
+            font-size: 14px;
+            font-weight: 800;
+            cursor: pointer;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .btn-menu {
+            display: block;
+            text-decoration: none;
+            border: 1px solid var(--border2);
+            border-radius: 10px;
+            padding: 12px 24px;
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text2);
+            text-align: center;
+            transition: all 0.2s;
+        }
+        .btn-menu:hover { border-color: var(--accent); color: var(--accent); }
     </style>
 </head>
 <body>
-    <div class="container">
-        <div class="header-area">
-            <a href="index.html" class="btn-back">← VOLVER</a>
-            <h2>SALDAR CUENTA</h2>
+    <div class="page">
+
+        <div class="top-bar">
+            <a href="index.html" class="btn-back">← Volver</a>
+            <span class="page-title">CarWash POS</span>
         </div>
 
-        <div class="form-card" id="formCard">
-            <div class="form-title">💳 Saldar Cuenta por Cobrar</div>
-
-            <div class="section-label">📋 Orden</div>
-            <div class="form-group">
-                <label class="form-label">Número de orden del vehículo <span class="req">*</span></label>
-                <div class="input-wrap">
-                    <input class="form-input" type="number" id="numOrden" placeholder="Ej: 42" oninput="onOrdenInput(this.value)">
-                    <span class="symbol">#</span>
+        <!-- FORM CARD -->
+        <div class="card" id="formCard">
+            <div class="card-header">
+                <div class="card-icon">💳</div>
+                <div class="card-header-text">
+                    <h1>Saldar Cuenta</h1>
+                    <p>Registra el cobro de la orden</p>
                 </div>
             </div>
 
-            <div class="locked-section" id="mainSection">
-                <div class="divider"></div>
+            <div class="card-body">
 
-                <div class="section-label">💳 Detalles de pago</div>
-                <div class="form-group">
-                    <label class="form-label">Método de pago <span class="req">*</span></label>
-                    <div class="chips-list">
-                        <label class="chip-label">
-                            <input type="checkbox" name="metodo" value="Tarjeta crédito / débito" onchange="toggleMonto(this)">
-                            <div class="chip"><div class="chip-box"></div> 💳 Tarjeta crédito / débito</div>
-                        </label>
-                        <label class="chip-label">
-                            <input type="checkbox" name="metodo" value="Efectivo" onchange="toggleMonto(this)">
-                            <div class="chip"><div class="chip-box"></div> 💵 Efectivo</div>
-                        </label>
-                        <label class="chip-label">
-                            <input type="checkbox" name="metodo" value="SINPE Móvil" onchange="toggleMonto(this)">
-                            <div class="chip"><div class="chip-box"></div> 📱 SINPE Móvil</div>
-                        </label>
+                <!-- ORDEN -->
+                <div class="section">
+                    <div class="section-title">📋 Orden</div>
+                    <div class="field">
+                        <label class="field-label">Número de orden <span class="req">*</span></label>
+                        <div class="input-wrap">
+                            <span class="prefix">#</span>
+                            <input type="number" id="numOrden" placeholder="Ej: 42" min="1" step="1" oninput="onOrdenInput(this.value)">
+                        </div>
                     </div>
                 </div>
 
-                <div class="monto-field" id="campo-Tarjeta crédito / débito">
-                    <label class="form-label">Monto en tarjeta</label>
-                    <div class="input-wrap"><input class="form-input" type="number" id="monto-Tarjeta crédito / débito" oninput="actualizarTotal()"><span class="symbol">₡</span></div>
-                </div>
-                <div class="monto-field" id="campo-Efectivo">
-                    <label class="form-label">Monto en efectivo</label>
-                    <div class="input-wrap"><input class="form-input" type="number" id="monto-Efectivo" oninput="actualizarTotal()"><span class="symbol">₡</span></div>
-                </div>
-                <div class="monto-field" id="campo-SINPE Móvil">
-                    <label class="form-label">Monto en SINPE</label>
-                    <div class="input-wrap"><input class="form-input" type="number" id="monto-SINPE Móvil" oninput="actualizarTotal()"><span class="symbol">₡</span></div>
-                </div>
+                <!-- SECCIÓN BLOQUEADA -->
+                <div class="locked" id="mainSection">
 
-                <div class="total-row" id="totalRow" style="display:none;">
-                    <span>💰 Total</span>
-                    <span id="totalValor">₡0</span>
-                </div>
+                    <!-- PAGO -->
+                    <div class="section">
+                        <div class="section-title">💳 Método de pago</div>
 
-                <div class="divider"></div>
+                        <div class="metodos-grid">
+                            <!-- Tarjeta -->
+                            <div class="metodo-item">
+                                <label class="metodo-toggle">
+                                    <input type="checkbox" name="metodo" value="Tarjeta" onchange="toggleMonto(this, 'monto-tarjeta')">
+                                    <div class="metodo-row">
+                                        <div class="metodo-check">✓</div>
+                                        <span class="metodo-name">💳 Tarjeta crédito / débito</span>
+                                    </div>
+                                </label>
+                                <div class="metodo-monto" id="wrap-tarjeta">
+                                    <div class="input-wrap">
+                                        <span class="prefix">₡</span>
+                                        <input type="number" id="monto-tarjeta" placeholder="0" min="0" oninput="actualizarTotal()">
+                                    </div>
+                                </div>
+                            </div>
 
-                <div class="section-label">🧾 Facturación</div>
-                <div class="form-group">
-                    <label class="form-label">Responsable <span class="req">*</span></label>
-                    <div class="chips-wrap">
-                        <label class="radio-label"><input type="radio" name="responsable" value="Juan"><span class="radio-chip">Juan</span></label>
-                        <label class="radio-label"><input type="radio" name="responsable" value="Eder"><span class="radio-chip">Eder</span></label>
-                        <label class="radio-label"><input type="radio" name="responsable" value="Massiel"><span class="radio-chip">Massiel</span></label>
-                        <label class="radio-label"><input type="radio" name="responsable" value="Jesús"><span class="radio-chip">Jesús</span></label>
-                        <label class="radio-label"><input type="radio" name="responsable" value="Andrey"><span class="radio-chip">Andrey</span></label>
+                            <!-- Efectivo -->
+                            <div class="metodo-item">
+                                <label class="metodo-toggle">
+                                    <input type="checkbox" name="metodo" value="Efectivo" onchange="toggleMonto(this, 'monto-efectivo')">
+                                    <div class="metodo-row">
+                                        <div class="metodo-check">✓</div>
+                                        <span class="metodo-name">💵 Efectivo</span>
+                                    </div>
+                                </label>
+                                <div class="metodo-monto" id="wrap-efectivo">
+                                    <div class="input-wrap">
+                                        <span class="prefix">₡</span>
+                                        <input type="number" id="monto-efectivo" placeholder="0" min="0" oninput="actualizarTotal()">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- SINPE -->
+                            <div class="metodo-item">
+                                <label class="metodo-toggle">
+                                    <input type="checkbox" name="metodo" value="SINPE Móvil" onchange="toggleMonto(this, 'monto-sinpe')">
+                                    <div class="metodo-row">
+                                        <div class="metodo-check">✓</div>
+                                        <span class="metodo-name">📱 SINPE Móvil</span>
+                                    </div>
+                                </label>
+                                <div class="metodo-monto" id="wrap-sinpe">
+                                    <div class="input-wrap">
+                                        <span class="prefix">₡</span>
+                                        <input type="number" id="monto-sinpe" placeholder="0" min="0" oninput="actualizarTotal()">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- TOTAL -->
+                        <div class="total-box" id="totalBox">
+                            <span class="total-label">Total combinado</span>
+                            <span class="total-value" id="totalValor">₡0</span>
+                        </div>
                     </div>
-                </div>
 
-                <div class="divider"></div>
+                    <!-- RESPONSABLE -->
+                    <div class="section">
+                        <div class="section-title">🧾 Responsable</div>
+                        <div class="resp-grid">
+                            <label class="resp-label"><input type="radio" name="responsable" value="Juan"><span class="resp-chip">Juan</span></label>
+                            <label class="resp-label"><input type="radio" name="responsable" value="Eder"><span class="resp-chip">Eder</span></label>
+                            <label class="resp-label"><input type="radio" name="responsable" value="Massiel"><span class="resp-chip">Massiel</span></label>
+                            <label class="resp-label"><input type="radio" name="responsable" value="Jesús"><span class="resp-chip">Jesús</span></label>
+                            <label class="resp-label"><input type="radio" name="responsable" value="Andrey"><span class="resp-chip">Andrey</span></label>
+                        </div>
+                    </div>
 
-                <div class="section-label">⭐ Fidelización</div>
-                <div class="fidel-wrap">
-                    <label class="fidel-label si"><input type="radio" name="fidelizacion" value="Sí"><div class="fidel-chip">⭐ Sí</div></label>
-                    <label class="fidel-label no"><input type="radio" name="fidelizacion" value="No"><div class="fidel-chip">❌ No</div></label>
+                    <!-- FIDELIZACIÓN -->
+                    <div class="section">
+                        <div class="section-title">⭐ Plan de puntos</div>
+                        <div class="fidel-grid">
+                            <label class="fidel-label si">
+                                <input type="radio" name="fidelizacion" value="Sí">
+                                <div class="fidel-chip">⭐ Sí, aplica</div>
+                            </label>
+                            <label class="fidel-label no">
+                                <input type="radio" name="fidelizacion" value="No">
+                                <div class="fidel-chip">❌ No aplica</div>
+                            </label>
+                        </div>
+                    </div>
+
                 </div>
+                <!-- /locked -->
+
+                <div class="error-box" id="errorBox">⚠️ <span id="errorMsg">Completa todos los campos requeridos.</span></div>
+
+                <button class="btn-submit" onclick="enviarCobro()">Saldar cuenta →</button>
+
             </div>
-
-            <div class="error-banner" id="errorBanner">⚠️ <span id="errorMsg">Completa los campos.</span></div>
-
-            <button class="btn-submit" id="btnSubmit" onclick="enviarCobro()">💳 Saldar cuenta</button>
         </div>
+        <!-- /form card -->
 
+        <!-- SUCCESS -->
         <div class="success-screen" id="successScreen">
-            <div class="icon">💰</div>
-            <h3>¡Cuenta Saldada!</h3>
-            <p id="successDetail"></p>
-            <button class="btn-nuevo" onclick="resetForm()">+ Saldar otra cuenta</button>
-            <a href="index.html" class="btn-back" style="margin-top:8px;">← Volver al menú</a>
+            <div class="success-icon">✓</div>
+            <h2>¡Cuenta saldada!</h2>
+            <p class="success-detail" id="successDetail"></p>
+            <div class="success-actions">
+                <button class="btn-nuevo" onclick="location.reload()">+ Saldar otra cuenta</button>
+                <a href="index.html" class="btn-menu">← Volver al menú</a>
+            </div>
         </div>
+
     </div>
 
     <script>
-        const N8N_WEBHOOK_URL = "https://n8n-production-6cc7.up.railway.app/webhook/saldar-cuenta";
+        const WEBHOOK = "https://n8n-production-6cc7.up.railway.app/webhook/saldar-cuenta";
 
         function onOrdenInput(val) {
-            document.getElementById("mainSection").classList.toggle("visible", val.trim() !== "");
+            document.getElementById("mainSection").classList.toggle("on", val !== "" && parseInt(val) > 0);
         }
 
-        function toggleMonto(checkbox) {
-            const campo = document.getElementById("campo-" + checkbox.value);
-            if (campo) {
-                campo.classList.toggle("visible", checkbox.checked);
-                if (!checkbox.checked) document.getElementById("monto-" + checkbox.value).value = "";
-            }
+        function toggleMonto(cb, id) {
+            const wrap = document.getElementById("wrap-" + id.replace("monto-",""));
+            wrap.classList.toggle("on", cb.checked);
+            if (!cb.checked) document.getElementById(id).value = "";
             actualizarTotal();
         }
 
         function actualizarTotal() {
-            const seleccionados = document.querySelectorAll('input[name="metodo"]:checked');
-            let suma = 0;
-            seleccionados.forEach(ch => {
-                suma += parseFloat(document.getElementById("monto-" + ch.value)?.value) || 0;
+            const checked = document.querySelectorAll('input[name="metodo"]:checked');
+            let total = 0;
+            checked.forEach(cb => {
+                const key = cb.value === "Tarjeta" ? "monto-tarjeta"
+                          : cb.value === "Efectivo" ? "monto-efectivo"
+                          : "monto-sinpe";
+                total += parseFloat(document.getElementById(key)?.value) || 0;
             });
-            document.getElementById("totalValor").textContent = "₡" + suma.toLocaleString("es-CR");
-            document.getElementById("totalRow").style.display = seleccionados.length > 1 ? "flex" : "none";
-            return suma;
+            document.getElementById("totalValor").textContent = "₡" + total.toLocaleString("es-CR");
+            document.getElementById("totalBox").classList.toggle("on", checked.length > 1);
+            return total;
         }
 
         function enviarCobro() {
-            const numOrden = document.getElementById("numOrden").value.trim();
+            const numOrden    = document.getElementById("numOrden").value.trim();
             const seleccionados = Array.from(document.querySelectorAll('input[name="metodo"]:checked'));
             const responsable = document.querySelector('input[name="responsable"]:checked');
-            const fidel = document.querySelector('input[name="fidelizacion"]:checked');
+            const fidel       = document.querySelector('input[name="fidelizacion"]:checked');
 
+            // Validación
             if (!numOrden || seleccionados.length === 0 || !responsable || !fidel) {
-                document.getElementById("errorBanner").style.display = "block";
+                mostrarError("Completa todos los campos requeridos.");
+                return;
+            }
+
+            const mTarjeta  = parseFloat(document.getElementById("monto-tarjeta")?.value) || 0;
+            const mEfectivo = parseFloat(document.getElementById("monto-efectivo")?.value) || 0;
+            const mSinpe    = parseFloat(document.getElementById("monto-sinpe")?.value) || 0;
+
+            // Validar que los montos seleccionados sean > 0
+            const montoInvalido = seleccionados.some(cb => {
+                const key = cb.value === "Tarjeta" ? "monto-tarjeta"
+                          : cb.value === "Efectivo" ? "monto-efectivo"
+                          : "monto-sinpe";
+                return !(parseFloat(document.getElementById(key)?.value) > 0);
+            });
+
+            if (montoInvalido) {
+                mostrarError("Ingresa el monto para cada método seleccionado.");
                 return;
             }
 
             const total = actualizarTotal();
+
             const payload = {
-                numero_orden: parseInt(numOrden),
-                metodo_pago: seleccionados.map(ch => ch.value).join(", "),
-                monto_efectivo: parseFloat(document.getElementById("monto-Efectivo")?.value) || 0,
-                monto_tarjeta: parseFloat(document.getElementById("monto-Tarjeta crédito / débito")?.value) || 0,
-                monto_sinpe: parseFloat(document.getElementById("monto-SINPE Móvil")?.value) || 0,
-                total: total,
-                responsable: responsable.value,
-                plan_puntos: fidel.value,
-                fecha_pago: new Date().toLocaleString("es-CR")
+                numero_orden:   parseInt(numOrden),
+                metodo_pago:    seleccionados.map(c => c.value).join(", "),
+                monto_tarjeta:  mTarjeta,
+                monto_efectivo: mEfectivo,
+                monto_sinpe:    mSinpe,
+                total:          total,
+                responsable:    responsable.value,
+                plan_puntos:    fidel.value,
+                fecha_pago:     new Date().toLocaleString("es-CR")
             };
 
-            // 1. CAMBIO DE PANTALLA INSTANTÁNEO
+            // Mostrar éxito de inmediato
             document.getElementById("formCard").style.display = "none";
             document.getElementById("successScreen").style.display = "flex";
-            document.getElementById("successDetail").innerHTML = `Orden #<strong>${numOrden}</strong> enviada.<br>Monto: <strong>₡${total.toLocaleString("es-CR")}</strong>`;
+            document.getElementById("successDetail").innerHTML =
+                `Orden <strong>#${numOrden}</strong> registrada.<br>` +
+                `Total: <strong>₡${total.toLocaleString("es-CR")}</strong><br>` +
+                `Responsable: <strong>${responsable.value}</strong>`;
 
-            // 2. DISPARAR EN SEGUNDO PLANO
-            fetch(N8N_WEBHOOK_URL, {
+            // Enviar en segundo plano
+            fetch(WEBHOOK, {
                 method: "POST",
                 mode: "no-cors",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(payload)
-            }).catch(e => console.log("Silent send"));
+            }).catch(() => {});
         }
 
-        function resetForm() {
-            location.reload();
+        function mostrarError(msg) {
+            const box = document.getElementById("errorBox");
+            document.getElementById("errorMsg").textContent = msg;
+            box.style.display = "block";
+            setTimeout(() => box.style.display = "none", 4000);
         }
     </script>
 </body>
