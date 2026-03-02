@@ -2,79 +2,172 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
     <title>CarWash — Agregar CXC</title>
     <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet" />
     <style>
-        :root { --bg: #0a0e14; --card: #111720; --border: #1e2d3d; --accent: #00c6ff; --text: #e8f1ff; --muted: #5a7a99; }
-        body { background: var(--bg); font-family: "DM Sans", sans-serif; color: var(--text); display: flex; flex-direction: column; align-items: center; min-height: 100vh; padding: 20px; }
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+        :root { 
+            --bg: #0a0e14; 
+            --card: #111720; 
+            --border: #1e2d3d; 
+            --accent: #00c6ff; 
+            --text: #e8f1ff; 
+            --muted: #5a7a99; 
+            --green: #00e676;
+        }
+        body { background: var(--bg); font-family: "DM Sans", sans-serif; color: var(--text); display: flex; flex-direction: column; align-items: center; min-height: 100vh; padding: 16px; }
         
-        .container { width: 100%; max-width: 450px; background: var(--card); border: 1px solid var(--border); border-radius: 24px; padding: 30px; margin-top: 40px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
-        h2 { font-family: "Bebas Neue", sans-serif; font-size: 32px; letter-spacing: 2px; color: var(--accent); margin-bottom: 20px; text-align: center; }
+        .header-area { width: 100%; max-width: 450px; display: flex; align-items: center; padding-bottom: 20px; position: relative; margin-top: 10px; }
+        .btn-back { text-decoration: none; color: var(--text); font-size: 13px; font-weight: 600; background: rgba(0,198,255,0.1); padding: 8px 15px; border-radius: 8px; border: 1px solid var(--accent); z-index: 10; transition: background 0.2s; }
+        h2 { font-family: 'Bebas Neue', sans-serif; color: var(--accent); font-size: 22px; letter-spacing: 2px; position: absolute; width: 100%; text-align: center; left: 0; pointer-events: none; }
+
+        .container { width: 100%; max-width: 450px; background: var(--card); border: 1px solid var(--border); border-radius: 24px; padding: 26px 22px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+        .form-title { font-family: 'Bebas Neue', sans-serif; font-size: 20px; letter-spacing: 1.5px; padding-bottom: 12px; border-bottom: 1px solid var(--border); margin-bottom: 20px; display: flex; align-items: center; gap: 10px; }
         
-        .form-group { margin-bottom: 18px; }
-        .form-label { display: block; font-size: 11px; text-transform: uppercase; color: var(--muted); letter-spacing: 1px; margin-bottom: 6px; font-weight: 600; }
-        .form-input { width: 100%; background: #070a0f; border: 1px solid var(--border); border-radius: 12px; color: #fff; padding: 12px 15px; font-size: 15px; outline: none; transition: border-color 0.2s; }
-        .form-input:focus { border-color: var(--accent); }
+        .form-group { margin-bottom: 18px; display: flex; flex-direction: column; gap: 6px; }
+        .form-label { font-size: 11px; text-transform: uppercase; color: var(--muted); letter-spacing: 1px; font-weight: 700; }
+        .form-input { width: 100%; background: var(--bg); border: 1px solid var(--border); border-radius: 12px; color: #fff; padding: 12px 14px; font-size: 15px; font-family: inherit; outline: none; transition: all 0.2s; }
+        .form-input:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(0,198,255,0.1); }
         
         .row { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
         
-        .btn-save { width: 100%; background: var(--accent); color: #000; border: none; border-radius: 12px; padding: 15px; font-size: 16px; font-weight: 700; cursor: pointer; margin-top: 10px; transition: transform 0.2s; }
-        .btn-save:active { transform: scale(0.98); }
-        
-        .btn-back { display: inline-block; margin-top: 20px; color: var(--muted); text-decoration: none; font-size: 14px; transition: color 0.2s; }
-        .btn-back:hover { color: var(--accent); }
+        .error-banner { display: none; background: rgba(255,80,80,0.1); border: 1px solid rgba(255,80,80,0.3); border-radius: 10px; color: #ff7b7b; padding: 12px; font-size: 13px; text-align: center; margin-bottom: 15px; }
+
+        .btn-submit { width: 100%; background: var(--accent); color: #000; border: none; border-radius: 12px; padding: 15px; font-size: 16px; font-weight: 700; cursor: pointer; transition: all 0.2s; display: flex; align-items: center; justify-content: center; gap: 8px; }
+        .btn-submit:hover { background: #00aadd; }
+        .btn-submit:active { transform: scale(0.98); }
+        .btn-submit:disabled { opacity: 0.6; cursor: not-allowed; }
+
+        .spinner { display: inline-block; width: 18px; height: 18px; border: 2px solid rgba(0,0,0,0.2); border-top-color: #000; border-radius: 50%; animation: spin 0.6s linear infinite; }
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        /* SUCCESS SCREEN */
+        .success-screen { display: none; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 40px 10px; gap: 14px; }
+        .success-screen .icon { font-size: 50px; margin-bottom: 10px; }
+        .success-screen h3 { font-family: 'Bebas Neue', sans-serif; font-size: 28px; letter-spacing: 2px; color: var(--green); }
+        .btn-nuevo { background: rgba(0,198,255,0.1); border: 1px solid var(--accent); color: var(--accent); border-radius: 12px; padding: 12px 24px; font-size: 15px; font-weight: 600; cursor: pointer; margin-top: 15px; }
     </style>
 </head>
 <body>
 
-    <div class="container">
-        <h2>Nueva Cuenta por Cobrar</h2>
+    <div class="header-area">
+        <a href="index.html" class="btn-back">← VOLVER</a>
+        <h2>SISTEMA CXC</h2>
+    </div>
+
+    <div class="container" id="formCard">
+        <div class="form-title">📝 Agregar Deuda Manual</div>
         
+        <div class="error-banner" id="errorBanner">⚠️ Por favor completa todos los campos.</div>
+
         <form id="cxcForm">
             <div class="row">
                 <div class="form-group">
-                    <label class="form-label">Fecha</label>
+                    <label class="form-label">Fecha de Deuda</label>
                     <input type="date" id="fecha" class="form-input" required>
                 </div>
                 <div class="form-group">
-                    <label class="form-label">Hora</label>
+                    <label class="form-label">Hora Registro</label>
                     <input type="time" id="hora" class="form-input" required>
                 </div>
             </div>
 
             <div class="form-group">
                 <label class="form-label">Número de Placa</label>
-                <input type="text" id="placa" class="form-input" placeholder="Ej: BCD-123" required>
+                <input type="text" id="placa" class="form-input" placeholder="Ej: ABC-1234" required>
             </div>
 
             <div class="form-group">
                 <label class="form-label">Nombre del Cliente</label>
-                <input type="text" id="nombre" class="form-input" placeholder="Nombre completo" required>
+                <input type="text" id="nombre" class="form-input" placeholder="Escriba el nombre" required>
             </div>
 
-            <div class="form-group">
-                <label class="form-label">Monto Adeudado (₡)</label>
-                <input type="number" id="monto" class="form-input" placeholder="0.00" required>
+            <div class="form-group" style="margin-bottom: 25px;">
+                <label class="form-label">Monto a Cobrar (₡)</label>
+                <input type="number" id="monto" class="form-input" placeholder="Monto total adeudado" required>
             </div>
 
-            <button type="submit" class="btn-save">💾 Registrar Deuda</button>
+            <button type="submit" class="btn-submit" id="btnSubmit">
+                💾 Registrar Deuda
+            </button>
         </form>
-        
-        <center><a href="index.html" class="btn-back">← Volver al Menú</a></center>
+    </div>
+
+    <div class="container success-screen" id="successScreen">
+        <div class="icon">✅</div>
+        <h3>¡Registro Exitoso!</h3>
+        <p id="successDetail" style="color: var(--muted); font-size: 14px;"></p>
+        <button class="btn-nuevo" onclick="resetForm()">+ Agregar otra deuda</button>
+        <a href="index.html" class="btn-back" style="margin-top: 10px; width: fit-content;">Volver al Menú</a>
     </div>
 
     <script>
-        // Auto-completar fecha y hora actual
-        const now = new Date();
-        document.getElementById('fecha').value = now.toISOString().split('T')[0];
-        document.getElementById('hora').value = now.getHours().toString().padStart(2, '0') + ":" + now.getMinutes().toString().padStart(2, '0');
+        const WEBHOOK_URL = "https://n8n-production-6cc7.up.railway.app/webhook-test/agregar-deudor";
 
-        document.getElementById('cxcForm').onsubmit = function(e) {
+        // Auto-llenar fecha y hora
+        function autoFill() {
+            const now = new Date();
+            document.getElementById('fecha').value = now.toISOString().split('T')[0];
+            document.getElementById('hora').value = now.getHours().toString().padStart(2, '0') + ":" + now.getMinutes().toString().padStart(2, '0');
+        }
+        autoFill();
+
+        document.getElementById('cxcForm').onsubmit = async function(e) {
             e.preventDefault();
-            // Aquí iría tu lógica para enviar a Google Sheets o AppScript
-            alert("Datos listos para enviar:\nPlaca: " + document.getElementById('placa').value);
+            
+            const btn = document.getElementById("btnSubmit");
+            const errorBanner = document.getElementById("errorBanner");
+            
+            // Obtener datos
+            const payload = {
+                fecha: document.getElementById('fecha').value,
+                hora: document.getElementById('hora').value,
+                placa: document.getElementById('placa').value.toUpperCase().trim(),
+                nombre: document.getElementById('nombre').value.trim(),
+                monto: parseFloat(document.getElementById('monto').value)
+            };
+
+            // Validaciones básicas
+            if (!payload.placa || !payload.nombre || isNaN(payload.monto)) {
+                errorBanner.style.display = "block";
+                return;
+            }
+
+            errorBanner.style.display = "none";
+            btn.disabled = true;
+            btn.innerHTML = '<span class="spinner"></span> Procesando...';
+
+            try {
+                const response = await fetch(WEBHOOK_URL, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify(payload)
+                });
+
+                if (!response.ok) throw new Error("Error en servidor");
+
+                // Mostrar éxito
+                document.getElementById('successDetail').innerHTML = `Deuda de <strong>₡${payload.monto.toLocaleString()}</strong> para <strong>${payload.placa}</strong> registrada correctamente.`;
+                document.getElementById('formCard').style.display = "none";
+                document.getElementById('successScreen').style.display = "flex";
+
+            } catch (err) {
+                errorBanner.textContent = "❌ Error al conectar con n8n. Reintenta.";
+                errorBanner.style.display = "block";
+                btn.disabled = false;
+                btn.innerHTML = "💾 Registrar Deuda";
+            }
         };
+
+        function resetForm() {
+            document.getElementById('cxcForm').reset();
+            autoFill();
+            document.getElementById('formCard').style.display = "block";
+            document.getElementById('successScreen').style.display = "none";
+            document.getElementById("btnSubmit").disabled = false;
+            document.getElementById("btnSubmit").innerHTML = "💾 Registrar Deuda";
+        }
     </script>
 </body>
 </html>
