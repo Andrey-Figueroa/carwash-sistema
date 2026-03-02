@@ -160,12 +160,6 @@
                         <span class="symbol">₡</span>
                     </div>
                 </div>
-                <div class="monto-field" id="campo-Cuenta por cobrar">
-                    <label class="form-label">Monto en cuenta por cobrar <span class="req">*</span></label>
-                    <div class="input-wrap">
-                        <input class="form-input" type="number" id="monto-Cuenta por cobrar" placeholder="0" min="0" oninput="actualizarTotal()">
-                        <span class="symbol">₡</span>
-                    </div>
                 </div>
                 <div class="monto-field" id="campo-Efectivo">
                     <label class="form-label">Monto en efectivo <span class="req">*</span></label>
@@ -258,7 +252,7 @@
         // ⚠️ REEMPLAZA con tu webhook de n8n
         const N8N_WEBHOOK_URL = "https://n8n-production-6cc7.up.railway.app/webhook-test/saldar-cuenta";
 
-        const metodos = ["Tarjeta crédito / débito", "Cuenta por cobrar", "Efectivo", "SINPE Móvil", "Tarjeta de regalo"];
+        const metodos = ["Tarjeta crédito / débito", "Efectivo", "SINPE Móvil", "Tarjeta de regalo"];
 
         function onOrdenInput(val) {
             document.getElementById("mainSection").classList.toggle("visible", val.trim() !== "" && parseInt(val) > 0);
@@ -328,10 +322,9 @@
             btn.innerHTML = '<span class="spinner"></span> Procesando...';
 
             const monto_tarjeta  = parseFloat(document.getElementById("monto-Tarjeta crédito / débito")?.value) || 0;
-            const monto_cxc      = parseFloat(document.getElementById("monto-Cuenta por cobrar")?.value) || 0;
             const monto_efectivo = parseFloat(document.getElementById("monto-Efectivo")?.value) || 0;
             const monto_sinpe    = parseFloat(document.getElementById("monto-SINPE Móvil")?.value) || 0;
-            const monto_regalo   = parseFloat(document.getElementById("monto-Tarjeta de regalo")?.value) || 0;
+        ;
             const total          = monto_tarjeta + monto_cxc + monto_efectivo + monto_sinpe + monto_regalo;
             const metodos_usados = seleccionados.map(ch => ch.value).join(", ");
 
