@@ -34,9 +34,7 @@
         .form-input { background: var(--bg); border: 1px solid var(--border); border-radius: 10px; color: var(--text); padding: 12px 14px; font-size: 15px; font-family: inherit; outline: none; transition: border-color 0.2s, box-shadow 0.2s; width: 100%; }
         .form-input:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(0,198,255,0.1); }
         .form-input::placeholder { color: var(--muted); }
-        .form-input[type="number"]::-webkit-outer-spin-button,
-        .form-input[type="number"]::-webkit-inner-spin-button { -webkit-appearance: none; }
-
+        
         .input-wrap { position: relative; }
         .input-wrap .symbol { position: absolute; right: 14px; top: 50%; transform: translateY(-50%); color: var(--muted); font-size: 15px; pointer-events: none; }
         .input-wrap .form-input { padding-right: 36px; }
@@ -59,7 +57,7 @@
         .chip-label input:checked + .chip .chip-box { border-color: var(--accent); background: var(--accent); }
         .chip-label input:checked + .chip .chip-box::after { content: "✓"; }
 
-        /* RADIO CHIPS (responsable / fidelización) */
+        /* RADIO CHIPS */
         .chips-wrap { display: flex; flex-wrap: wrap; gap: 9px; }
         .radio-label { cursor: pointer; }
         .radio-label input { display: none; }
@@ -74,8 +72,6 @@
         .fidel-chip { display: flex; align-items: center; justify-content: center; gap: 8px; padding: 12px; border-radius: 10px; border: 1px solid var(--border); background: var(--bg); color: var(--muted); font-size: 14px; font-weight: 600; transition: all 0.18s; user-select: none; }
         .fidel-label.si input:checked + .fidel-chip { background: rgba(0,230,118,0.12); border-color: var(--green); color: var(--green); }
         .fidel-label.no input:checked + .fidel-chip { background: rgba(255,92,92,0.1); border-color: #ff5c5c; color: #ff5c5c; }
-        .fidel-label.si .fidel-chip:hover { border-color: var(--green); }
-        .fidel-label.no .fidel-chip:hover { border-color: #ff5c5c; }
 
         /* MONTOS CONDICIONALES */
         .monto-field { display: none; flex-direction: column; gap: 8px; animation: fadeIn 0.2s ease; }
@@ -90,24 +86,17 @@
         .error-banner { display: none; background: rgba(255,80,80,0.1); border: 1px solid rgba(255,80,80,0.3); border-radius: 10px; color: #ff7b7b; padding: 12px 16px; font-size: 13px; text-align: center; }
 
         .btn-submit { background: var(--green); color: #000; border: none; border-radius: 12px; padding: 15px; font-size: 16px; font-weight: 700; cursor: pointer; font-family: inherit; transition: background 0.2s, transform 0.1s; display: flex; align-items: center; justify-content: center; gap: 8px; width: 100%; }
-        .btn-submit:hover { background: #00c45a; }
         .btn-submit:active { transform: scale(0.98); }
-        .btn-submit:disabled { opacity: 0.6; cursor: not-allowed; }
-
-        .spinner { display: inline-block; width: 18px; height: 18px; border: 2px solid rgba(0,0,0,0.3); border-top-color: #000; border-radius: 50%; animation: spin 0.6s linear infinite; }
-        @keyframes spin { to { transform: rotate(360deg); } }
 
         .success-screen { display: none; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 60px 20px; gap: 14px; }
         .success-screen .icon { font-size: 64px; }
         .success-screen h3 { font-family: 'Bebas Neue', sans-serif; font-size: 30px; letter-spacing: 2px; }
         .success-screen p { color: var(--muted); font-size: 14px; line-height: 1.7; }
-        .btn-nuevo { margin-top: 10px; background: rgba(0,198,255,0.1); border: 1px solid var(--accent); color: var(--accent); border-radius: 12px; padding: 12px 28px; font-size: 15px; font-weight: 600; cursor: pointer; font-family: inherit; transition: background 0.2s; }
-        .btn-nuevo:hover { background: rgba(0,198,255,0.2); }
+        .btn-nuevo { margin-top: 10px; background: rgba(0,198,255,0.1); border: 1px solid var(--accent); color: var(--accent); border-radius: 12px; padding: 12px 28px; font-size: 15px; font-weight: 600; cursor: pointer; font-family: inherit; }
     </style>
 </head>
 <body>
     <div class="container">
-
         <div class="header-area">
             <a href="index.html" class="btn-back">← VOLVER</a>
             <h2>SALDAR CUENTA</h2>
@@ -116,23 +105,18 @@
         <div class="form-card" id="formCard">
             <div class="form-title">💳 Saldar Cuenta por Cobrar</div>
 
-            <!-- NÚMERO DE ORDEN -->
             <div class="section-label">📋 Orden</div>
             <div class="form-group">
                 <label class="form-label">Número de orden del vehículo <span class="req">*</span></label>
                 <div class="input-wrap">
-                    <input class="form-input" type="number" id="numOrden" placeholder="Ej: 42" min="1" oninput="onOrdenInput(this.value)">
+                    <input class="form-input" type="number" id="numOrden" placeholder="Ej: 42" oninput="onOrdenInput(this.value)">
                     <span class="symbol">#</span>
                 </div>
-                <span class="field-hint">Puedes verificarlo en el Google Sheets</span>
             </div>
 
-            <!-- TODO LO DEMÁS (bloqueado hasta tener orden) -->
             <div class="locked-section" id="mainSection">
-
                 <div class="divider"></div>
 
-                <!-- MÉTODO DE PAGO -->
                 <div class="section-label">💳 Detalles de pago</div>
                 <div class="form-group">
                     <label class="form-label">Método de pago <span class="req">*</span></label>
@@ -152,30 +136,19 @@
                     </div>
                 </div>
 
-                <!-- MONTOS CONDICIONALES -->
                 <div class="monto-field" id="campo-Tarjeta crédito / débito">
-                    <label class="form-label">Monto en tarjeta <span class="req">*</span></label>
-                    <div class="input-wrap">
-                        <input class="form-input" type="number" id="monto-Tarjeta crédito / débito" placeholder="0" min="0" oninput="actualizarTotal()">
-                        <span class="symbol">₡</span>
-                    </div>
-                </div>
+                    <label class="form-label">Monto en tarjeta</label>
+                    <div class="input-wrap"><input class="form-input" type="number" id="monto-Tarjeta crédito / débito" oninput="actualizarTotal()"><span class="symbol">₡</span></div>
                 </div>
                 <div class="monto-field" id="campo-Efectivo">
-                    <label class="form-label">Monto en efectivo <span class="req">*</span></label>
-                    <div class="input-wrap">
-                        <input class="form-input" type="number" id="monto-Efectivo" placeholder="0" min="0" oninput="actualizarTotal()">
-                        <span class="symbol">₡</span>
-                    </div>
+                    <label class="form-label">Monto en efectivo</label>
+                    <div class="input-wrap"><input class="form-input" type="number" id="monto-Efectivo" oninput="actualizarTotal()"><span class="symbol">₡</span></div>
                 </div>
                 <div class="monto-field" id="campo-SINPE Móvil">
-                    <label class="form-label">Monto en SINPE <span class="req">*</span></label>
-                    <div class="input-wrap">
-                        <input class="form-input" type="number" id="monto-SINPE Móvil" placeholder="0" min="0" oninput="actualizarTotal()">
-                        <span class="symbol">₡</span>
-                    </div>
+                    <label class="form-label">Monto en SINPE</label>
+                    <div class="input-wrap"><input class="form-input" type="number" id="monto-SINPE Móvil" oninput="actualizarTotal()"><span class="symbol">₡</span></div>
                 </div>
-                <!-- TOTAL -->
+
                 <div class="total-row" id="totalRow" style="display:none;">
                     <span>💰 Total</span>
                     <span id="totalValor">₡0</span>
@@ -183,173 +156,105 @@
 
                 <div class="divider"></div>
 
-                <!-- FACTURACIÓN -->
                 <div class="section-label">🧾 Facturación</div>
                 <div class="form-group">
-                    <label class="form-label">Responsable que recibe el pago <span class="req">*</span></label>
+                    <label class="form-label">Responsable <span class="req">*</span></label>
                     <div class="chips-wrap">
                         <label class="radio-label"><input type="radio" name="responsable" value="Juan"><span class="radio-chip">Juan</span></label>
                         <label class="radio-label"><input type="radio" name="responsable" value="Eder"><span class="radio-chip">Eder</span></label>
                         <label class="radio-label"><input type="radio" name="responsable" value="Massiel"><span class="radio-chip">Massiel</span></label>
                         <label class="radio-label"><input type="radio" name="responsable" value="Jesús"><span class="radio-chip">Jesús</span></label>
                         <label class="radio-label"><input type="radio" name="responsable" value="Andrey"><span class="radio-chip">Andrey</span></label>
-                        <label class="radio-label"><input type="radio" name="responsable" value="Ronald"><span class="radio-chip">Ronald</span></label>
-                        <label class="radio-label"><input type="radio" name="responsable" value="Ricardo"><span class="radio-chip">Ricardo</span></label>
-                        <label class="radio-label"><input type="radio" name="responsable" value="Angie"><span class="radio-chip">Angie</span></label>
                     </div>
                 </div>
 
                 <div class="divider"></div>
 
-                <!-- FIDELIZACIÓN -->
-                <div class="section-label">⭐ Recordatorio (Fidelización)</div>
-                <div class="form-group">
-                    <label class="form-label">¿El cliente está en el plan de acumulación de puntos? <span class="req">*</span></label>
-                    <div class="fidel-wrap">
-                        <label class="fidel-label si">
-                            <input type="radio" name="fidelizacion" value="Sí">
-                            <div class="fidel-chip">⭐ Sí</div>
-                        </label>
-                        <label class="fidel-label no">
-                            <input type="radio" name="fidelizacion" value="No">
-                            <div class="fidel-chip">❌ No</div>
-                        </label>
-                    </div>
+                <div class="section-label">⭐ Fidelización</div>
+                <div class="fidel-wrap">
+                    <label class="fidel-label si"><input type="radio" name="fidelizacion" value="Sí"><div class="fidel-chip">⭐ Sí</div></label>
+                    <label class="fidel-label no"><input type="radio" name="fidelizacion" value="No"><div class="fidel-chip">❌ No</div></label>
                 </div>
-
-            </div>
-            <!-- fin locked-section -->
-
-            <!-- ERROR -->
-            <div class="error-banner" id="errorBanner">
-                ⚠️ <span id="errorMsg">Por favor completa todos los campos.</span>
             </div>
 
-            <button class="btn-submit" id="btnSubmit" onclick="enviarCobro()">
-                💳 Saldar cuenta
-            </button>
+            <div class="error-banner" id="errorBanner">⚠️ <span id="errorMsg">Completa los campos.</span></div>
+
+            <button class="btn-submit" id="btnSubmit" onclick="enviarCobro()">💳 Saldar cuenta</button>
         </div>
 
-        <!-- SUCCESS -->
         <div class="success-screen" id="successScreen">
             <div class="icon">💰</div>
             <h3>¡Cuenta Saldada!</h3>
-            <p id="successDetail">La cuenta fue marcada como saldada en Google Sheets.</p>
+            <p id="successDetail"></p>
             <button class="btn-nuevo" onclick="resetForm()">+ Saldar otra cuenta</button>
             <a href="index.html" class="btn-back" style="margin-top:8px;">← Volver al menú</a>
         </div>
-
     </div>
 
     <script>
-        // URL de tu webhook de n8n
         const N8N_WEBHOOK_URL = "https://n8n-production-6cc7.up.railway.app/webhook/saldar-cuenta";
-        const metodos = ["Tarjeta crédito / débito", "Efectivo", "SINPE Móvil"];
-    
+
         function onOrdenInput(val) {
-            document.getElementById("mainSection").classList.toggle("visible", val.trim() !== "" && parseInt(val) > 0);
+            document.getElementById("mainSection").classList.toggle("visible", val.trim() !== "");
         }
-    
+
         function toggleMonto(checkbox) {
             const campo = document.getElementById("campo-" + checkbox.value);
-            if (!campo) return;
-            campo.classList.toggle("visible", checkbox.checked);
-            if (!checkbox.checked) {
-                const input = document.getElementById("monto-" + checkbox.value);
-                if (input) input.value = "";
+            if (campo) {
+                campo.classList.toggle("visible", checkbox.checked);
+                if (!checkbox.checked) document.getElementById("monto-" + checkbox.value).value = "";
             }
             actualizarTotal();
         }
-    
+
         function actualizarTotal() {
             const seleccionados = document.querySelectorAll('input[name="metodo"]:checked');
-            const totalRow = document.getElementById("totalRow");
-            if (seleccionados.length > 1) {
-                let suma = 0;
-                seleccionados.forEach(ch => {
-                    suma += parseFloat(document.getElementById("monto-" + ch.value)?.value) || 0;
-                });
-                document.getElementById("totalValor").textContent = "₡" + suma.toLocaleString("es-CR");
-                totalRow.style.display = "flex";
-            } else {
-                totalRow.style.display = "none";
-            }
+            let suma = 0;
+            seleccionados.forEach(ch => {
+                suma += parseFloat(document.getElementById("monto-" + ch.value)?.value) || 0;
+            });
+            document.getElementById("totalValor").textContent = "₡" + suma.toLocaleString("es-CR");
+            document.getElementById("totalRow").style.display = seleccionados.length > 1 ? "flex" : "none";
+            return suma;
         }
-    
+
         function enviarCobro() {
-            const numOrden      = document.getElementById("numOrden").value.trim();
+            const numOrden = document.getElementById("numOrden").value.trim();
             const seleccionados = Array.from(document.querySelectorAll('input[name="metodo"]:checked'));
-            const responsableEl = document.querySelector('input[name="responsable"]:checked');
-            const fidelEl       = document.querySelector('input[name="fidelizacion"]:checked');
-            const errorBanner   = document.getElementById("errorBanner");
-            const errorMsg      = document.getElementById("errorMsg");
-    
-            // --- VALIDACIONES LOCALES ---
-            if (!numOrden || parseInt(numOrden) <= 0) {
-                errorMsg.textContent = "Por favor ingresa el número de orden.";
-                errorBanner.style.display = "block"; return;
+            const responsable = document.querySelector('input[name="responsable"]:checked');
+            const fidel = document.querySelector('input[name="fidelizacion"]:checked');
+
+            if (!numOrden || seleccionados.length === 0 || !responsable || !fidel) {
+                document.getElementById("errorBanner").style.display = "block";
+                return;
             }
-            if (seleccionados.length === 0) {
-                errorMsg.textContent = "Por favor selecciona al menos un método de pago.";
-                errorBanner.style.display = "block"; return;
-            }
-            for (const ch of seleccionados) {
-                const val = parseFloat(document.getElementById("monto-" + ch.value)?.value);
-                if (!val || val <= 0) {
-                    errorMsg.textContent = `Ingresa el monto para: ${ch.value}`;
-                    errorBanner.style.display = "block"; return;
-                }
-            }
-            if (!responsableEl) {
-                errorMsg.textContent = "Por favor selecciona el responsable.";
-                errorBanner.style.display = "block"; return;
-            }
-            if (!fidelEl) {
-                errorMsg.textContent = "Por favor indica el plan de puntos.";
-                errorBanner.style.display = "block"; return;
-            }
-    
-            errorBanner.style.display = "none";
-    
-            // --- PREPARAR DATOS ---
-            const monto_tarjeta  = parseFloat(document.getElementById("monto-Tarjeta crédito / débito")?.value) || 0;
-            const monto_efectivo = parseFloat(document.getElementById("monto-Efectivo")?.value) || 0;
-            const monto_sinpe    = parseFloat(document.getElementById("monto-SINPE Móvil")?.value) || 0;
-            const total          = monto_tarjeta + monto_efectivo + monto_sinpe;
-            const metodos_usados = seleccionados.map(ch => ch.value).join(", ");
-    
+
+            const total = actualizarTotal();
             const payload = {
-                numero_orden:   parseInt(numOrden),
-                metodo_pago:    metodos_usados,
-                total,
-                monto_tarjeta,
-                monto_efectivo,
-                monto_sinpe,
-                responsable:    responsableEl.value,
-                plan_puntos:    fidelEl.value,
-                fecha_pago:     new Date().toLocaleString("es-CR")
+                numero_orden: parseInt(numOrden),
+                metodo_pago: seleccionados.map(ch => ch.value).join(", "),
+                total: total,
+                responsable: responsable.value,
+                plan_puntos: fidel.value,
+                fecha_pago: new Date().toLocaleString("es-CR")
             };
-    
-            // --- DISPARAR Y OLVIDAR (Fire and Forget) ---
-            fetch(N8N_WEBHOOK_URL, {
-                method: "POST",
-                mode: "no-cors", 
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(payload)
-            }).catch(e => console.log("Enviado a n8n"));
-    
-            // --- MOSTRAR ÉXITO INMEDIATO ---
-            document.getElementById("successDetail").innerHTML =
-                `Orden #<strong>${numOrden}</strong> enviada.<br>` +
-                `<strong style="color:#00e676">₡${total.toLocaleString("es-CR")}</strong> cobrados.<br>` +
-                `<small>Actualizando base de datos en segundo plano...</small>`;
-    
+
+            // 1. CAMBIO DE PANTALLA INSTANTÁNEO
             document.getElementById("formCard").style.display = "none";
             document.getElementById("successScreen").style.display = "flex";
+            document.getElementById("successDetail").innerHTML = `Orden #<strong>${numOrden}</strong> enviada.<br>Monto: <strong>₡${total.toLocaleString("es-CR")}</strong>`;
+
+            // 2. DISPARAR EN SEGUNDO PLANO
+            fetch(N8N_WEBHOOK_URL, {
+                method: "POST",
+                mode: "no-cors",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(payload)
+            }).catch(e => console.log("Silent send"));
         }
-    
+
         function resetForm() {
-            location.reload(); // Forma más limpia de resetear todos los estados visuales
+            location.reload();
         }
     </script>
 </body>
