@@ -233,6 +233,9 @@
             const payload = {
                 numero_orden: parseInt(numOrden),
                 metodo_pago: seleccionados.map(ch => ch.value).join(", "),
+                monto_efectivo: parseFloat(document.getElementById("monto-Efectivo")?.value) || 0,
+                monto_tarjeta: parseFloat(document.getElementById("monto-Tarjeta crédito / débito")?.value) || 0,
+                monto_sinpe: parseFloat(document.getElementById("monto-SINPE Móvil")?.value) || 0,
                 total: total,
                 responsable: responsable.value,
                 plan_puntos: fidel.value,
