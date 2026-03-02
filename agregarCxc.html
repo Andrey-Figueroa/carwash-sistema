@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>CarWash — Agregar CXC</title>
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet" />
+    <style>
+        :root { --bg: #0a0e14; --card: #111720; --border: #1e2d3d; --accent: #00c6ff; --text: #e8f1ff; --muted: #5a7a99; }
+        body { background: var(--bg); font-family: "DM Sans", sans-serif; color: var(--text); display: flex; flex-direction: column; align-items: center; min-height: 100vh; padding: 20px; }
+        
+        .container { width: 100%; max-width: 450px; background: var(--card); border: 1px solid var(--border); border-radius: 24px; padding: 30px; margin-top: 40px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+        h2 { font-family: "Bebas Neue", sans-serif; font-size: 32px; letter-spacing: 2px; color: var(--accent); margin-bottom: 20px; text-align: center; }
+        
+        .form-group { margin-bottom: 18px; }
+        .form-label { display: block; font-size: 11px; text-transform: uppercase; color: var(--muted); letter-spacing: 1px; margin-bottom: 6px; font-weight: 600; }
+        .form-input { width: 100%; background: #070a0f; border: 1px solid var(--border); border-radius: 12px; color: #fff; padding: 12px 15px; font-size: 15px; outline: none; transition: border-color 0.2s; }
+        .form-input:focus { border-color: var(--accent); }
+        
+        .row { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+        
+        .btn-save { width: 100%; background: var(--accent); color: #000; border: none; border-radius: 12px; padding: 15px; font-size: 16px; font-weight: 700; cursor: pointer; margin-top: 10px; transition: transform 0.2s; }
+        .btn-save:active { transform: scale(0.98); }
+        
+        .btn-back { display: inline-block; margin-top: 20px; color: var(--muted); text-decoration: none; font-size: 14px; transition: color 0.2s; }
+        .btn-back:hover { color: var(--accent); }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h2>Nueva Cuenta por Cobrar</h2>
+        
+        <form id="cxcForm">
+            <div class="row">
+                <div class="form-group">
+                    <label class="form-label">Fecha</label>
+                    <input type="date" id="fecha" class="form-input" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Hora</label>
+                    <input type="time" id="hora" class="form-input" required>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Número de Placa</label>
+                <input type="text" id="placa" class="form-input" placeholder="Ej: BCD-123" required>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Nombre del Cliente</label>
+                <input type="text" id="nombre" class="form-input" placeholder="Nombre completo" required>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Monto Adeudado (₡)</label>
+                <input type="number" id="monto" class="form-input" placeholder="0.00" required>
+            </div>
+
+            <button type="submit" class="btn-save">💾 Registrar Deuda</button>
+        </form>
+        
+        <center><a href="index.html" class="btn-back">← Volver al Menú</a></center>
+    </div>
+
+    <script>
+        // Auto-completar fecha y hora actual
+        const now = new Date();
+        document.getElementById('fecha').value = now.toISOString().split('T')[0];
+        document.getElementById('hora').value = now.getHours().toString().padStart(2, '0') + ":" + now.getMinutes().toString().padStart(2, '0');
+
+        document.getElementById('cxcForm').onsubmit = function(e) {
+            e.preventDefault();
+            // Aquí iría tu lógica para enviar a Google Sheets o AppScript
+            alert("Datos listos para enviar:\nPlaca: " + document.getElementById('placa').value);
+        };
+    </script>
+</body>
+</html>
