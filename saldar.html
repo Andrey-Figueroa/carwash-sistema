@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>CarWash — Saldar Cuenta</title>
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+        :root {
+            --bg: #0a0e14;
+            --card: #111720;
+            --border: #1e2d3d;
+            --accent: #00c6ff;
+            --text: #e8f1ff;
+            --muted: #5a7a99;
+            --green: #00e676;
+        }
+        html, body { background: var(--bg); font-family: 'DM Sans', sans-serif; color: var(--text); min-height: 100vh; }
+        .container { display: flex; flex-direction: column; min-height: 100vh; padding: 16px; max-width: 560px; margin: 0 auto; padding-bottom: 40px; }
+
+        .header-area { display: flex; align-items: center; padding-bottom: 20px; position: relative; }
+        .btn-back { text-decoration: none; color: var(--text); font-size: 13px; font-weight: 600; background: rgba(0,198,255,0.1); padding: 8px 15px; border-radius: 8px; border: 1px solid var(--accent); z-index: 10; transition: background 0.2s; }
+        .btn-back:hover { background: rgba(0,198,255,0.2); }
+        h2 { font-family: 'Bebas Neue', sans-serif; color: var(--accent); font-size: 22px; letter-spacing: 2px; position: absolute; width: 100%; text-align: center; left: 0; pointer-events: none; }
+
+        .form-card { background: var(--card); border: 1px solid var(--border); border-radius: 20px; padding: 26px 22px; display: flex; flex-direction: column; gap: 22px; }
+        .form-title { font-family: 'Bebas Neue', sans-serif; font-size: 20px; letter-spacing: 1.5px; padding-bottom: 4px; border-bottom: 1px solid var(--border); }
+        .section-label { font-size: 11px; font-weight: 700; color: var(--accent); text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: -8px; }
+        .form-group { display: flex; flex-direction: column; gap: 8px; }
+        .form-label { font-size: 13px; font-weight: 600; color: var(--text); display: flex; align-items: center; gap: 5px; }
+        .req { color: var(--accent); font-size: 16px; line-height: 1; }
+
+        .form-input { background: var(--bg); border: 1px solid var(--border); border-radius: 10px; color: var(--text); padding: 12px 14px; font-size: 15px; font-family: inherit; outline: none; transition: border-color 0.2s, box-shadow 0.2s; width: 100%; }
+        .form-input:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(0,198,255,0.1); }
+        .form-input::placeholder { color: var(--muted); }
+        .form-input[type="number"]::-webkit-outer-spin-button,
+        .form-input[type="number"]::-webkit-inner-spin-button { -webkit-appearance: none; }
+
+        .input-wrap { position: relative; }
+        .input-wrap .symbol { position: absolute; right: 14px; top: 50%; transform: translateY(-50%); color: var(--muted); font-size: 15px; pointer-events: none; }
+        .input-wrap .form-input { padding-right: 36px; }
+
+        .field-hint { font-size: 11px; color: var(--muted); margin-top: -4px; }
+
+        /* SECCIONES BLOQUEADAS */
+        .locked-section { display: none; flex-direction: column; gap: 18px; animation: fadeIn 0.25s ease; }
+        .locked-section.visible { display: flex; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(-6px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* CHIPS CHECKBOX */
+        .chips-list { display: flex; flex-direction: column; gap: 9px; }
+        .chip-label { cursor: pointer; }
+        .chip-label input { display: none; }
+        .chip { display: flex; align-items: center; gap: 10px; padding: 12px 16px; border-radius: 10px; border: 1px solid var(--border); background: var(--bg); color: var(--muted); font-size: 14px; font-weight: 500; transition: all 0.18s ease; user-select: none; }
+        .chip:hover { border-color: rgba(0,198,255,0.4); color: var(--text); }
+        .chip-label input:checked + .chip { background: rgba(0,198,255,0.12); border-color: var(--accent); color: var(--accent); font-weight: 600; }
+        .chip-box { width: 18px; height: 18px; border-radius: 5px; border: 2px solid var(--border); flex-shrink: 0; display: flex; align-items: center; justify-content: center; transition: all 0.18s; font-size: 11px; font-weight: 700; color: #000; }
+        .chip-label input:checked + .chip .chip-box { border-color: var(--accent); background: var(--accent); }
+        .chip-label input:checked + .chip .chip-box::after { content: "✓"; }
+
+        /* RADIO CHIPS (responsable / fidelización) */
+        .chips-wrap { display: flex; flex-wrap: wrap; gap: 9px; }
+        .radio-label { cursor: pointer; }
+        .radio-label input { display: none; }
+        .radio-chip { display: inline-flex; align-items: center; padding: 8px 16px; border-radius: 50px; border: 1px solid var(--border); background: var(--bg); color: var(--muted); font-size: 13px; font-weight: 500; transition: all 0.18s; user-select: none; }
+        .radio-chip:hover { border-color: rgba(0,198,255,0.4); color: var(--text); }
+        .radio-label input:checked + .radio-chip { background: rgba(0,198,255,0.12); border-color: var(--accent); color: var(--accent); font-weight: 600; }
+
+        /* FIDELIZACIÓN SÍ/NO */
+        .fidel-wrap { display: flex; gap: 10px; }
+        .fidel-label { cursor: pointer; flex: 1; }
+        .fidel-label input { display: none; }
+        .fidel-chip { display: flex; align-items: center; justify-content: center; gap: 8px; padding: 12px; border-radius: 10px; border: 1px solid var(--border); background: var(--bg); color: var(--muted); font-size: 14px; font-weight: 600; transition: all 0.18s; user-select: none; }
+        .fidel-label.si input:checked + .fidel-chip { background: rgba(0,230,118,0.12); border-color: var(--green); color: var(--green); }
+        .fidel-label.no input:checked + .fidel-chip { background: rgba(255,92,92,0.1); border-color: #ff5c5c; color: #ff5c5c; }
+        .fidel-label.si .fidel-chip:hover { border-color: var(--green); }
+        .fidel-label.no .fidel-chip:hover { border-color: #ff5c5c; }
+
+        /* MONTOS CONDICIONALES */
+        .monto-field { display: none; flex-direction: column; gap: 8px; animation: fadeIn 0.2s ease; }
+        .monto-field.visible { display: flex; }
+
+        /* TOTAL */
+        .total-row { display: flex; justify-content: space-between; align-items: center; background: rgba(0,198,255,0.07); border: 1px solid rgba(0,198,255,0.2); border-radius: 10px; padding: 12px 16px; font-size: 15px; font-weight: 600; }
+        .total-row span:last-child { color: var(--accent); font-size: 18px; }
+
+        .divider { height: 1px; background: var(--border); }
+
+        .error-banner { display: none; background: rgba(255,80,80,0.1); border: 1px solid rgba(255,80,80,0.3); border-radius: 10px; color: #ff7b7b; padding: 12px 16px; font-size: 13px; text-align: center; }
+
+        .btn-submit { background: var(--green); color: #000; border: none; border-radius: 12px; padding: 15px; font-size: 16px; font-weight: 700; cursor: pointer; font-family: inherit; transition: background 0.2s, transform 0.1s; display: flex; align-items: center; justify-content: center; gap: 8px; width: 100%; }
+        .btn-submit:hover { background: #00c45a; }
+        .btn-submit:active { transform: scale(0.98); }
+        .btn-submit:disabled { opacity: 0.6; cursor: not-allowed; }
+
+        .spinner { display: inline-block; width: 18px; height: 18px; border: 2px solid rgba(0,0,0,0.3); border-top-color: #000; border-radius: 50%; animation: spin 0.6s linear infinite; }
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        .success-screen { display: none; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 60px 20px; gap: 14px; }
+        .success-screen .icon { font-size: 64px; }
+        .success-screen h3 { font-family: 'Bebas Neue', sans-serif; font-size: 30px; letter-spacing: 2px; }
+        .success-screen p { color: var(--muted); font-size: 14px; line-height: 1.7; }
+        .btn-nuevo { margin-top: 10px; background: rgba(0,198,255,0.1); border: 1px solid var(--accent); color: var(--accent); border-radius: 12px; padding: 12px 28px; font-size: 15px; font-weight: 600; cursor: pointer; font-family: inherit; transition: background 0.2s; }
+        .btn-nuevo:hover { background: rgba(0,198,255,0.2); }
+    </style>
+</head>
+<body>
+    <div class="container">
+
+        <div class="header-area">
+            <a href="index.html" class="btn-back">← VOLVER</a>
+            <h2>SALDAR CUENTA</h2>
+        </div>
+
+        <div class="form-card" id="formCard">
+            <div class="form-title">💳 Saldar Cuenta por Cobrar</div>
+
+            <!-- NÚMERO DE ORDEN -->
+            <div class="section-label">📋 Orden</div>
+            <div class="form-group">
+                <label class="form-label">Número de orden del vehículo <span class="req">*</span></label>
+                <div class="input-wrap">
+                    <input class="form-input" type="number" id="numOrden" placeholder="Ej: 42" min="1" oninput="onOrdenInput(this.value)">
+                    <span class="symbol">#</span>
+                </div>
+                <span class="field-hint">Puedes verificarlo en el Google Sheets</span>
+            </div>
+
+            <!-- TODO LO DEMÁS (bloqueado hasta tener orden) -->
+            <div class="locked-section" id="mainSection">
+
+                <div class="divider"></div>
+
+                <!-- MÉTODO DE PAGO -->
+                <div class="section-label">💳 Detalles de pago</div>
+                <div class="form-group">
+                    <label class="form-label">Método de pago <span class="req">*</span></label>
+                    <div class="chips-list">
+                        <label class="chip-label">
+                            <input type="checkbox" name="metodo" value="Tarjeta crédito / débito" onchange="toggleMonto(this)">
+                            <div class="chip"><div class="chip-box"></div> 💳 Tarjeta crédito / débito</div>
+                        </label>
+                        <label class="chip-label">
+                            <input type="checkbox" name="metodo" value="Cuenta por cobrar" onchange="toggleMonto(this)">
+                            <div class="chip"><div class="chip-box"></div> 📄 Cuenta por cobrar</div>
+                        </label>
+                        <label class="chip-label">
+                            <input type="checkbox" name="metodo" value="Efectivo" onchange="toggleMonto(this)">
+                            <div class="chip"><div class="chip-box"></div> 💵 Efectivo</div>
+                        </label>
+                        <label class="chip-label">
+                            <input type="checkbox" name="metodo" value="SINPE Móvil" onchange="toggleMonto(this)">
+                            <div class="chip"><div class="chip-box"></div> 📱 SINPE Móvil</div>
+                        </label>
+                        <label class="chip-label">
+                            <input type="checkbox" name="metodo" value="Tarjeta de regalo" onchange="toggleMonto(this)">
+                            <div class="chip"><div class="chip-box"></div> 🎁 Tarjeta de regalo</div>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- MONTOS CONDICIONALES -->
+                <div class="monto-field" id="campo-Tarjeta crédito / débito">
+                    <label class="form-label">Monto en tarjeta <span class="req">*</span></label>
+                    <div class="input-wrap">
+                        <input class="form-input" type="number" id="monto-Tarjeta crédito / débito" placeholder="0" min="0" oninput="actualizarTotal()">
+                        <span class="symbol">₡</span>
+                    </div>
+                </div>
+                <div class="monto-field" id="campo-Cuenta por cobrar">
+                    <label class="form-label">Monto en cuenta por cobrar <span class="req">*</span></label>
+                    <div class="input-wrap">
+                        <input class="form-input" type="number" id="monto-Cuenta por cobrar" placeholder="0" min="0" oninput="actualizarTotal()">
+                        <span class="symbol">₡</span>
+                    </div>
+                </div>
+                <div class="monto-field" id="campo-Efectivo">
+                    <label class="form-label">Monto en efectivo <span class="req">*</span></label>
+                    <div class="input-wrap">
+                        <input class="form-input" type="number" id="monto-Efectivo" placeholder="0" min="0" oninput="actualizarTotal()">
+                        <span class="symbol">₡</span>
+                    </div>
+                </div>
+                <div class="monto-field" id="campo-SINPE Móvil">
+                    <label class="form-label">Monto en SINPE <span class="req">*</span></label>
+                    <div class="input-wrap">
+                        <input class="form-input" type="number" id="monto-SINPE Móvil" placeholder="0" min="0" oninput="actualizarTotal()">
+                        <span class="symbol">₡</span>
+                    </div>
+                </div>
+                <div class="monto-field" id="campo-Tarjeta de regalo">
+                    <label class="form-label">Monto en tarjeta de regalo <span class="req">*</span></label>
+                    <div class="input-wrap">
+                        <input class="form-input" type="number" id="monto-Tarjeta de regalo" placeholder="0" min="0" oninput="actualizarTotal()">
+                        <span class="symbol">₡</span>
+                    </div>
+                </div>
+
+                <!-- TOTAL -->
+                <div class="total-row" id="totalRow" style="display:none;">
+                    <span>💰 Total</span>
+                    <span id="totalValor">₡0</span>
+                </div>
+
+                <div class="divider"></div>
+
+                <!-- FACTURACIÓN -->
+                <div class="section-label">🧾 Facturación</div>
+                <div class="form-group">
+                    <label class="form-label">Responsable que recibe el pago <span class="req">*</span></label>
+                    <div class="chips-wrap">
+                        <label class="radio-label"><input type="radio" name="responsable" value="Juan"><span class="radio-chip">Juan</span></label>
+                        <label class="radio-label"><input type="radio" name="responsable" value="Eder"><span class="radio-chip">Eder</span></label>
+                        <label class="radio-label"><input type="radio" name="responsable" value="Massiel"><span class="radio-chip">Massiel</span></label>
+                        <label class="radio-label"><input type="radio" name="responsable" value="Jesús"><span class="radio-chip">Jesús</span></label>
+                        <label class="radio-label"><input type="radio" name="responsable" value="Andrey"><span class="radio-chip">Andrey</span></label>
+                        <label class="radio-label"><input type="radio" name="responsable" value="Ronald"><span class="radio-chip">Ronald</span></label>
+                        <label class="radio-label"><input type="radio" name="responsable" value="Ricardo"><span class="radio-chip">Ricardo</span></label>
+                    </div>
+                </div>
+
+                <div class="divider"></div>
+
+                <!-- FIDELIZACIÓN -->
+                <div class="section-label">⭐ Recordatorio (Fidelización)</div>
+                <div class="form-group">
+                    <label class="form-label">¿El cliente está en el plan de acumulación de puntos? <span class="req">*</span></label>
+                    <div class="fidel-wrap">
+                        <label class="fidel-label si">
+                            <input type="radio" name="fidelizacion" value="Sí">
+                            <div class="fidel-chip">⭐ Sí</div>
+                        </label>
+                        <label class="fidel-label no">
+                            <input type="radio" name="fidelizacion" value="No">
+                            <div class="fidel-chip">❌ No</div>
+                        </label>
+                    </div>
+                </div>
+
+            </div>
+            <!-- fin locked-section -->
+
+            <!-- ERROR -->
+            <div class="error-banner" id="errorBanner">
+                ⚠️ <span id="errorMsg">Por favor completa todos los campos.</span>
+            </div>
+
+            <button class="btn-submit" id="btnSubmit" onclick="enviarCobro()">
+                💳 Saldar cuenta
+            </button>
+        </div>
+
+        <!-- SUCCESS -->
+        <div class="success-screen" id="successScreen">
+            <div class="icon">💰</div>
+            <h3>¡Cuenta Saldada!</h3>
+            <p id="successDetail">La cuenta fue marcada como saldada en Google Sheets.</p>
+            <button class="btn-nuevo" onclick="resetForm()">+ Saldar otra cuenta</button>
+            <a href="index.html" class="btn-back" style="margin-top:8px;">← Volver al menú</a>
+        </div>
+
+    </div>
+
+    <script>
+        // ⚠️ REEMPLAZA con tu webhook de n8n
+        const N8N_WEBHOOK_URL = "https://TU-N8N-URL/webhook/saldar";
+
+        const metodos = ["Tarjeta crédito / débito", "Cuenta por cobrar", "Efectivo", "SINPE Móvil", "Tarjeta de regalo"];
+
+        function onOrdenInput(val) {
+            document.getElementById("mainSection").classList.toggle("visible", val.trim() !== "" && parseInt(val) > 0);
+        }
+
+        function toggleMonto(checkbox) {
+            const campo = document.getElementById("campo-" + checkbox.value);
+            if (!campo) return;
+            campo.classList.toggle("visible", checkbox.checked);
+            if (!checkbox.checked) {
+                const input = document.getElementById("monto-" + checkbox.value);
+                if (input) input.value = "";
+            }
+            actualizarTotal();
+        }
+
+        function actualizarTotal() {
+            const seleccionados = document.querySelectorAll('input[name="metodo"]:checked');
+            const totalRow = document.getElementById("totalRow");
+            if (seleccionados.length > 1) {
+                let suma = 0;
+                seleccionados.forEach(ch => {
+                    suma += parseFloat(document.getElementById("monto-" + ch.value)?.value) || 0;
+                });
+                document.getElementById("totalValor").textContent = "₡" + suma.toLocaleString("es-CR");
+                totalRow.style.display = "flex";
+            } else {
+                totalRow.style.display = "none";
+            }
+        }
+
+        async function enviarCobro() {
+            const numOrden      = document.getElementById("numOrden").value.trim();
+            const seleccionados = Array.from(document.querySelectorAll('input[name="metodo"]:checked'));
+            const responsableEl = document.querySelector('input[name="responsable"]:checked');
+            const fidelEl       = document.querySelector('input[name="fidelizacion"]:checked');
+            const errorBanner   = document.getElementById("errorBanner");
+            const errorMsg      = document.getElementById("errorMsg");
+
+            if (!numOrden || parseInt(numOrden) <= 0) {
+                errorMsg.textContent = "Por favor ingresa el número de orden.";
+                errorBanner.style.display = "block"; return;
+            }
+            if (seleccionados.length === 0) {
+                errorMsg.textContent = "Por favor selecciona al menos un método de pago.";
+                errorBanner.style.display = "block"; return;
+            }
+            for (const ch of seleccionados) {
+                const val = parseFloat(document.getElementById("monto-" + ch.value)?.value);
+                if (!val || val <= 0) {
+                    errorMsg.textContent = `Ingresa el monto para: ${ch.value}`;
+                    errorBanner.style.display = "block"; return;
+                }
+            }
+            if (!responsableEl) {
+                errorMsg.textContent = "Por favor selecciona el responsable que recibe el pago.";
+                errorBanner.style.display = "block"; return;
+            }
+            if (!fidelEl) {
+                errorMsg.textContent = "Por favor indica si el cliente está en el plan de puntos.";
+                errorBanner.style.display = "block"; return;
+            }
+
+            errorBanner.style.display = "none";
+            const btn = document.getElementById("btnSubmit");
+            btn.disabled = true;
+            btn.innerHTML = '<span class="spinner"></span> Procesando...';
+
+            const monto_tarjeta  = parseFloat(document.getElementById("monto-Tarjeta crédito / débito")?.value) || 0;
+            const monto_cxc      = parseFloat(document.getElementById("monto-Cuenta por cobrar")?.value) || 0;
+            const monto_efectivo = parseFloat(document.getElementById("monto-Efectivo")?.value) || 0;
+            const monto_sinpe    = parseFloat(document.getElementById("monto-SINPE Móvil")?.value) || 0;
+            const monto_regalo   = parseFloat(document.getElementById("monto-Tarjeta de regalo")?.value) || 0;
+            const total          = monto_tarjeta + monto_cxc + monto_efectivo + monto_sinpe + monto_regalo;
+            const metodos_usados = seleccionados.map(ch => ch.value).join(", ");
+
+            const payload = {
+                numero_orden:            parseInt(numOrden),
+                metodo_pago:             metodos_usados,
+                total,
+                monto_tarjeta:           monto_tarjeta  || "",
+                monto_cuenta_por_cobrar: monto_cxc      || "",
+                monto_efectivo:          monto_efectivo || "",
+                monto_sinpe:             monto_sinpe    || "",
+                monto_tarjeta_regalo:    monto_regalo   || "",
+                responsable:             responsableEl.value,
+                plan_puntos:             fidelEl.value
+            };
+
+            try {
+                const response = await fetch(N8N_WEBHOOK_URL, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify(payload)
+                });
+                if (!response.ok) throw new Error("Error " + response.status);
+
+                document.getElementById("successDetail").innerHTML =
+                    `Orden #<strong>${numOrden}</strong><br>` +
+                    `${metodos_usados}<br>` +
+                    `<strong style="color:#00e676">₡${total.toLocaleString("es-CR")}</strong><br>` +
+                    `Responsable: ${responsableEl.value} · Puntos: ${fidelEl.value}`;
+
+                document.getElementById("formCard").style.display = "none";
+                document.getElementById("successScreen").style.display = "flex";
+
+            } catch (err) {
+                errorMsg.textContent = "Error al enviar. Verifica la conexión e intenta de nuevo.";
+                errorBanner.style.display = "block";
+                btn.disabled = false;
+                btn.innerHTML = "💳 Saldar cuenta";
+            }
+        }
+
+        function resetForm() {
+            document.getElementById("numOrden").value = "";
+            document.getElementById("mainSection").classList.remove("visible");
+            document.querySelectorAll('input[name="metodo"]').forEach(ch => ch.checked = false);
+            document.querySelectorAll('input[name="responsable"]').forEach(r => r.checked = false);
+            document.querySelectorAll('input[name="fidelizacion"]').forEach(r => r.checked = false);
+            metodos.forEach(m => {
+                const campo = document.getElementById("campo-" + m);
+                if (campo) campo.classList.remove("visible");
+                const input = document.getElementById("monto-" + m);
+                if (input) input.value = "";
+            });
+            document.getElementById("totalRow").style.display = "none";
+            document.getElementById("errorBanner").style.display = "none";
+            document.getElementById("btnSubmit").disabled = false;
+            document.getElementById("btnSubmit").innerHTML = "💳 Saldar cuenta";
+            document.getElementById("formCard").style.display = "flex";
+            document.getElementById("successScreen").style.display = "none";
+        }
+    </script>
+</body>
+</html>
