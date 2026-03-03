@@ -6,6 +6,7 @@
 <title>Pizarra CarWash — Vista del Local</title>
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Mono:wght@400;500&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet"/>
 <style>
+/* ESTILOS ORIGINALES PRESERVADOS */
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 :root{
   --bg:#07090d;--surface:#0d1219;--card:#111a25;--border:#1a2a3a;
@@ -15,7 +16,6 @@
 body{background:var(--bg);font-family:"DM Sans",sans-serif;color:var(--text);min-height:100vh;display:flex;flex-direction:column;overflow-x:hidden}
 body::before{content:"";position:fixed;inset:0;background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,0,0,0.025) 2px,rgba(0,0,0,0.025) 4px);pointer-events:none;z-index:9999}
 
-/* TOPBAR */
 .topbar{display:flex;align-items:center;justify-content:space-between;padding:14px 28px;background:linear-gradient(90deg,#050d14,#081525);border-bottom:1px solid var(--border);position:sticky;top:0;z-index:100}
 .topbar-left{display:flex;align-items:center;gap:14px}
 .logo-chip{background:rgba(0,212,255,0.08);border:1px solid rgba(0,212,255,0.25);border-radius:8px;padding:6px 14px;font-family:"Bebas Neue",sans-serif;font-size:18px;letter-spacing:2px;color:var(--accent)}
@@ -29,7 +29,6 @@ body::before{content:"";position:fixed;inset:0;background:repeating-linear-gradi
 .back-btn{background:transparent;border:1px solid var(--border);color:var(--muted);border-radius:8px;padding:7px 14px;cursor:pointer;font-size:13px;font-family:inherit;transition:all .2s;text-decoration:none;display:flex;align-items:center;gap:6px}
 .back-btn:hover{color:var(--text);border-color:var(--muted)}
 
-/* STATS */
 .stats-bar{display:flex;border-bottom:1px solid var(--border);background:var(--surface)}
 .stat{flex:1;padding:14px 20px;border-right:1px solid var(--border);display:flex;align-items:center;gap:12px}
 .stat:last-child{border-right:none}
@@ -37,10 +36,7 @@ body::before{content:"";position:fixed;inset:0;background:repeating-linear-gradi
 .stat-val{font-size:24px;font-weight:700;font-family:"DM Mono",monospace}
 .stat-lbl{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-top:1px}
 
-/* BOARD — 3 cols */
 .board{display:grid;grid-template-columns:1fr 1fr 1fr;flex:1;gap:0;min-height:calc(100vh - 130px)}
-
-/* ZONES */
 .zone{position:relative;border:1px solid var(--border);padding:22px;overflow:hidden;min-height:400px}
 .zone::before{content:"";position:absolute;inset:0;background-image:linear-gradient(rgba(255,255,255,0.015) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,0.015) 1px,transparent 1px);background-size:44px 44px;pointer-events:none}
 .zone-label{display:flex;align-items:center;gap:10px;margin-bottom:20px;padding-bottom:14px;border-bottom:1px solid var(--border);position:relative;z-index:1}
@@ -54,10 +50,7 @@ body::before{content:"";position:fixed;inset:0;background:repeating-linear-gradi
 .zone-retirado{background:radial-gradient(ellipse at 90% 90%,rgba(255,82,82,0.06) 0%,transparent 60%),#110a0a;opacity:.75}
 .zone-retirado .zone-title{color:var(--red)}
 
-/* CARS GRID */
 .cars-grid{display:flex;flex-wrap:wrap;gap:14px;align-content:flex-start;position:relative;z-index:1}
-
-/* CAR CARD */
 .car-card{position:relative;width:172px;background:rgba(0,0,0,0.45);border-radius:18px;border:1px solid rgba(255,255,255,0.06);padding:14px;transition:transform .2s,border-color .2s,box-shadow .2s;animation:carIn .42s cubic-bezier(.34,1.56,.64,1) forwards}
 .car-card:hover{transform:translateY(-4px);border-color:rgba(255,255,255,0.14);box-shadow:0 12px 30px rgba(0,0,0,0.4)}
 @keyframes carIn{from{opacity:0;transform:scale(.82) translateY(12px)}to{opacity:1;transform:scale(1) translateY(0)}}
@@ -68,30 +61,25 @@ body::before{content:"";position:fixed;inset:0;background:repeating-linear-gradi
 .zone-terminado .car-card::before{content:"";position:absolute;bottom:-1px;left:10%;width:80%;height:2px;background:linear-gradient(90deg,transparent,rgba(0,230,118,0.35),transparent);border-radius:2px}
 .zone-retirado .car-card{opacity:.5;filter:grayscale(60%)}
 
-/* Wash drops */
 .wash-drops{position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none;border-radius:18px;overflow:hidden}
 .drop-p{position:absolute;width:2px;border-radius:10px;background:linear-gradient(to bottom,transparent,rgba(0,200,255,0.65));animation:dfall linear infinite}
 @keyframes dfall{0%{transform:translateY(-8px);opacity:0}10%{opacity:1}100%{transform:translateY(110px);opacity:0}}
 
-/* CAR SVG */
 .car-visual{width:100%;height:80px;display:flex;align-items:center;justify-content:center;margin-bottom:10px}
 .car-svg{filter:drop-shadow(0 5px 10px rgba(0,0,0,0.5));transition:transform .3s}
 .car-card:hover .car-svg{transform:scale(1.07)}
 
-/* INFO */
 .car-plate{font-family:"DM Mono",monospace;font-size:13px;font-weight:500;background:rgba(0,0,0,0.6);border:1px solid rgba(255,255,255,0.1);border-radius:6px;padding:3px 8px;text-align:center;letter-spacing:2px;margin-bottom:6px}
 .car-name{font-size:12px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-bottom:3px}
 .car-service{font-size:10px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .car-time{font-size:10px;color:var(--muted);font-family:"DM Mono",monospace;margin-top:6px;display:flex;align-items:center;gap:4px}
 .car-time.urgent{color:var(--red)}.car-time.warn{color:var(--yellow)}
 
-/* BADGE */
 .car-badge{position:absolute;top:9px;right:9px;font-size:9px;font-weight:700;padding:2px 7px;border-radius:20px;text-transform:uppercase;letter-spacing:.5px}
 .badge-proceso{background:rgba(0,180,255,0.15);color:#4fc3f7;border:1px solid rgba(0,180,255,0.25)}
 .badge-terminado{background:rgba(0,230,118,0.12);color:#00e676;border:1px solid rgba(0,230,118,0.2)}
 .badge-retirado{background:rgba(255,82,82,0.1);color:#ff7070;border:1px solid rgba(255,82,82,0.2)}
 
-/* BUTTONS */
 .card-actions{display:flex;flex-direction:column;gap:6px;margin-top:8px}
 .btn-action{width:100%;border-radius:9px;padding:7px 8px;font-size:11px;font-weight:700;cursor:pointer;font-family:inherit;transition:all .15s;border:1px solid transparent;display:flex;align-items:center;justify-content:center;gap:5px}
 .btn-terminar{background:rgba(0,212,255,0.1);border-color:rgba(0,212,255,0.25);color:var(--accent)}
@@ -101,16 +89,13 @@ body::before{content:"";position:fixed;inset:0;background:repeating-linear-gradi
 .btn-retirar{background:rgba(255,82,82,0.08);border-color:rgba(255,82,82,0.2);color:#ff7070}
 .btn-retirar:hover{background:rgba(255,82,82,0.18);transform:scale(1.02)}
 
-/* EMPTY */
 .empty-zone{display:flex;flex-direction:column;align-items:center;justify-content:center;height:140px;color:var(--muted);font-size:13px;gap:8px;width:100%}
 .empty-zone .ei{font-size:36px;opacity:.3}
 
-/* LOADING */
 .loading-overlay{position:fixed;inset:0;background:rgba(7,9,13,.95);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;z-index:500;transition:opacity .4s}
 .spinner{width:40px;height:40px;border-radius:50%;border:3px solid var(--border);border-top-color:var(--accent);animation:spin .8s linear infinite}
 @keyframes spin{to{transform:rotate(360deg)}}
 
-/* CONFIRM MODAL */
 .confirm-modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.85);backdrop-filter:blur(10px);z-index:600;align-items:center;justify-content:center}
 .confirm-modal.show{display:flex}
 .confirm-box{background:var(--card);border:1px solid var(--border);border-radius:22px;padding:32px;width:330px;text-align:center;animation:popIn .25s cubic-bezier(.34,1.56,.64,1)}
@@ -126,7 +111,6 @@ body::before{content:"";position:fixed;inset:0;background:repeating-linear-gradi
 .btn-ok-cf.green{background:var(--green)}.btn-ok-cf.red{background:var(--red)}
 .btn-ok-cf:hover{filter:brightness(1.1)}
 
-/* TOAST */
 .toast{position:fixed;bottom:28px;left:50%;transform:translateX(-50%) translateY(20px);background:var(--card);border:1px solid var(--border);border-radius:12px;padding:12px 22px;font-size:13px;box-shadow:0 8px 32px rgba(0,0,0,0.5);opacity:0;transition:all .3s;z-index:700;pointer-events:none;white-space:nowrap}
 .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
 
@@ -191,14 +175,23 @@ body::before{content:"";position:fixed;inset:0;background:repeating-linear-gradi
 <div class="toast" id="toast"></div>
 
 <script>
-// ══ CONFIG ══
-const SHEET_ID   = "1VGBiKE8xOYRk22-EZFMGdXVPosUvXbHj-aeEOOQYzr4";
-const SHEET_NAME = "Ordenes";
-const COL = {placa:0,cliente:1,servicio:2,estado:3,hora:4};
+// ══ CONFIGURACIÓN AJUSTADA A TUS IMÁGENES ══
+const SHEET_ID   = "1VGBiKE8xOYRk22-EZFMGdXVPosUvXbHj-aeEOOQYzr4"; 
+const SHEET_NAME = "BD Control General"; // Según la pestaña de tu imagen
+
+const COL = {
+  placa: 2,      // Columna C
+  cliente: 3,    // Columna D
+  celular: 4,    // Columna E (Para WhatsApp)
+  servicio: 7,   // Columna H (Categoría servicio)
+  estado: 8,     // Columna I (Estado)
+  hora: 1        // Columna B (Hora entrada)
+};
+
 const STATUS_MAP = {
-  "en proceso":"proceso","lavando":"proceso","proceso":"proceso",
-  "terminado":"terminado","listo":"terminado",
-  "retirado":"retirado"
+  "en proceso": "proceso", "lavando": "proceso", "pendiente": "proceso",
+  "terminado": "terminado", "listo": "terminado", "finalizado": "terminado",
+  "retirado": "retirado", "entregado": "retirado"
 };
 
 const CAR_COLORS=["#e53935","#1e88e5","#43a047","#fb8c00","#8e24aa","#00acc1","#f4511e","#3949ab","#00897b","#c0ca33","#6d4c41","#546e7a","#d81b60","#039be5","#7cb342"];
@@ -213,24 +206,9 @@ function carSVG(color,zone){
     <rect x="24" y="11" width="60" height="28" rx="8" fill="${color}" opacity=".87"/>
     <rect x="26" y="13" width="26" height="16" rx="3.5" fill="${shine}" stroke="rgba(255,255,255,0.18)" stroke-width="1"/>
     <rect x="56" y="13" width="26" height="16" rx="3.5" fill="${shine}" stroke="rgba(255,255,255,0.1)" stroke-width="1"/>
-    <rect x="9" y="27" width="15" height="4" rx="2" fill="rgba(255,255,255,0.07)"/>
-    <rect x="84" y="27" width="15" height="4" rx="2" fill="rgba(255,255,255,0.05)"/>
     <circle cx="27" cy="54" r="9.5" fill="#131622" stroke="#252535" stroke-width="1.5"/>
-    <circle cx="27" cy="54" r="4.5" fill="#383850"/>
     <circle cx="81" cy="54" r="9.5" fill="#131622" stroke="#252535" stroke-width="1.5"/>
-    <circle cx="81" cy="54" r="4.5" fill="#383850"/>
-    <circle cx="27" cy="22" r="9.5" fill="#131622" stroke="#252535" stroke-width="1.5"/>
-    <circle cx="27" cy="22" r="4.5" fill="#383850"/>
-    <circle cx="81" cy="22" r="9.5" fill="#131622" stroke="#252535" stroke-width="1.5"/>
-    <circle cx="81" cy="22" r="4.5" fill="#383850"/>
-    <rect x="6" y="30" width="7" height="10" rx="2.5" fill="#fffde7" opacity=".9"/>
-    <rect x="6" y="40" width="7" height="6" rx="1.5" fill="#ff7043" opacity=".65"/>
-    <rect x="95" y="30" width="7" height="10" rx="2.5" fill="#ff5252" opacity=".85"/>
-    <rect x="95" y="40" width="7" height="6" rx="1.5" fill="#ff5252" opacity=".55"/>
-    ${wet?`<circle cx="40" cy="21" r="2.2" fill="#4fc3f7" opacity=".72"/>
-    <circle cx="60" cy="15" r="1.6" fill="#4fc3f7" opacity=".52"/>
-    <circle cx="74" cy="22" r="1.9" fill="#81d4fa" opacity=".6"/>
-    <circle cx="50" cy="25" r="1.3" fill="#b3e5fc" opacity=".48"/>`:""}
+    ${wet?`<circle cx="40" cy="21" r="2.2" fill="#4fc3f7" opacity=".72"/><circle cx="60" cy="15" r="1.6" fill="#4fc3f7" opacity=".52"/>`:""}
     ${spark?`<text x="93" y="14" font-size="13" opacity=".9">✨</text>`:""}
   </svg>`;
 }
@@ -243,10 +221,18 @@ function makeDrops(){
 
 function timeAgo(ts){
   if(!ts)return "";
-  try{const[h,m]=ts.split(":").map(Number);const now=new Date(),then=new Date(now);then.setHours(h,m,0,0);const diff=Math.round((now-then)/60000);if(diff<0||diff>720)return "";return diff<60?`${diff} min`:`${Math.floor(diff/60)}h ${diff%60}m`;}catch{return ""}
+  try{
+    const[h,m]=ts.split(":").map(Number);
+    const now=new Date();
+    const then=new Date(now);
+    then.setHours(h,m,0,0);
+    const diff=Math.round((now-then)/60000);
+    if(diff<0||diff>720)return "";
+    return diff<60?`${diff} min`:`${Math.floor(diff/60)}h ${diff%60}m`;
+  }catch{return ""}
 }
 
-function esc(s){return(s||"").replace(/'/g,"\\'").replace(/"/g,"&quot;")}
+function esc(s){return(s||"").toString().replace(/'/g,"\\'").replace(/"/g,"&quot;")}
 
 let localState={};
 function effectiveStatus(car){return localState[car.placa]||STATUS_MAP[(car.estado||"").toLowerCase().trim()]||null}
@@ -265,7 +251,7 @@ function buildCard(car,zone){
     actions=`<div class="card-actions"><button class="btn-action btn-terminar" onclick="askChange('${esc(car.placa)}','${esc(car.cliente)}','terminado')">✅ Marcar terminado</button></div>`;
   } else if(zone==="terminado"){
     actions=`<div class="card-actions">
-      <button class="btn-action btn-avisar" onclick="notifyClient('${esc(car.placa)}','${esc(car.cliente)}')">📲 Avisar cliente</button>
+      <button class="btn-action btn-avisar" onclick="notifyClient('${esc(car.placa)}','${esc(car.cliente)}','${esc(car.celular)}')">📲 Avisar cliente</button>
       <button class="btn-action btn-retirar" onclick="askChange('${esc(car.placa)}','${esc(car.cliente)}','retirado')">🚗 Marcar retirado</button>
     </div>`;
   }
@@ -282,15 +268,25 @@ function buildCard(car,zone){
   </div>`;
 }
 
+function notifyClient(placa, cliente, celular) {
+  if (!celular || celular.trim() === "" || celular === "undefined") {
+    showToast(`⚠️ Sin número para ${cliente}`);
+    return;
+  }
+  const numLimpio = celular.toString().replace(/\D/g, '');
+  const mensaje = `Hola ${cliente}, te saludamos de CarWash. ¡Tu vehículo con placa ${placa} ya está listo! ✨`;
+  const url = `https://wa.me/${numLimpio}?text=${encodeURIComponent(mensaje)}`;
+  window.open(url, '_blank');
+  showToast(`📲 WhatsApp para ${cliente}`);
+}
+
 let pendingAction=null;
 function askChange(placa,cliente,newStatus){
   pendingAction={placa,newStatus};
   const isT=newStatus==="terminado";
   document.getElementById("cfIcon").textContent=isT?"✅":"🚗";
-  document.getElementById("cfTitle").textContent=isT?"¿Marcar como terminado?":"¿Marcar como retirado?";
-  document.getElementById("cfSub").textContent=isT
-    ?`El vehículo de ${cliente} se moverá al parqueo de listos.`
-    :`El vehículo de ${cliente} será marcado como retirado.`;
+  document.getElementById("cfTitle").textContent=isT?"¿Marcar terminado?":"¿Marcar retirado?";
+  document.getElementById("cfSub").textContent=`Mover vehículo de ${cliente} a ${newStatus}.`;
   const btn=document.getElementById("cfOkBtn");
   btn.textContent=isT?"Sí, terminado":"Sí, retirado";
   btn.className="btn-ok-cf "+(isT?"green":"red");
@@ -302,13 +298,10 @@ function confirmAction(){
   const{placa,newStatus}=pendingAction;
   localState[placa]=newStatus;
   closeConfirm();
-  showToast(newStatus==="terminado"?"✅ Vehículo marcado como terminado":"🚗 Vehículo retirado del local");
   renderAll();
 }
 
-function notifyClient(placa,cliente){showToast(`📲 Aviso enviado a ${cliente||placa}`)}
-
-function showToast(msg,ms=3200){
+function showToast(msg,ms=3000){
   const t=document.getElementById("toast");t.textContent=msg;t.classList.add("show");
   setTimeout(()=>t.classList.remove("show"),ms);
 }
@@ -317,11 +310,10 @@ let allCars=[];
 function renderAll(){
   const groups={proceso:[],terminado:[],retirado:[]};
   for(const car of allCars){const st=effectiveStatus(car);if(st&&groups[st])groups[st].push(car)}
-  const empty={proceso:"Sin carros en lavado",terminado:"Parqueo vacío",retirado:"Ningún retiro aún"};
   ["proceso","terminado","retirado"].forEach(z=>{
     const grid=document.getElementById("grid-"+z);
     const cars=groups[z];
-    grid.innerHTML=cars.length?cars.map(c=>buildCard(c,z)).join(""):`<div class="empty-zone"><div class="ei">🚘</div>${empty[z]}</div>`;
+    grid.innerHTML=cars.length?cars.map(c=>buildCard(c,z)).join(""):`<div class="empty-zone"><div class="ei">🚘</div>Vacío</div>`;
     document.getElementById("cnt-"+z).textContent=cars.length;
     document.getElementById("lbl-"+z).textContent=cars.length+" carro"+(cars.length!==1?"s":"");
   });
@@ -329,43 +321,38 @@ function renderAll(){
 
 async function fetchSheet(){
   const url=`https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:csv&sheet=${encodeURIComponent(SHEET_NAME)}`;
-  const r=await fetch(url,{cache:"no-store"});if(!r.ok)throw new Error("Sheet");
+  const r=await fetch(url,{cache:"no-store"});
+  if(!r.ok)throw new Error("Error de conexión");
   return parseCSV(await r.text());
 }
+
 function parseCSV(text){
   return text.trim().split("\n").slice(1).map(line=>{
     const cols=[];let inQ=false,cur="";
-    for(const ch of line+","){if(ch==='"'){inQ=!inQ}else if(ch===","&&!inQ){cols.push(cur.trim());cur=""}else cur+=ch;}
-    return{placa:cols[COL.placa]||"",cliente:cols[COL.cliente]||"",servicio:cols[COL.servicio]||"",estado:(cols[COL.estado]||"").toLowerCase().trim(),hora:cols[COL.hora]||""};
-  }).filter(r=>r.placa);
-}
-
-function demoData(){
-  function ago(m){const d=new Date(Date.now()-m*60000);return d.getHours().toString().padStart(2,"0")+":"+d.getMinutes().toString().padStart(2,"0")}
-  return[
-    {placa:"CRC-1234",cliente:"Juan Mora",servicio:"Lavado completo",estado:"en proceso",hora:ago(35)},
-    {placa:"SJO-5678",cliente:"Ana Solís",servicio:"Encerado + lavado",estado:"en proceso",hora:ago(58)},
-    {placa:"ALJ-9012",cliente:"Luis Brenes",servicio:"Detailing interior",estado:"en proceso",hora:ago(97)},
-    {placa:"HER-3344",cliente:"María Quesada",servicio:"Lavado express",estado:"terminado",hora:ago(80)},
-    {placa:"CAR-5566",cliente:"Carlos Vega",servicio:"Pulido completo",estado:"terminado",hora:ago(112)},
-    {placa:"SJO-7788",cliente:"Diego Vargas",servicio:"Lavado express",estado:"retirado",hora:ago(150)},
-  ];
+    for(const ch of line+","){
+      if(ch==='"'){inQ=!inQ}else if(ch===","&&!inQ){cols.push(cur.trim());cur=""}else cur+=ch;
+    }
+    return{
+      placa:cols[COL.placa]||"",
+      cliente:cols[COL.cliente]||"",
+      celular:cols[COL.celular]||"",
+      servicio:cols[COL.servicio]||"",
+      estado:(cols[COL.estado]||"").toLowerCase().trim(),
+      hora:cols[COL.hora]||""
+    };
+  }).filter(r=>r.placa && r.placa !== "");
 }
 
 async function loadData(){
   try{
-    const data=await fetchSheet();
-    if(!data.length)throw new Error("empty");
-    allCars=data;
+    allCars=await fetchSheet();
+    renderAll();
+    document.getElementById("lastUpdate").textContent="Actualizado "+new Date().toLocaleTimeString();
+    const ov=document.getElementById("loadingOverlay");
+    ov.style.opacity="0";setTimeout(()=>ov.style.display="none",400);
   }catch(e){
-    console.warn("Demo:",e.message);
-    allCars=demoData();
-    showToast("⚠️ Modo demo — publica tu Sheet para datos reales");
+    showToast("⚠️ Error: Publica el Sheets o revisa el ID");
   }
-  renderAll();
-  document.getElementById("lastUpdate").textContent="Actualizado "+new Date().toLocaleTimeString("es-CR");
-  const ov=document.getElementById("loadingOverlay");
-  ov.style.opacity="0";setTimeout(()=>ov.style.display="none",400);
 }
 
 setInterval(loadData,45000);
