@@ -6,7 +6,7 @@
 <title>Pizarra CarWash — Control en Vivo</title>
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Mono:wght@400;500&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet"/>
 <style>
-/* --- ESTILOS VISUALES --- */
+/* --- ESTILOS PRESERVADOS --- */
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 :root{
   --bg:#07090d;--surface:#0d1219;--card:#111a25;--border:#1a2a3a;
@@ -16,9 +16,14 @@
 body{background:var(--bg);font-family:"DM Sans",sans-serif;color:var(--text);min-height:100vh;display:flex;flex-direction:column;overflow-x:hidden}
 
 .topbar{display:flex;align-items:center;justify-content:space-between;padding:14px 28px;background:linear-gradient(90deg,#050d14,#081525);border-bottom:1px solid var(--border);position:sticky;top:0;z-index:100}
+.topbar-left{display:flex;align-items:center;gap:15px}
 .logo-chip{background:rgba(0,212,255,0.08);border:1px solid rgba(0,212,255,0.25);border-radius:8px;padding:6px 14px;font-family:"Bebas Neue",sans-serif;font-size:18px;letter-spacing:2px;color:var(--accent)}
 .page-title{font-family:"Bebas Neue",sans-serif;font-size:26px;letter-spacing:3px;background:linear-gradient(90deg,#fff 40%,var(--accent));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
 
+.back-btn{background:transparent;border:1px solid var(--border);color:var(--muted);border-radius:8px;padding:7px 14px;cursor:pointer;font-size:13px;font-family:inherit;transition:all .2s;text-decoration:none;display:flex;align-items:center;gap:6px}
+.back-btn:hover{color:var(--text);border-color:var(--muted);background:rgba(255,255,255,0.05)}
+
+.topbar-right{display:flex;align-items:center;gap:15px}
 .status-pill{display:flex;align-items:center;gap:7px;font-size:12px;color:var(--muted);background:rgba(0,0,0,0.3);border:1px solid var(--border);border-radius:20px;padding:5px 12px}
 .pulse-dot{width:7px;height:7px;border-radius:50%;background:var(--green);animation:pulse 2s infinite}
 @keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(0,230,118,0.5)}50%{box-shadow:0 0 0 5px rgba(0,230,118,0)}}
@@ -31,16 +36,24 @@ body{background:var(--bg);font-family:"DM Sans",sans-serif;color:var(--text);min
 .board{display:grid;grid-template-columns:1fr 1fr 1fr;flex:1;min-height:calc(100vh - 130px)}
 .zone{position:relative;border:1px solid var(--border);padding:22px;overflow:hidden}
 .zone-title{font-family:"Bebas Neue",sans-serif;font-size:20px;letter-spacing:2px;color:var(--accent);margin-bottom:20px;display:block}
-
 .cars-grid{display:flex;flex-wrap:wrap;gap:14px;align-content:flex-start}
-.car-card{width:175px;background:rgba(0,0,0,0.45);border-radius:18px;border:1px solid rgba(255,255,255,0.06);padding:14px;transition: transform 0.2s}
+
+.car-card{width:175px;background:rgba(0,0,0,0.45);border-radius:18px;border:1px solid rgba(255,255,255,0.06);padding:14px;transition: transform 0.2s;position:relative;overflow:hidden;animation:carIn .42s cubic-bezier(.34,1.56,.64,1) forwards}
 .car-card:hover{transform: translateY(-5px); border-color: var(--accent)}
 
+@keyframes carIn{from{opacity:0;transform:scale(.82) translateY(12px)}to{opacity:1;transform:scale(1) translateY(0)}}
+@keyframes shimmer{0%{opacity:.2}100%{opacity:.8}}
+
+.car-emoji{font-size:32px;display:block;text-align:center;margin-bottom:10px}
 .car-plate{font-family:"DM Mono",monospace;font-size:13px;font-weight:bold;background:rgba(0,212,255,0.1);border:1px solid rgba(0,212,255,0.3);border-radius:6px;padding:4px;text-align:center;letter-spacing:1px;margin-bottom:8px;color:#fff}
 .car-name{font-size:12px;font-weight:600;margin-bottom:4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .car-service{font-size:10px;color:var(--muted);line-height:1.2;height:24px;overflow:hidden}
 
-.btn-wa{width:100%;margin-top:12px;padding:8px;background:rgba(0,230,118,0.1);border:1px solid rgba(0,230,118,0.3);color:var(--green);border-radius:9px;cursor:pointer;font-weight:bold;font-size:11px;transition:0.2s}
+.zone-proceso-active::after{content:"";position:absolute;inset:0;background:linear-gradient(135deg,rgba(0,180,255,0.1),transparent 60%);animation:shimmer 2.5s ease-in-out infinite alternate}
+.zone-terminado-active{border-color:rgba(0,230,118,0.2) !important;box-shadow: 0 0 15px rgba(0,230,118,0.1)}
+.zone-retirado-active{opacity:.5;filter:grayscale(60%)}
+
+.btn-wa{width:100%;margin-top:12px;padding:8px;background:rgba(0,230,118,0.1);border:1px solid rgba(0,230,118,0.3);color:var(--green);border-radius:9px;cursor:pointer;font-weight:bold;font-size:11px;transition:0.2s;position:relative;z-index:1}
 .btn-wa:hover{background:var(--green);color:#000}
 
 .loading-overlay{position:fixed;inset:0;background:var(--bg);display:flex;flex-direction:column;justify-content:center;align-items:center;z-index:1000;gap:15px}
@@ -49,19 +62,22 @@ body{background:var(--bg);font-family:"DM Sans",sans-serif;color:var(--text);min
 .toast{position:fixed;bottom:25px;left:50%;transform:translateX(-50%);background:var(--card);border:1px solid var(--border);padding:12px 25px;border-radius:12px;opacity:0;transition:0.3s;z-index:2000}
 .toast.show{opacity:1}
 
-@media(max-width:860px){.board{grid-template-columns:1fr}.stat{padding:10px}}
+@media(max-width:860px){.board{grid-template-columns:1fr}}
 </style>
 </head>
 <body>
 
 <div class="topbar">
   <div class="topbar-left">
+    <a class="back-btn" href="index.html">← Menú</a>
     <div class="logo-chip">CW</div>
     <div class="page-title">GESTIÓN DE LAVADO</div>
   </div>
-  <div class="status-pill">
-    <div class="pulse-dot"></div>
-    <span id="lastUpdate">Sincronizando...</span>
+  <div class="topbar-right">
+    <div class="status-pill">
+      <div class="pulse-dot"></div>
+      <span id="lastUpdate">Sincronizando...</span>
+    </div>
   </div>
 </div>
 
@@ -79,22 +95,21 @@ body{background:var(--bg);font-family:"DM Sans",sans-serif;color:var(--text);min
 
 <div id="loadingOverlay" class="loading-overlay">
   <div class="spinner"></div>
-  <div style="font-family:'DM Mono'">CARGANDO DATOS...</div>
+  <div style="font-family:'DM Mono'">CONECTANDO CON LA BASE DE DATOS...</div>
 </div>
 <div id="toast" class="toast"></div>
 
 <script>
-// --- VINCULACIÓN CON TU ENLACE CSV ---
 const CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRZKI99U4UgQBDH7Can0vVO9TO0hhi6TkTYx4jNdTDxYDsM1dQrEG5UaIoftDmOdzkXAr8LOscVFxv-/pub?gid=0&single=true&output=csv";
 
-// Columnas según tu imagen (A=0, B=1, C=2...)
+// Columnas según tu imagen
 const COL = {
-  hora: 1,      // B: Hora entrada
-  placa: 2,     // C: Placa
-  cliente: 3,   // D: Nombre cliente
-  celular: 4,   // E: Celular cliente
-  servicio: 7,  // H: Categoria servicio
-  estado: 8     // I: Estado
+  hora: 1,      // B
+  placa: 2,     // C
+  cliente: 3,   // D
+  celular: 4,   // E
+  servicio: 7,  // H
+  estado: 8     // I
 };
 
 async function loadData() {
@@ -103,25 +118,23 @@ async function loadData() {
     const text = await response.text();
     const rows = parseCSV(text);
     render(rows);
-    document.getElementById("lastUpdate").textContent = "Último cambio: " + new Date().toLocaleTimeString();
+    document.getElementById("lastUpdate").textContent = "En vivo: " + new Date().toLocaleTimeString();
     document.getElementById("loadingOverlay").style.opacity = "0";
     setTimeout(()=> document.getElementById("loadingOverlay").style.display = "none", 400);
   } catch (e) {
-    showToast("⚠️ Error de conexión con Google Sheets");
-    console.error(e);
+    showToast("⚠️ Revisa la conexión a Internet");
   }
 }
 
 function parseCSV(text) {
   return text.trim().split("\n").slice(1).map(line => {
-    // Regex para separar por comas respetando comillas
     const cols = line.split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/);
     return {
-      hora: (cols[COL.hora] || "").replace(/"/g, ""),
-      placa: (cols[COL.placa] || "").replace(/"/g, ""),
-      cliente: (cols[COL.cliente] || "").replace(/"/g, ""),
-      celular: (cols[COL.celular] || "").replace(/\D/g, ""), // Solo números
-      servicio: (cols[COL.servicio] || "").replace(/"/g, ""),
+      hora: (cols[COL.hora] || "").replace(/"/g, "").trim(),
+      placa: (cols[COL.placa] || "").replace(/"/g, "").trim(),
+      cliente: (cols[COL.cliente] || "").replace(/"/g, "").trim(),
+      celular: (cols[COL.celular] || "").replace(/\D/g, ""),
+      servicio: (cols[COL.servicio] || "").replace(/"/g, "").trim(),
       estado: (cols[COL.estado] || "").replace(/"/g, "").toLowerCase().trim()
     };
   }).filter(r => r.placa && r.placa.length > 2);
@@ -129,11 +142,18 @@ function parseCSV(text) {
 
 function render(cars) {
   const groups = { proceso: [], terminado: [], retirado: [] };
-  
+  const zoneEmojis = { proceso: "🚿", terminado: "✨", retirado: "💨" };
+
   cars.forEach(car => {
-    let st = "proceso"; // Por defecto
-    if (car.estado.includes("listo") || car.estado.includes("terminado") || car.estado.includes("finalizado")) st = "terminado";
-    else if (car.estado.includes("retirado") || car.estado.includes("entregado")) st = "retirado";
+    let st = "proceso";
+    
+    // LÓGICA DE DETECCIÓN MEJORADA (Flexible con espacios y mayúsculas)
+    const e = car.estado;
+    if (e.includes("listo") || e.includes("terminado") || e.includes("finalizado")) {
+        st = "terminado";
+    } else if (e.includes("retirado") || e.includes("entregado") || e.includes("entrega")) {
+        st = "retirado";
+    }
     
     if(groups[st]) groups[st].push(car);
   });
@@ -143,23 +163,24 @@ function render(cars) {
     document.getElementById("cnt-" + z).textContent = groups[z].length;
     
     grid.innerHTML = groups[z].length ? groups[z].map(car => `
-      <div class="car-card">
+      <div class="car-card zone-${z}-active">
+        <div class="car-emoji">🚗${zoneEmojis[z]}</div>
         <div class="car-plate">${car.placa}</div>
         <div class="car-name">${car.cliente}</div>
         <div class="car-service">${car.servicio}</div>
-        <div style="font-size:9px; color:var(--muted); margin-top:5px;"> Entrada: ${car.hora}</div>
+        <div style="font-size:9px; color:var(--muted); margin-top:5px;">Entrada: ${car.hora}</div>
         ${z === 'terminado' ? `
           <button class="btn-wa" onclick="enviarWA('${car.celular}', '${car.cliente}', '${car.placa}')">
-            📲 AVISAR LISTO
+            📲 AVISAR POR WA
           </button>` : ''}
       </div>
-    `).join("") : `<div style="font-size:12px; color:var(--muted); width:100%; text-align:center; margin-top:20px;">Sin vehículos</div>`;
+    `).join("") : `<div style="font-size:12px; color:var(--muted); width:100%; text-align:center; margin-top:20px;">No hay carros aquí</div>`;
   });
 }
 
 function enviarWA(num, cliente, placa) {
-  if(!num || num.length < 7) return showToast("⚠️ No hay número de teléfono válido");
-  const msg = encodeURIComponent(`Hola ${cliente}, te saluda el CarWash. ¡Tu vehículo (${placa}) ya está listo! ✨`);
+  if(!num || num.length < 7) return showToast("⚠️ Cliente sin teléfono");
+  const msg = encodeURIComponent(`¡Hola ${cliente}! ✨ Tu vehículo con placa ${placa} ya está listo para ser retirado en el CarWash.`);
   window.open(`https://wa.me/${num}?text=${msg}`, '_blank');
 }
 
@@ -169,7 +190,6 @@ function showToast(m) {
   setTimeout(() => t.classList.remove("show"), 3000);
 }
 
-// Sincronización automática cada 30 segundos
 setInterval(loadData, 30000);
 loadData();
 </script>
