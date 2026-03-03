@@ -126,18 +126,71 @@ async function loadData() {
   }
 }
 
+// ... (Sustituye solo las funciones parseCSV y render en tu script actual)
+
 function parseCSV(text) {
-  return text.trim().split("\n").slice(1).map(line => {
-    const cols = line.split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/);
+  // Dividimos por líneas y limpiamos espacios en blanco
+  const lines = text.trim().split(/\r?\n/);
+  
+  return lines.slice(1).map(line => {
+    // Separamos columnas respetando las comas dentro de comillas
+    const cols = line.split(/,(?=(?:[^"]*"[^"]*")*[^"]*$)/);
+    
+    // Función para limpiar celdas (quitar comillas y espacios extras)
+    const clean = (val) => (val || "").replace(/^["']|["']$/g, "").trim();
+
     return {
-      hora: (cols[COL.hora] || "").replace(/"/g, "").trim(),
-      placa: (cols[COL.placa] || "").replace(/"/g, "").trim(),
-      cliente: (cols[COL.cliente] || "").replace(/"/g, "").trim(),
-      celular: (cols[COL.celular] || "").replace(/\D/g, ""),
-      servicio: (cols[COL.servicio] || "").replace(/"/g, "").trim(),
-      estado: (cols[COL.estado] || "").replace(/"/g, "").toLowerCase().trim()
+      hora: clean(cols[COL.hora]),
+      placa: clean(cols[COL.placa]),
+      cliente: clean(cols[COL.cliente]),
+      celular: clean(cols[COL.celular]).replace(/\D/g, ""),
+      servicio: clean(cols[COL.servicio]),
+      estado: clean(cols[COL.estado]).toLowerCase()
     };
-  }).filter(r => r.placa && r.placa.length > 2);
+  }).filter(r => r.placa.length >= 3); // FILTRO CRÍTICO: Solo placas reales
+}
+
+function render(cars) {
+  const groups = { proceso: [], terminado: [], retirado: [] };
+  const zoneEmojis = { proceso: "🚿", terminado: "✨", retirado: "💨" };
+
+  cars.forEach(car => {
+    let st = "proceso"; // Estado base
+    const e = car.estado;
+
+    // Lógica jerárquica: El estado más avanzado manda
+    if (e.includes("retirado") || e.includes("entregado") || e.includes("fuera")) {
+        st = "retirado";
+    } else if (e.includes("listo") || e.includes("terminado") || e.includes("finalizado")) {
+        st = "terminado";
+    }
+    
+    groups[st].push(car);
+  });
+
+  // Limpiar y dibujar cada zona
+  ["proceso", "terminado", "retirado"].forEach(z => {
+    const grid = document.getElementById("grid-" + z);
+    const countEl = document.getElementById("cnt-" + z);
+    
+    if (countEl) countEl.textContent = groups[z].length;
+    
+    if (grid) {
+        grid.innerHTML = groups[z].length ? groups[z].map(car => `
+          <div class="car-card zone-${z}-active">
+            <div class="car-emoji">🚗${zoneEmojis[z]}</div>
+            <div class="car-plate">${car.placa}</div>
+            <div class="car-name">${car.cliente || 'Sin nombre'}</div>
+            <div class="car-service">${car.servicio || 'General'}</div>
+            <div style="font-size:9px; color:var(--muted); margin-top:5px;">Entrada: ${car.hora}</div>
+            ${z === 'terminado' ? `
+              <button class="btn-wa" onclick="enviarWA('${car.celular}', '${car.cliente}', '${car.placa}')">
+                📲 AVISAR POR WA
+              </button>` : ''}
+          </div>
+        `).join("") : `<div style="font-size:11px; color:var(--muted); padding:20px;">Sin vehículos</div>`;
+    }
+  });
 }
 
 function render(cars) {
