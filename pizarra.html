@@ -3,10 +3,10 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>Pizarra CarWash — Vista del Local</title>
+<title>Pizarra CarWash — Control en Vivo</title>
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Mono:wght@400;500&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet"/>
 <style>
-/* ESTILOS ORIGINALES PRESERVADOS */
+/* --- ESTILOS VISUALES --- */
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 :root{
   --bg:#07090d;--surface:#0d1219;--card:#111a25;--border:#1a2a3a;
@@ -14,107 +14,42 @@
   --text:#dff0ff;--muted:#4a6a85;
 }
 body{background:var(--bg);font-family:"DM Sans",sans-serif;color:var(--text);min-height:100vh;display:flex;flex-direction:column;overflow-x:hidden}
-body::before{content:"";position:fixed;inset:0;background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,0,0,0.025) 2px,rgba(0,0,0,0.025) 4px);pointer-events:none;z-index:9999}
 
 .topbar{display:flex;align-items:center;justify-content:space-between;padding:14px 28px;background:linear-gradient(90deg,#050d14,#081525);border-bottom:1px solid var(--border);position:sticky;top:0;z-index:100}
-.topbar-left{display:flex;align-items:center;gap:14px}
 .logo-chip{background:rgba(0,212,255,0.08);border:1px solid rgba(0,212,255,0.25);border-radius:8px;padding:6px 14px;font-family:"Bebas Neue",sans-serif;font-size:18px;letter-spacing:2px;color:var(--accent)}
 .page-title{font-family:"Bebas Neue",sans-serif;font-size:26px;letter-spacing:3px;background:linear-gradient(90deg,#fff 40%,var(--accent));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
-.topbar-right{display:flex;align-items:center;gap:12px}
+
 .status-pill{display:flex;align-items:center;gap:7px;font-size:12px;color:var(--muted);background:rgba(0,0,0,0.3);border:1px solid var(--border);border-radius:20px;padding:5px 12px}
 .pulse-dot{width:7px;height:7px;border-radius:50%;background:var(--green);animation:pulse 2s infinite}
 @keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(0,230,118,0.5)}50%{box-shadow:0 0 0 5px rgba(0,230,118,0)}}
-.topbar-btn{background:rgba(0,212,255,0.08);border:1px solid rgba(0,212,255,0.2);color:var(--accent);border-radius:8px;padding:7px 14px;cursor:pointer;font-size:13px;font-family:inherit;transition:all .2s;display:flex;align-items:center;gap:6px;text-decoration:none}
-.topbar-btn:hover{background:rgba(0,212,255,0.15);border-color:var(--accent)}
-.back-btn{background:transparent;border:1px solid var(--border);color:var(--muted);border-radius:8px;padding:7px 14px;cursor:pointer;font-size:13px;font-family:inherit;transition:all .2s;text-decoration:none;display:flex;align-items:center;gap:6px}
-.back-btn:hover{color:var(--text);border-color:var(--muted)}
 
 .stats-bar{display:flex;border-bottom:1px solid var(--border);background:var(--surface)}
 .stat{flex:1;padding:14px 20px;border-right:1px solid var(--border);display:flex;align-items:center;gap:12px}
-.stat:last-child{border-right:none}
-.stat-ico{font-size:22px}
 .stat-val{font-size:24px;font-weight:700;font-family:"DM Mono",monospace}
-.stat-lbl{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-top:1px}
+.stat-lbl{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:1px}
 
-.board{display:grid;grid-template-columns:1fr 1fr 1fr;flex:1;gap:0;min-height:calc(100vh - 130px)}
-.zone{position:relative;border:1px solid var(--border);padding:22px;overflow:hidden;min-height:400px}
-.zone::before{content:"";position:absolute;inset:0;background-image:linear-gradient(rgba(255,255,255,0.015) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,0.015) 1px,transparent 1px);background-size:44px 44px;pointer-events:none}
-.zone-label{display:flex;align-items:center;gap:10px;margin-bottom:20px;padding-bottom:14px;border-bottom:1px solid var(--border);position:relative;z-index:1}
-.zone-title{font-family:"Bebas Neue",sans-serif;font-size:20px;letter-spacing:2px}
-.zone-count{margin-left:auto;font-family:"DM Mono",monospace;font-size:13px;color:var(--muted);background:rgba(0,0,0,0.4);border:1px solid var(--border);border-radius:6px;padding:2px 10px}
+.board{display:grid;grid-template-columns:1fr 1fr 1fr;flex:1;min-height:calc(100vh - 130px)}
+.zone{position:relative;border:1px solid var(--border);padding:22px;overflow:hidden}
+.zone-title{font-family:"Bebas Neue",sans-serif;font-size:20px;letter-spacing:2px;color:var(--accent);margin-bottom:20px;display:block}
 
-.zone-proceso{background:radial-gradient(ellipse at 10% 90%,rgba(0,100,180,0.1) 0%,transparent 60%),#080f18}
-.zone-proceso .zone-title{color:#4fc3f7}
-.zone-terminado{background:radial-gradient(ellipse at 50% 20%,rgba(0,180,80,0.08) 0%,transparent 60%),#08130e}
-.zone-terminado .zone-title{color:var(--green)}
-.zone-retirado{background:radial-gradient(ellipse at 90% 90%,rgba(255,82,82,0.06) 0%,transparent 60%),#110a0a;opacity:.75}
-.zone-retirado .zone-title{color:var(--red)}
+.cars-grid{display:flex;flex-wrap:wrap;gap:14px;align-content:flex-start}
+.car-card{width:175px;background:rgba(0,0,0,0.45);border-radius:18px;border:1px solid rgba(255,255,255,0.06);padding:14px;transition: transform 0.2s}
+.car-card:hover{transform: translateY(-5px); border-color: var(--accent)}
 
-.cars-grid{display:flex;flex-wrap:wrap;gap:14px;align-content:flex-start;position:relative;z-index:1}
-.car-card{position:relative;width:172px;background:rgba(0,0,0,0.45);border-radius:18px;border:1px solid rgba(255,255,255,0.06);padding:14px;transition:transform .2s,border-color .2s,box-shadow .2s;animation:carIn .42s cubic-bezier(.34,1.56,.64,1) forwards}
-.car-card:hover{transform:translateY(-4px);border-color:rgba(255,255,255,0.14);box-shadow:0 12px 30px rgba(0,0,0,0.4)}
-@keyframes carIn{from{opacity:0;transform:scale(.82) translateY(12px)}to{opacity:1;transform:scale(1) translateY(0)}}
+.car-plate{font-family:"DM Mono",monospace;font-size:13px;font-weight:bold;background:rgba(0,212,255,0.1);border:1px solid rgba(0,212,255,0.3);border-radius:6px;padding:4px;text-align:center;letter-spacing:1px;margin-bottom:8px;color:#fff}
+.car-name{font-size:12px;font-weight:600;margin-bottom:4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.car-service{font-size:10px;color:var(--muted);line-height:1.2;height:24px;overflow:hidden}
 
-.zone-proceso .car-card::after{content:"";position:absolute;inset:0;border-radius:18px;background:linear-gradient(135deg,rgba(0,180,255,0.05),transparent 60%);animation:shimmer 2.5s ease-in-out infinite alternate;pointer-events:none}
-@keyframes shimmer{from{opacity:.2}to{opacity:.8}}
-.zone-terminado .car-card{border-color:rgba(0,230,118,0.14)}
-.zone-terminado .car-card::before{content:"";position:absolute;bottom:-1px;left:10%;width:80%;height:2px;background:linear-gradient(90deg,transparent,rgba(0,230,118,0.35),transparent);border-radius:2px}
-.zone-retirado .car-card{opacity:.5;filter:grayscale(60%)}
+.btn-wa{width:100%;margin-top:12px;padding:8px;background:rgba(0,230,118,0.1);border:1px solid rgba(0,230,118,0.3);color:var(--green);border-radius:9px;cursor:pointer;font-weight:bold;font-size:11px;transition:0.2s}
+.btn-wa:hover{background:var(--green);color:#000}
 
-.wash-drops{position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none;border-radius:18px;overflow:hidden}
-.drop-p{position:absolute;width:2px;border-radius:10px;background:linear-gradient(to bottom,transparent,rgba(0,200,255,0.65));animation:dfall linear infinite}
-@keyframes dfall{0%{transform:translateY(-8px);opacity:0}10%{opacity:1}100%{transform:translateY(110px);opacity:0}}
-
-.car-visual{width:100%;height:80px;display:flex;align-items:center;justify-content:center;margin-bottom:10px}
-.car-svg{filter:drop-shadow(0 5px 10px rgba(0,0,0,0.5));transition:transform .3s}
-.car-card:hover .car-svg{transform:scale(1.07)}
-
-.car-plate{font-family:"DM Mono",monospace;font-size:13px;font-weight:500;background:rgba(0,0,0,0.6);border:1px solid rgba(255,255,255,0.1);border-radius:6px;padding:3px 8px;text-align:center;letter-spacing:2px;margin-bottom:6px}
-.car-name{font-size:12px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-bottom:3px}
-.car-service{font-size:10px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.car-time{font-size:10px;color:var(--muted);font-family:"DM Mono",monospace;margin-top:6px;display:flex;align-items:center;gap:4px}
-.car-time.urgent{color:var(--red)}.car-time.warn{color:var(--yellow)}
-
-.car-badge{position:absolute;top:9px;right:9px;font-size:9px;font-weight:700;padding:2px 7px;border-radius:20px;text-transform:uppercase;letter-spacing:.5px}
-.badge-proceso{background:rgba(0,180,255,0.15);color:#4fc3f7;border:1px solid rgba(0,180,255,0.25)}
-.badge-terminado{background:rgba(0,230,118,0.12);color:#00e676;border:1px solid rgba(0,230,118,0.2)}
-.badge-retirado{background:rgba(255,82,82,0.1);color:#ff7070;border:1px solid rgba(255,82,82,0.2)}
-
-.card-actions{display:flex;flex-direction:column;gap:6px;margin-top:8px}
-.btn-action{width:100%;border-radius:9px;padding:7px 8px;font-size:11px;font-weight:700;cursor:pointer;font-family:inherit;transition:all .15s;border:1px solid transparent;display:flex;align-items:center;justify-content:center;gap:5px}
-.btn-terminar{background:rgba(0,212,255,0.1);border-color:rgba(0,212,255,0.25);color:var(--accent)}
-.btn-terminar:hover{background:rgba(0,212,255,0.22);transform:scale(1.02)}
-.btn-avisar{background:rgba(0,230,118,0.1);border-color:rgba(0,230,118,0.2);color:#00e676}
-.btn-avisar:hover{background:rgba(0,230,118,0.2);transform:scale(1.02)}
-.btn-retirar{background:rgba(255,82,82,0.08);border-color:rgba(255,82,82,0.2);color:#ff7070}
-.btn-retirar:hover{background:rgba(255,82,82,0.18);transform:scale(1.02)}
-
-.empty-zone{display:flex;flex-direction:column;align-items:center;justify-content:center;height:140px;color:var(--muted);font-size:13px;gap:8px;width:100%}
-.empty-zone .ei{font-size:36px;opacity:.3}
-
-.loading-overlay{position:fixed;inset:0;background:rgba(7,9,13,.95);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;z-index:500;transition:opacity .4s}
-.spinner{width:40px;height:40px;border-radius:50%;border:3px solid var(--border);border-top-color:var(--accent);animation:spin .8s linear infinite}
+.loading-overlay{position:fixed;inset:0;background:var(--bg);display:flex;flex-direction:column;justify-content:center;align-items:center;z-index:1000;gap:15px}
+.spinner{width:40px;height:40px;border:3px solid var(--border);border-top-color:var(--accent);border-radius:50%;animation:spin 1s linear infinite}
 @keyframes spin{to{transform:rotate(360deg)}}
+.toast{position:fixed;bottom:25px;left:50%;transform:translateX(-50%);background:var(--card);border:1px solid var(--border);padding:12px 25px;border-radius:12px;opacity:0;transition:0.3s;z-index:2000}
+.toast.show{opacity:1}
 
-.confirm-modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.85);backdrop-filter:blur(10px);z-index:600;align-items:center;justify-content:center}
-.confirm-modal.show{display:flex}
-.confirm-box{background:var(--card);border:1px solid var(--border);border-radius:22px;padding:32px;width:330px;text-align:center;animation:popIn .25s cubic-bezier(.34,1.56,.64,1)}
-@keyframes popIn{from{transform:scale(.85);opacity:0}to{transform:scale(1);opacity:1}}
-.cf-icon{font-size:52px;margin-bottom:12px}
-.cf-title{font-size:18px;font-weight:700;margin-bottom:8px}
-.cf-sub{font-size:13px;color:var(--muted);margin-bottom:24px;line-height:1.55}
-.cf-actions{display:flex;gap:10px}
-.cf-actions button{flex:1;padding:12px;border-radius:12px;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit;transition:all .15s}
-.btn-cancel-cf{background:transparent;border:1px solid var(--border);color:var(--muted)}
-.btn-cancel-cf:hover{border-color:var(--muted);color:var(--text)}
-.btn-ok-cf{border:none;color:#000;font-weight:800}
-.btn-ok-cf.green{background:var(--green)}.btn-ok-cf.red{background:var(--red)}
-.btn-ok-cf:hover{filter:brightness(1.1)}
-
-.toast{position:fixed;bottom:28px;left:50%;transform:translateX(-50%) translateY(20px);background:var(--card);border:1px solid var(--border);border-radius:12px;padding:12px 22px;font-size:13px;box-shadow:0 8px 32px rgba(0,0,0,0.5);opacity:0;transition:all .3s;z-index:700;pointer-events:none;white-space:nowrap}
-.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
-
-@media(max-width:860px){.board{grid-template-columns:1fr}.stats-bar{flex-wrap:wrap}.stat{min-width:33%}}
+@media(max-width:860px){.board{grid-template-columns:1fr}.stat{padding:10px}}
 </style>
 </head>
 <body>
@@ -122,240 +57,120 @@ body::before{content:"";position:fixed;inset:0;background:repeating-linear-gradi
 <div class="topbar">
   <div class="topbar-left">
     <div class="logo-chip">CW</div>
-    <div class="page-title">PIZARRA DEL LOCAL</div>
+    <div class="page-title">GESTIÓN DE LAVADO</div>
   </div>
-  <div class="topbar-right">
-    <div class="status-pill">
-      <div class="pulse-dot"></div>
-      <span id="lastUpdate">Cargando...</span>
-    </div>
-    <button class="topbar-btn" onclick="loadData()">↻ Actualizar</button>
-    <a class="back-btn" href="index.html">← Menú</a>
+  <div class="status-pill">
+    <div class="pulse-dot"></div>
+    <span id="lastUpdate">Sincronizando...</span>
   </div>
 </div>
 
 <div class="stats-bar">
-  <div class="stat"><div class="stat-ico">🚿</div><div><div class="stat-val" style="color:#4fc3f7" id="cnt-proceso">0</div><div class="stat-lbl">En proceso</div></div></div>
-  <div class="stat"><div class="stat-ico">✅</div><div><div class="stat-val" style="color:var(--green)" id="cnt-terminado">0</div><div class="stat-lbl">Terminados</div></div></div>
-  <div class="stat"><div class="stat-ico">🚗</div><div><div class="stat-val" style="color:var(--red)" id="cnt-retirado">0</div><div class="stat-lbl">Retirados hoy</div></div></div>
+  <div class="stat"><div><div class="stat-val" id="cnt-proceso">0</div><div class="stat-lbl">En Lavado</div></div></div>
+  <div class="stat"><div><div class="stat-val" id="cnt-terminado" style="color:var(--green)">0</div><div class="stat-lbl">Listos</div></div></div>
+  <div class="stat"><div><div class="stat-val" id="cnt-retirado" style="color:var(--red)">0</div><div class="stat-lbl">Entregados</div></div></div>
 </div>
 
 <div class="board">
-  <div class="zone zone-proceso">
-    <div class="zone-label"><span>🚿</span><span class="zone-title">EN PROCESO</span><span class="zone-count" id="lbl-proceso">0 carros</span></div>
-    <div class="cars-grid" id="grid-proceso"></div>
-  </div>
-  <div class="zone zone-terminado">
-    <div class="zone-label"><span>🅿️</span><span class="zone-title">TERMINADO</span><span class="zone-count" id="lbl-terminado">0 carros</span></div>
-    <div class="cars-grid" id="grid-terminado"></div>
-  </div>
-  <div class="zone zone-retirado">
-    <div class="zone-label"><span>🚗💨</span><span class="zone-title">RETIRADO</span><span class="zone-count" id="lbl-retirado">0 carros</span></div>
-    <div class="cars-grid" id="grid-retirado"></div>
-  </div>
+  <div class="zone"><span class="zone-title">🚿 EN PROCESO</span><div class="cars-grid" id="grid-proceso"></div></div>
+  <div class="zone"><span class="zone-title" style="color:var(--green)">🅿️ LISTOS</span><div class="cars-grid" id="grid-terminado"></div></div>
+  <div class="zone"><span class="zone-title" style="color:var(--red)">🚗 ENTREGADOS</span><div class="cars-grid" id="grid-retirado"></div></div>
 </div>
 
-<div class="loading-overlay" id="loadingOverlay">
+<div id="loadingOverlay" class="loading-overlay">
   <div class="spinner"></div>
-  <div style="font-size:14px;color:var(--muted);font-family:'DM Mono',monospace">Cargando pizarra...</div>
+  <div style="font-family:'DM Mono'">CARGANDO DATOS...</div>
 </div>
-
-<div class="confirm-modal" id="confirmModal">
-  <div class="confirm-box">
-    <div class="cf-icon" id="cfIcon"></div>
-    <div class="cf-title" id="cfTitle"></div>
-    <div class="cf-sub" id="cfSub"></div>
-    <div class="cf-actions">
-      <button class="btn-cancel-cf" onclick="closeConfirm()">Cancelar</button>
-      <button class="btn-ok-cf" id="cfOkBtn" onclick="confirmAction()"></button>
-    </div>
-  </div>
-</div>
-
-<div class="toast" id="toast"></div>
+<div id="toast" class="toast"></div>
 
 <script>
-// ══ CONFIGURACIÓN AJUSTADA A TUS IMÁGENES ══
-const SHEET_ID   = "1VGBiKE8xOYRk22-EZFMGdXVPosUvXbHj-aeEOOQYzr4"; 
-const SHEET_NAME = "BD Control General"; // Según la pestaña de tu imagen
+// --- VINCULACIÓN CON TU ENLACE CSV ---
+const CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRZKI99U4UgQBDH7Can0vVO9TO0hhi6TkTYx4jNdTDxYDsM1dQrEG5UaIoftDmOdzkXAr8LOscVFxv-/pub?gid=0&single=true&output=csv";
 
+// Columnas según tu imagen (A=0, B=1, C=2...)
 const COL = {
-  placa: 2,      // Columna C
-  cliente: 3,    // Columna D
-  celular: 4,    // Columna E (Para WhatsApp)
-  servicio: 7,   // Columna H (Categoría servicio)
-  estado: 8,     // Columna I (Estado)
-  hora: 1        // Columna B (Hora entrada)
+  hora: 1,      // B: Hora entrada
+  placa: 2,     // C: Placa
+  cliente: 3,   // D: Nombre cliente
+  celular: 4,   // E: Celular cliente
+  servicio: 7,  // H: Categoria servicio
+  estado: 8     // I: Estado
 };
 
-const STATUS_MAP = {
-  "en proceso": "proceso", "lavando": "proceso", "pendiente": "proceso",
-  "terminado": "terminado", "listo": "terminado", "finalizado": "terminado",
-  "retirado": "retirado", "entregado": "retirado"
-};
-
-const CAR_COLORS=["#e53935","#1e88e5","#43a047","#fb8c00","#8e24aa","#00acc1","#f4511e","#3949ab","#00897b","#c0ca33","#6d4c41","#546e7a","#d81b60","#039be5","#7cb342"];
-function carColor(p){let h=0;for(const c of(p||"CW"))h=(h*31+c.charCodeAt(0))%CAR_COLORS.length;return CAR_COLORS[Math.abs(h)]}
-
-function carSVG(color,zone){
-  const shine=zone==="terminado"?"#ffffff40":"#ffffff1a";
-  const wet=zone==="proceso";const spark=zone==="terminado";
-  return `<svg width="108" height="68" viewBox="0 0 108 68" fill="none" xmlns="http://www.w3.org/2000/svg" class="car-svg">
-    <ellipse cx="54" cy="63" rx="41" ry="5.5" fill="rgba(0,0,0,0.38)"/>
-    <rect x="9" y="21" width="90" height="35" rx="10" fill="${color}"/>
-    <rect x="24" y="11" width="60" height="28" rx="8" fill="${color}" opacity=".87"/>
-    <rect x="26" y="13" width="26" height="16" rx="3.5" fill="${shine}" stroke="rgba(255,255,255,0.18)" stroke-width="1"/>
-    <rect x="56" y="13" width="26" height="16" rx="3.5" fill="${shine}" stroke="rgba(255,255,255,0.1)" stroke-width="1"/>
-    <circle cx="27" cy="54" r="9.5" fill="#131622" stroke="#252535" stroke-width="1.5"/>
-    <circle cx="81" cy="54" r="9.5" fill="#131622" stroke="#252535" stroke-width="1.5"/>
-    ${wet?`<circle cx="40" cy="21" r="2.2" fill="#4fc3f7" opacity=".72"/><circle cx="60" cy="15" r="1.6" fill="#4fc3f7" opacity=".52"/>`:""}
-    ${spark?`<text x="93" y="14" font-size="13" opacity=".9">✨</text>`:""}
-  </svg>`;
-}
-
-function makeDrops(){
-  let h='<div class="wash-drops">';
-  for(let i=0;i<8;i++){const ht=12+Math.random()*28;h+=`<div class="drop-p" style="left:${8+Math.random()*84}%;height:${ht}px;animation-duration:${.65+Math.random()*.95}s;animation-delay:${Math.random()*.85}s"></div>`;}
-  return h+'</div>';
-}
-
-function timeAgo(ts){
-  if(!ts)return "";
-  try{
-    const[h,m]=ts.split(":").map(Number);
-    const now=new Date();
-    const then=new Date(now);
-    then.setHours(h,m,0,0);
-    const diff=Math.round((now-then)/60000);
-    if(diff<0||diff>720)return "";
-    return diff<60?`${diff} min`:`${Math.floor(diff/60)}h ${diff%60}m`;
-  }catch{return ""}
-}
-
-function esc(s){return(s||"").toString().replace(/'/g,"\\'").replace(/"/g,"&quot;")}
-
-let localState={};
-function effectiveStatus(car){return localState[car.placa]||STATUS_MAP[(car.estado||"").toLowerCase().trim()]||null}
-
-function buildCard(car,zone){
-  const color=carColor(car.placa||"CW");
-  const elapsed=timeAgo(car.hora);
-  const urgent=elapsed&&parseInt(elapsed)>90;
-  const warn=elapsed&&parseInt(elapsed)>45;
-  const drops=zone==="proceso"?makeDrops():"";
-  const badges={proceso:"badge-proceso",terminado:"badge-terminado",retirado:"badge-retirado"};
-  const labels={proceso:"Lavando",terminado:"Listo ✓",retirado:"Retirado"};
-
-  let actions="";
-  if(zone==="proceso"){
-    actions=`<div class="card-actions"><button class="btn-action btn-terminar" onclick="askChange('${esc(car.placa)}','${esc(car.cliente)}','terminado')">✅ Marcar terminado</button></div>`;
-  } else if(zone==="terminado"){
-    actions=`<div class="card-actions">
-      <button class="btn-action btn-avisar" onclick="notifyClient('${esc(car.placa)}','${esc(car.cliente)}','${esc(car.celular)}')">📲 Avisar cliente</button>
-      <button class="btn-action btn-retirar" onclick="askChange('${esc(car.placa)}','${esc(car.cliente)}','retirado')">🚗 Marcar retirado</button>
-    </div>`;
+async function loadData() {
+  try {
+    const response = await fetch(CSV_URL, { cache: "no-store" });
+    const text = await response.text();
+    const rows = parseCSV(text);
+    render(rows);
+    document.getElementById("lastUpdate").textContent = "Último cambio: " + new Date().toLocaleTimeString();
+    document.getElementById("loadingOverlay").style.opacity = "0";
+    setTimeout(()=> document.getElementById("loadingOverlay").style.display = "none", 400);
+  } catch (e) {
+    showToast("⚠️ Error de conexión con Google Sheets");
+    console.error(e);
   }
-
-  return `<div class="car-card">
-    ${drops}
-    <span class="car-badge ${badges[zone]}">${labels[zone]}</span>
-    <div class="car-visual">${carSVG(color,zone)}</div>
-    <div class="car-plate">${car.placa||"???"}</div>
-    <div class="car-name">${car.cliente||"Cliente"}</div>
-    <div class="car-service">${car.servicio||""}</div>
-    ${elapsed?`<div class="car-time ${urgent?"urgent":warn?"warn":""}">${urgent?"⚠️":"🕐"} ${elapsed}</div>`:""}
-    ${actions}
-  </div>`;
 }
 
-function notifyClient(placa, cliente, celular) {
-  if (!celular || celular.trim() === "" || celular === "undefined") {
-    showToast(`⚠️ Sin número para ${cliente}`);
-    return;
-  }
-  const numLimpio = celular.toString().replace(/\D/g, '');
-  const mensaje = `Hola ${cliente}, te saludamos de CarWash. ¡Tu vehículo con placa ${placa} ya está listo! ✨`;
-  const url = `https://wa.me/${numLimpio}?text=${encodeURIComponent(mensaje)}`;
-  window.open(url, '_blank');
-  showToast(`📲 WhatsApp para ${cliente}`);
+function parseCSV(text) {
+  return text.trim().split("\n").slice(1).map(line => {
+    // Regex para separar por comas respetando comillas
+    const cols = line.split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/);
+    return {
+      hora: (cols[COL.hora] || "").replace(/"/g, ""),
+      placa: (cols[COL.placa] || "").replace(/"/g, ""),
+      cliente: (cols[COL.cliente] || "").replace(/"/g, ""),
+      celular: (cols[COL.celular] || "").replace(/\D/g, ""), // Solo números
+      servicio: (cols[COL.servicio] || "").replace(/"/g, ""),
+      estado: (cols[COL.estado] || "").replace(/"/g, "").toLowerCase().trim()
+    };
+  }).filter(r => r.placa && r.placa.length > 2);
 }
 
-let pendingAction=null;
-function askChange(placa,cliente,newStatus){
-  pendingAction={placa,newStatus};
-  const isT=newStatus==="terminado";
-  document.getElementById("cfIcon").textContent=isT?"✅":"🚗";
-  document.getElementById("cfTitle").textContent=isT?"¿Marcar terminado?":"¿Marcar retirado?";
-  document.getElementById("cfSub").textContent=`Mover vehículo de ${cliente} a ${newStatus}.`;
-  const btn=document.getElementById("cfOkBtn");
-  btn.textContent=isT?"Sí, terminado":"Sí, retirado";
-  btn.className="btn-ok-cf "+(isT?"green":"red");
-  document.getElementById("confirmModal").classList.add("show");
-}
-function closeConfirm(){document.getElementById("confirmModal").classList.remove("show");pendingAction=null}
-function confirmAction(){
-  if(!pendingAction)return;
-  const{placa,newStatus}=pendingAction;
-  localState[placa]=newStatus;
-  closeConfirm();
-  renderAll();
-}
+function render(cars) {
+  const groups = { proceso: [], terminado: [], retirado: [] };
+  
+  cars.forEach(car => {
+    let st = "proceso"; // Por defecto
+    if (car.estado.includes("listo") || car.estado.includes("terminado") || car.estado.includes("finalizado")) st = "terminado";
+    else if (car.estado.includes("retirado") || car.estado.includes("entregado")) st = "retirado";
+    
+    if(groups[st]) groups[st].push(car);
+  });
 
-function showToast(msg,ms=3000){
-  const t=document.getElementById("toast");t.textContent=msg;t.classList.add("show");
-  setTimeout(()=>t.classList.remove("show"),ms);
-}
-
-let allCars=[];
-function renderAll(){
-  const groups={proceso:[],terminado:[],retirado:[]};
-  for(const car of allCars){const st=effectiveStatus(car);if(st&&groups[st])groups[st].push(car)}
-  ["proceso","terminado","retirado"].forEach(z=>{
-    const grid=document.getElementById("grid-"+z);
-    const cars=groups[z];
-    grid.innerHTML=cars.length?cars.map(c=>buildCard(c,z)).join(""):`<div class="empty-zone"><div class="ei">🚘</div>Vacío</div>`;
-    document.getElementById("cnt-"+z).textContent=cars.length;
-    document.getElementById("lbl-"+z).textContent=cars.length+" carro"+(cars.length!==1?"s":"");
+  ["proceso", "terminado", "retirado"].forEach(z => {
+    const grid = document.getElementById("grid-" + z);
+    document.getElementById("cnt-" + z).textContent = groups[z].length;
+    
+    grid.innerHTML = groups[z].length ? groups[z].map(car => `
+      <div class="car-card">
+        <div class="car-plate">${car.placa}</div>
+        <div class="car-name">${car.cliente}</div>
+        <div class="car-service">${car.servicio}</div>
+        <div style="font-size:9px; color:var(--muted); margin-top:5px;"> Entrada: ${car.hora}</div>
+        ${z === 'terminado' ? `
+          <button class="btn-wa" onclick="enviarWA('${car.celular}', '${car.cliente}', '${car.placa}')">
+            📲 AVISAR LISTO
+          </button>` : ''}
+      </div>
+    `).join("") : `<div style="font-size:12px; color:var(--muted); width:100%; text-align:center; margin-top:20px;">Sin vehículos</div>`;
   });
 }
 
-async function fetchSheet(){
-  const url=`https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:csv&sheet=${encodeURIComponent(SHEET_NAME)}`;
-  const r=await fetch(url,{cache:"no-store"});
-  if(!r.ok)throw new Error("Error de conexión");
-  return parseCSV(await r.text());
+function enviarWA(num, cliente, placa) {
+  if(!num || num.length < 7) return showToast("⚠️ No hay número de teléfono válido");
+  const msg = encodeURIComponent(`Hola ${cliente}, te saluda el CarWash. ¡Tu vehículo (${placa}) ya está listo! ✨`);
+  window.open(`https://wa.me/${num}?text=${msg}`, '_blank');
 }
 
-function parseCSV(text){
-  return text.trim().split("\n").slice(1).map(line=>{
-    const cols=[];let inQ=false,cur="";
-    for(const ch of line+","){
-      if(ch==='"'){inQ=!inQ}else if(ch===","&&!inQ){cols.push(cur.trim());cur=""}else cur+=ch;
-    }
-    return{
-      placa:cols[COL.placa]||"",
-      cliente:cols[COL.cliente]||"",
-      celular:cols[COL.celular]||"",
-      servicio:cols[COL.servicio]||"",
-      estado:(cols[COL.estado]||"").toLowerCase().trim(),
-      hora:cols[COL.hora]||""
-    };
-  }).filter(r=>r.placa && r.placa !== "");
+function showToast(m) {
+  const t = document.getElementById("toast");
+  t.textContent = m; t.classList.add("show");
+  setTimeout(() => t.classList.remove("show"), 3000);
 }
 
-async function loadData(){
-  try{
-    allCars=await fetchSheet();
-    renderAll();
-    document.getElementById("lastUpdate").textContent="Actualizado "+new Date().toLocaleTimeString();
-    const ov=document.getElementById("loadingOverlay");
-    ov.style.opacity="0";setTimeout(()=>ov.style.display="none",400);
-  }catch(e){
-    showToast("⚠️ Error: Publica el Sheets o revisa el ID");
-  }
-}
-
-setInterval(loadData,45000);
+// Sincronización automática cada 30 segundos
+setInterval(loadData, 30000);
 loadData();
 </script>
 </body>
