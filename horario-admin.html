@@ -51,8 +51,8 @@ body{background:var(--bg);font-family:"DM Sans",sans-serif;color:var(--text);min
 .day-letter{font-family:"Bebas Neue",sans-serif;font-size:24px;letter-spacing:2px;color:var(--gold);line-height:1}
 .day-name{font-size:10px;color:var(--muted);margin-top:2px}
 
-.shift-zone{flex:1;min-height:110px;background:var(--card);border:1.5px dashed var(--border);border-radius:12px;padding:10px 8px 8px;display:flex;flex-direction:column;gap:6px;transition:all .2s;position:relative}
-.shift-zone.weekend-zone{min-height:236px}
+.shift-zone{flex:none;min-height:80px;height:auto;background:var(--card);border:1.5px dashed var(--border);border-radius:12px;padding:10px 8px 8px;display:flex;flex-direction:column;gap:6px;transition:border-color .2s,background .2s;position:relative}
+.shift-zone.weekend-zone{min-height:80px}
 .shift-label{font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:4px;padding:0 2px}
 .shift-zone.drag-over{border-color:var(--gold);background:rgba(201,168,76,.07);border-style:solid}
 .shift-zone.drag-over .shift-label{color:var(--gold)}
@@ -113,7 +113,7 @@ body{background:var(--bg);font-family:"DM Sans",sans-serif;color:var(--text);min
   <span style="color:var(--border)">|</span>
   <span class="topbar-title">📅 CREAR HORARIO</span>
   <div class="topbar-actions">
-    <button class="btn-pdf" onclick="exportPDF()">🖨️ Exportar PDF</button>
+    <button class="btn-pdf" onclick="exportPDF()">⬇️ Exportar PDF</button>
     <button class="btn-save" onclick="saveSchedule()">💾 Guardar Horario</button>
   </div>
 </div>
@@ -325,10 +325,91 @@ function saveSchedule(){
   setTimeout(() => t.classList.remove("show"), 2800);
 }
 
-// ─── PDF ──────────────────────────────────────────────────
-function exportPDF(){
-  document.getElementById("printWeek").textContent = document.getElementById("weekLabel").value || "Próxima semana";
-  window.print();
+// ─── PDF DOWNLOAD ─────────────────────────────────────────
+async function exportPDF(){
+  const weekText = document.getElementById("weekLabel").value || "Próxima semana";
+  const btn = document.querySelector(".btn-pdf");
+  btn.disabled = true;
+  btn.innerHTML = "⏳ Generando...";
+
+  // Dynamically load jsPDF + html2canvas
+  await loadScript("https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js");
+  await loadScript("https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js");
+
+  // Build a clean off-screen render container
+  const clone = document.getElementById("scheduleGrid").cloneNode(true);
+  // Remove × buttons from clone
+  clone.querySelectorAll(".remove").forEach(el => el.remove());
+
+  const wrapper = document.createElement("div");
+  wrapper.style.cssText = "position:fixed;left:-9999px;top:0;padding:24px;background:#0a0c0f;width:1100px;font-family:DM Sans,sans-serif;";
+
+  // Header
+  const header = document.createElement("div");
+  header.style.cssText = "text-align:center;margin-bottom:12px;";
+  header.innerHTML = `
+    <div style="font-family:serif;font-size:22px;font-weight:700;letter-spacing:4px;color:#c9a84c;text-transform:uppercase;">SUS AMIGOS DETAILER'S CENTER</div>
+    <div style="font-size:13px;color:#7a6a4a;margin-top:4px;">Horario — ${weekText}</div>`;
+
+  clone.style.cssText = "display:flex;gap:8px;";
+  // Restyle cloned chips for light rendering on dark bg
+  clone.querySelectorAll(".placed-chip").forEach(c => {
+    c.style.cssText = "background:#181d24;border:1px solid #2a3545;border-radius:8px;padding:6px 8px;font-size:12px;color:#f0e8d5;display:flex;align-items:center;margin-bottom:4px;";
+  });
+  clone.querySelectorAll(".shift-zone").forEach(z => {
+    z.style.cssText = "background:#111418;border:1px solid #1e2730;border-radius:10px;padding:10px 8px;margin-bottom:6px;min-height:60px;";
+  });
+  clone.querySelectorAll(".shift-label").forEach(l => {
+    l.style.cssText = "font-size:9px;font-weight:700;color:#7a6a4a;text-transform:uppercase;letter-spacing:1px;margin-bottom:6px;";
+  });
+  clone.querySelectorAll(".day-header").forEach(h => {
+    h.style.cssText = "background:rgba(201,168,76,0.12);border:1px solid rgba(201,168,76,0.3);border-radius:10px;padding:8px;text-align:center;margin-bottom:6px;";
+  });
+  clone.querySelectorAll(".day-letter").forEach(l => {
+    l.style.cssText = "font-size:22px;font-weight:700;color:#c9a84c;letter-spacing:2px;";
+  });
+  clone.querySelectorAll(".day-name").forEach(n => {
+    n.style.cssText = "font-size:9px;color:#7a6a4a;margin-top:2px;";
+  });
+  clone.querySelectorAll(".day-col").forEach(c => {
+    c.style.cssText = "flex:1;min-width:0;display:flex;flex-direction:column;";
+  });
+
+  wrapper.appendChild(header);
+  wrapper.appendChild(clone);
+  document.body.appendChild(wrapper);
+
+  try {
+    const canvas = await html2canvas(wrapper, { scale: 2, backgroundColor: "#0a0c0f", useCORS: true });
+    document.body.removeChild(wrapper);
+
+    const { jsPDF } = window.jspdf;
+    const pdf = new jsPDF({ orientation: "landscape", unit: "mm", format: "a4" });
+    const pdfW = pdf.internal.pageSize.getWidth();
+    const pdfH = pdf.internal.pageSize.getHeight();
+    const imgRatio = canvas.height / canvas.width;
+    const imgH = Math.min(pdfH - 10, pdfW * imgRatio);
+    const imgY = (pdfH - imgH) / 2;
+    pdf.addImage(canvas.toDataURL("image/png"), "PNG", 5, imgY, pdfW - 10, imgH);
+    const filename = "horario_" + (weekText.replace(/[^a-zA-Z0-9]/g,"_")) + ".pdf";
+    pdf.save(filename);
+  } catch(e) {
+    if(document.body.contains(wrapper)) document.body.removeChild(wrapper);
+    alert("Error generando PDF. Intenta de nuevo.");
+    console.error(e);
+  }
+
+  btn.disabled = false;
+  btn.innerHTML = "⬇️ Exportar PDF";
+}
+
+function loadScript(src){
+  return new Promise((resolve, reject) => {
+    if(document.querySelector(`script[src="${src}"]`)){ resolve(); return; }
+    const s = document.createElement("script");
+    s.src = src; s.onload = resolve; s.onerror = reject;
+    document.head.appendChild(s);
+  });
 }
 
 // ─── INIT ─────────────────────────────────────────────────
