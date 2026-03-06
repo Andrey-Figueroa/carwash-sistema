@@ -1,0 +1,354 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Crear Horario — Administración</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{--bg:#0a0c0f;--card:#111418;--card2:#181d24;--border:#1e2730;--gold:#c9a84c;--text:#f0e8d5;--muted:#7a6a4a;--green:#00e676;--blue:#00c6ff;--red:#ff4d6d}
+body{background:var(--bg);font-family:"DM Sans",sans-serif;color:var(--text);min-height:100vh;display:flex;flex-direction:column;align-items:center;padding-bottom:60px}
+
+/* TOPBAR */
+.topbar{width:100%;background:var(--card);border-bottom:1px solid var(--border);padding:14px 24px;display:flex;align-items:center;gap:14px;position:sticky;top:0;z-index:100}
+.back-btn{color:var(--muted);font-size:13px;background:none;border:none;cursor:pointer;font-family:inherit;transition:color .2s;display:flex;align-items:center;gap:6px}
+.back-btn:hover{color:var(--gold)}
+.topbar-title{font-family:"Bebas Neue",sans-serif;font-size:20px;letter-spacing:2px;color:var(--gold)}
+.topbar-actions{margin-left:auto;display:flex;gap:10px}
+.btn-save{background:linear-gradient(135deg,#c9a84c,#a07828);color:#000;border:none;border-radius:10px;padding:9px 18px;font-size:13px;font-weight:700;cursor:pointer;font-family:inherit;transition:opacity .2s;display:flex;align-items:center;gap:6px}
+.btn-save:hover{opacity:.85}
+.btn-pdf{background:var(--card2);border:1px solid var(--border);color:var(--text);border-radius:10px;padding:9px 18px;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit;transition:all .2s;display:flex;align-items:center;gap:6px}
+.btn-pdf:hover{border-color:var(--gold);color:var(--gold)}
+
+/* PAGE */
+.page{width:100%;max-width:1200px;padding:20px 16px 0}
+
+/* WEEK INPUT */
+.week-bar{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:14px 20px;margin-bottom:20px;display:flex;align-items:center;gap:14px}
+.week-label{font-size:12px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:1px;white-space:nowrap}
+.week-input{background:var(--bg);border:1px solid var(--border);border-radius:8px;color:var(--text);padding:8px 14px;font-size:14px;font-family:inherit;outline:none;flex:1;transition:border-color .2s}
+.week-input:focus{border-color:var(--gold)}
+.week-input::placeholder{color:var(--muted)}
+
+/* EMPLOYEE POOL */
+.pool-section{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:16px 20px;margin-bottom:20px}
+.pool-title{font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:2px;margin-bottom:12px}
+.pool-chips{display:flex;flex-wrap:wrap;gap:8px}
+.emp-chip{display:inline-flex;align-items:center;gap:6px;background:var(--card2);border:1px solid var(--border);border-radius:50px;padding:7px 14px;font-size:13px;font-weight:500;cursor:grab;transition:all .15s;user-select:none;white-space:nowrap}
+.emp-chip:hover{border-color:var(--gold);color:var(--gold);transform:translateY(-1px)}
+.emp-chip:active{cursor:grabbing;transform:scale(0.97)}
+.emp-chip.dragging{opacity:.4}
+.emp-chip[data-name="otro"]{border-style:dashed;color:var(--muted)}
+.emp-chip[data-name="otro"]:hover{color:var(--gold)}
+
+/* SCHEDULE GRID */
+.schedule-wrap{overflow-x:auto;padding-bottom:8px}
+.schedule-grid{display:flex;gap:8px;min-width:980px}
+
+.day-col{flex:1;min-width:130px;display:flex;flex-direction:column;gap:6px}
+.day-header{background:linear-gradient(135deg,rgba(201,168,76,.15),rgba(201,168,76,.05));border:1px solid rgba(201,168,76,.25);border-radius:12px;padding:10px 8px;text-align:center}
+.day-letter{font-family:"Bebas Neue",sans-serif;font-size:24px;letter-spacing:2px;color:var(--gold);line-height:1}
+.day-name{font-size:10px;color:var(--muted);margin-top:2px}
+
+.shift-zone{flex:1;min-height:110px;background:var(--card);border:1.5px dashed var(--border);border-radius:12px;padding:10px 8px 8px;display:flex;flex-direction:column;gap:6px;transition:all .2s;position:relative}
+.shift-zone.weekend-zone{min-height:236px}
+.shift-label{font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:4px;padding:0 2px}
+.shift-zone.drag-over{border-color:var(--gold);background:rgba(201,168,76,.07);border-style:solid}
+.shift-zone.drag-over .shift-label{color:var(--gold)}
+
+/* PLACED CHIPS */
+.placed-chip{display:flex;align-items:center;justify-content:space-between;background:var(--card2);border:1px solid var(--border);border-radius:8px;padding:6px 8px;font-size:12px;font-weight:500;cursor:grab;animation:popIn .2s ease;gap:4px}
+.placed-chip:hover{border-color:rgba(201,168,76,.4)}
+.placed-chip:active{cursor:grabbing}
+.placed-chip .remove{background:none;border:none;color:var(--muted);cursor:pointer;font-size:14px;line-height:1;padding:0;transition:color .15s;flex-shrink:0}
+.placed-chip .remove:hover{color:var(--red)}
+.placed-name{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+@keyframes popIn{from{opacity:0;transform:scale(0.85)}to{opacity:1;transform:scale(1)}}
+
+/* OTRO INPUT MODAL */
+.otro-modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,.8);backdrop-filter:blur(6px);z-index:500;align-items:center;justify-content:center}
+.otro-modal.show{display:flex}
+.otro-box{background:var(--card);border:1px solid rgba(201,168,76,.3);border-radius:20px;padding:28px;width:320px;max-width:calc(100vw - 40px)}
+.otro-box h3{font-size:16px;font-weight:700;color:var(--gold);margin-bottom:6px}
+.otro-box p{font-size:13px;color:var(--muted);margin-bottom:16px}
+.otro-input{width:100%;background:var(--bg);border:1px solid var(--border);border-radius:10px;color:var(--text);padding:12px 16px;font-size:15px;font-family:inherit;outline:none;margin-bottom:14px;transition:border-color .2s}
+.otro-input:focus{border-color:var(--gold)}
+.otro-input::placeholder{color:var(--muted)}
+.otro-btns{display:flex;gap:10px}
+.btn-confirm{flex:1;background:linear-gradient(135deg,#c9a84c,#a07828);color:#000;border:none;border-radius:10px;padding:12px;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit}
+.btn-cancel-otro{flex:1;background:none;border:1px solid var(--border);border-radius:10px;padding:12px;font-size:14px;color:var(--muted);cursor:pointer;font-family:inherit;transition:all .15s}
+.btn-cancel-otro:hover{border-color:var(--border);color:var(--text)}
+
+/* TOAST */
+.toast{position:fixed;bottom:30px;left:50%;transform:translateX(-50%) translateY(80px);background:var(--green);color:#000;border-radius:50px;padding:12px 28px;font-size:14px;font-weight:700;transition:transform .3s ease;z-index:999;white-space:nowrap}
+.toast.show{transform:translateX(-50%) translateY(0)}
+
+/* PRINT STYLES */
+@media print{
+  body{background:#fff;color:#000}
+  .topbar,.pool-section,.week-bar,.topbar-actions,.no-print{display:none!important}
+  .page{padding:0;max-width:100%}
+  .schedule-wrap{overflow:visible}
+  .schedule-grid{min-width:unset;gap:4px}
+  .day-col{min-width:unset}
+  .day-header{background:#f5e9c8!important;border:1px solid #c9a84c!important;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  .day-letter{color:#8b6914!important}
+  .shift-zone{border:1px solid #ddd!important;background:#fafafa!important;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  .shift-label{color:#666!important}
+  .placed-chip{background:#eee!important;border:1px solid #ccc!important;-webkit-print-color-adjust:exact;print-color-adjust:exact;color:#000!important}
+  .placed-chip .remove{display:none}
+  .emp-chip{display:none}
+  .print-header{display:block!important}
+}
+.print-header{display:none;text-align:center;margin-bottom:16px;font-family:"Bebas Neue",sans-serif;font-size:28px;letter-spacing:4px}
+.print-week{display:none;text-align:center;font-size:14px;color:#666;margin-bottom:20px}
+@media print{.print-header,.print-week{display:block}}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <button class="back-btn" onclick="window.location.href='admin.html'">← Volver</button>
+  <span style="color:var(--border)">|</span>
+  <span class="topbar-title">📅 CREAR HORARIO</span>
+  <div class="topbar-actions">
+    <button class="btn-pdf" onclick="exportPDF()">🖨️ Exportar PDF</button>
+    <button class="btn-save" onclick="saveSchedule()">💾 Guardar Horario</button>
+  </div>
+</div>
+
+<div class="page">
+  <div class="print-header">SUS AMIGOS DETAILER'S CENTER</div>
+  <div class="print-week" id="printWeek"></div>
+
+  <div class="week-bar no-print">
+    <span class="week-label">📅 Semana:</span>
+    <input type="text" class="week-input" id="weekLabel" placeholder="Ej: 9 – 15 de Marzo, 2026" oninput="document.getElementById('printWeek').textContent=this.value"/>
+  </div>
+
+  <div class="pool-section no-print">
+    <div class="pool-title">👤 Empleados — arrastra al horario</div>
+    <div class="pool-chips" id="poolChips"></div>
+  </div>
+
+  <div class="schedule-wrap">
+    <div class="schedule-grid" id="scheduleGrid"></div>
+  </div>
+</div>
+
+<!-- Otro Modal -->
+<div class="otro-modal" id="otroModal">
+  <div class="otro-box">
+    <h3>➕ Agregar persona</h3>
+    <p>Escribe el nombre del empleado o persona a asignar:</p>
+    <input type="text" class="otro-input" id="otroInput" placeholder="Nombre..." maxlength="30"/>
+    <div class="otro-btns">
+      <button class="btn-confirm" onclick="confirmOtro()">Agregar</button>
+      <button class="btn-cancel-otro" onclick="cancelOtro()">Cancelar</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast">✅ Horario guardado</div>
+
+<script>
+const EMPLOYEES = ["Cecilio","Juan","Ricardo A","Ricardo L","Ronald","Jesús","Jason","Miguel","Mecánico","Massiel"];
+
+const DAYS = [
+  {key:"L",letter:"L",name:"Lunes",   weekend:false},
+  {key:"M",letter:"M",name:"Martes",  weekend:false},
+  {key:"K",letter:"K",name:"Miérc.",  weekend:false},
+  {key:"J",letter:"J",name:"Jueves",  weekend:false},
+  {key:"V",letter:"V",name:"Viernes", weekend:false},
+  {key:"S",letter:"S",name:"Sábado",  weekend:true},
+  {key:"D",letter:"D",name:"Domingo", weekend:true},
+];
+
+// Schedule state: { "L":{"7-5":["Cecilio"],"8-6":[]}, "S":{"7-6":["Juan"]} ... }
+let schedule = {};
+DAYS.forEach(d => {
+  if(d.weekend) schedule[d.key] = {"7-6":[]};
+  else schedule[d.key] = {"7-5":[],"8-6":[]};
+});
+
+let draggedName = null;
+let dragFromZone = null; // {day, shift}
+let pendingDrop = null;  // {day, shift} — for Otro modal
+
+// ─── BUILD POOL ───────────────────────────────────────────
+function buildPool(){
+  const pool = document.getElementById("poolChips");
+  pool.innerHTML = "";
+  [...EMPLOYEES, "otro"].forEach(name => {
+    const chip = document.createElement("div");
+    chip.className = "emp-chip";
+    chip.draggable = true;
+    chip.dataset.name = name;
+    chip.textContent = name === "otro" ? "+ Otro" : name;
+    chip.addEventListener("dragstart", e => {
+      draggedName = name;
+      dragFromZone = null;
+      chip.classList.add("dragging");
+      e.dataTransfer.effectAllowed = "copy";
+    });
+    chip.addEventListener("dragend", () => chip.classList.remove("dragging"));
+    pool.appendChild(chip);
+  });
+}
+
+// ─── BUILD GRID ───────────────────────────────────────────
+function buildGrid(){
+  const grid = document.getElementById("scheduleGrid");
+  grid.innerHTML = "";
+  DAYS.forEach(day => {
+    const col = document.createElement("div");
+    col.className = "day-col";
+    col.innerHTML = `<div class="day-header"><div class="day-letter">${day.letter}</div><div class="day-name">${day.name}</div></div>`;
+
+    const shifts = day.weekend
+      ? [{id:"7-6", label:"7:00 am – 6:00 pm"}]
+      : [{id:"7-5",label:"7:00 am – 5:00 pm"},{id:"8-6",label:"8:00 am – 6:00 pm"}];
+
+    shifts.forEach(shift => {
+      const zone = document.createElement("div");
+      zone.className = "shift-zone" + (day.weekend ? " weekend-zone" : "");
+      zone.dataset.day = day.key;
+      zone.dataset.shift = shift.id;
+      zone.innerHTML = `<div class="shift-label">${shift.label}</div>`;
+
+      // Render existing chips
+      (schedule[day.key][shift.id] || []).forEach(name => {
+        zone.appendChild(createPlacedChip(name, day.key, shift.id));
+      });
+
+      // DnD events
+      zone.addEventListener("dragover", e => { e.preventDefault(); zone.classList.add("drag-over"); });
+      zone.addEventListener("dragleave", e => { if(!zone.contains(e.relatedTarget)) zone.classList.remove("drag-over"); });
+      zone.addEventListener("drop", e => {
+        e.preventDefault();
+        zone.classList.remove("drag-over");
+        handleDrop(day.key, shift.id, zone);
+      });
+
+      col.appendChild(zone);
+    });
+    grid.appendChild(col);
+  });
+}
+
+function createPlacedChip(name, day, shift){
+  const chip = document.createElement("div");
+  chip.className = "placed-chip";
+  chip.draggable = true;
+  chip.dataset.name = name;
+  chip.innerHTML = `<span class="placed-name">${name}</span><button class="remove" title="Quitar">×</button>`;
+  chip.querySelector(".remove").addEventListener("click", e => {
+    e.stopPropagation();
+    removeFromSchedule(day, shift, name);
+  });
+  chip.addEventListener("dragstart", e => {
+    draggedName = name;
+    dragFromZone = {day, shift};
+    e.dataTransfer.effectAllowed = "move";
+    setTimeout(() => chip.style.opacity = "0.3", 0);
+  });
+  chip.addEventListener("dragend", () => chip.style.opacity = "1");
+  return chip;
+}
+
+function handleDrop(day, shift, zone){
+  if(!draggedName) return;
+  if(draggedName === "otro"){
+    pendingDrop = {day, shift};
+    document.getElementById("otroInput").value = "";
+    document.getElementById("otroModal").classList.add("show");
+    setTimeout(() => document.getElementById("otroInput").focus(), 100);
+    draggedName = null; dragFromZone = null;
+    return;
+  }
+  // Remove from source if moving
+  if(dragFromZone){
+    removeFromSchedule(dragFromZone.day, dragFromZone.shift, draggedName, false);
+  }
+  addToSchedule(day, shift, draggedName);
+  draggedName = null; dragFromZone = null;
+}
+
+function addToSchedule(day, shift, name){
+  if(!schedule[day][shift].includes(name)){
+    schedule[day][shift].push(name);
+  }
+  rebuildZone(day, shift);
+}
+
+function removeFromSchedule(day, shift, name, rebuild=true){
+  schedule[day][shift] = schedule[day][shift].filter(n => n !== name);
+  if(rebuild) rebuildZone(day, shift);
+}
+
+function rebuildZone(day, shift){
+  const zone = document.querySelector(`.shift-zone[data-day="${day}"][data-shift="${shift}"]`);
+  if(!zone) return;
+  // Keep label, remove chips
+  const label = zone.querySelector(".shift-label");
+  zone.innerHTML = "";
+  zone.appendChild(label);
+  schedule[day][shift].forEach(name => zone.appendChild(createPlacedChip(name, day, shift)));
+}
+
+// ─── OTRO MODAL ───────────────────────────────────────────
+function confirmOtro(){
+  const name = document.getElementById("otroInput").value.trim();
+  if(!name) return;
+  document.getElementById("otroModal").classList.remove("show");
+  if(pendingDrop){
+    addToSchedule(pendingDrop.day, pendingDrop.shift, name);
+    pendingDrop = null;
+  }
+}
+function cancelOtro(){
+  document.getElementById("otroModal").classList.remove("show");
+  pendingDrop = null;
+}
+document.getElementById("otroInput").addEventListener("keydown", e => { if(e.key==="Enter") confirmOtro(); if(e.key==="Escape") cancelOtro(); });
+
+// ─── SAVE ─────────────────────────────────────────────────
+function saveSchedule(){
+  const data = {
+    week: document.getElementById("weekLabel").value || "Próxima semana",
+    schedule: JSON.parse(JSON.stringify(schedule))
+  };
+  localStorage.setItem("carwash_schedule", JSON.stringify(data));
+  const t = document.getElementById("toast");
+  t.classList.add("show");
+  setTimeout(() => t.classList.remove("show"), 2800);
+}
+
+// ─── PDF ──────────────────────────────────────────────────
+function exportPDF(){
+  document.getElementById("printWeek").textContent = document.getElementById("weekLabel").value || "Próxima semana";
+  window.print();
+}
+
+// ─── INIT ─────────────────────────────────────────────────
+// Load saved schedule if exists
+const saved = localStorage.getItem("carwash_schedule");
+if(saved){
+  try{
+    const parsed = JSON.parse(saved);
+    if(parsed.schedule) schedule = parsed.schedule;
+    if(parsed.week) document.getElementById("weekLabel").value = parsed.week;
+  } catch(e){}
+}
+
+buildPool();
+buildGrid();
+
+// Close otro modal on backdrop click
+document.getElementById("otroModal").addEventListener("click", e => {
+  if(e.target === document.getElementById("otroModal")) cancelOtro();
+});
+</script>
+</body>
+</html>
