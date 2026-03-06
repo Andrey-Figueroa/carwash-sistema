@@ -238,29 +238,13 @@
 
     <!-- ══ MODAL: HORARIO ══ -->
     <div id="horarioModal" class="modal">
-        <div class="modal-box">
+        <div class="modal-box" style="max-width:660px;width:calc(100vw - 40px)">
             <div class="modal-header">
-                <h2>📅 Horario — Próxima Semana</h2>
+                <h2>📅 Horario — <span id="horWeekLabel">Próxima Semana</span></h2>
                 <button class="modal-close" onclick="closeModal('horarioModal')">✕</button>
             </div>
-            <div class="modal-body" style="padding-top:16px">
-                <table class="horario-table">
-                    <thead><tr><th>Día</th><th>Empleado</th><th>Turno</th><th>Horario</th></tr></thead>
-                    <tbody>
-                        <tr><td>Lunes</td><td>María R.</td><td><span class="turno-tag turno-m">Mañana</span></td><td>7:00 – 13:00</td></tr>
-                        <tr><td>Lunes</td><td>Pedro V.</td><td><span class="turno-tag turno-t">Tarde</span></td><td>13:00 – 19:00</td></tr>
-                        <tr><td>Martes</td><td>Juan M.</td><td><span class="turno-tag turno-m">Mañana</span></td><td>7:00 – 13:00</td></tr>
-                        <tr><td>Martes</td><td>María R.</td><td><span class="turno-tag turno-t">Tarde</span></td><td>13:00 – 19:00</td></tr>
-                        <tr><td>Miércoles</td><td>Pedro V.</td><td><span class="turno-tag turno-m">Mañana</span></td><td>7:00 – 13:00</td></tr>
-                        <tr><td>Miércoles</td><td>Ana S.</td><td><span class="turno-tag turno-t">Tarde</span></td><td>13:00 – 19:00</td></tr>
-                        <tr><td>Jueves</td><td>Juan M.</td><td><span class="turno-tag turno-m">Mañana</span></td><td>7:00 – 13:00</td></tr>
-                        <tr><td>Jueves</td><td>Pedro V.</td><td><span class="turno-tag turno-t">Tarde</span></td><td>13:00 – 19:00</td></tr>
-                        <tr><td>Viernes</td><td>Ana S.</td><td><span class="turno-tag turno-m">Mañana</span></td><td>7:00 – 13:00</td></tr>
-                        <tr><td>Viernes</td><td>María R.</td><td><span class="turno-tag turno-t">Tarde</span></td><td>13:00 – 19:00</td></tr>
-                        <tr><td>Sábado</td><td>Juan M.</td><td><span class="turno-tag turno-m">Mañana</span></td><td>7:00 – 13:00</td></tr>
-                        <tr><td>Domingo</td><td colspan="3"><span class="turno-tag turno-libre">Día libre</span></td></tr>
-                    </tbody>
-                </table>
+            <div class="modal-body" style="padding-top:12px;overflow-x:auto" id="horarioBody">
+                <p style="color:var(--muted);text-align:center;font-size:13px;padding:20px 0">No hay horario guardado aún. El administrador debe crear el horario desde Administración Privada.</p>
             </div>
         </div>
     </div>
@@ -346,7 +330,37 @@
 
         function openAdmin() { document.getElementById("adminModal").classList.add("show"); setTimeout(()=>document.getElementById("pwInput").focus(),100); }
         function openCalc() { document.getElementById("calcModal").classList.add("show"); }
-        function openHorario() { document.getElementById("horarioModal").classList.add("show"); }
+        function openHorario() {
+            document.getElementById("horarioModal").classList.add("show");
+            renderHorarioModal();
+        }
+        function renderHorarioModal() {
+            const raw = localStorage.getItem("carwash_schedule");
+            const body = document.getElementById("horarioBody");
+            if (!raw) return;
+            try {
+                const data = JSON.parse(raw);
+                if (data.week) document.getElementById("horWeekLabel").textContent = data.week;
+                const DAYS_MAP = {L:"Lunes",M:"Martes",K:"Miércoles",J:"Jueves",V:"Viernes",S:"Sábado",D:"Domingo"};
+                const SHIFT_MAP = {"7-5":"7:00 – 5:00 pm","8-6":"8:00 – 6:00 pm","7-6":"7:00 – 6:00 pm"};
+                let html = '<table class="horario-table"><thead><tr><th>Día</th><th>Turno</th><th>Empleados</th></tr></thead><tbody>';
+                const ORDER = ["L","M","K","J","V","S","D"];
+                ORDER.forEach(dayKey => {
+                    const shifts = data.schedule[dayKey];
+                    if (!shifts) return;
+                    Object.entries(shifts).forEach(([shiftId, emps]) => {
+                        const color = shiftId==="7-5" ? "turno-m" : shiftId==="8-6" ? "turno-t" : "turno-libre";
+                        html += '<tr>';
+                        html += '<td style="font-weight:600">' + DAYS_MAP[dayKey] + '</td>';
+                        html += '<td><span class="turno-tag ' + color + '">' + (SHIFT_MAP[shiftId]||shiftId) + '</span></td>';
+                        html += '<td>' + (emps.length ? emps.join(", ") : '<span style="color:var(--muted)">—</span>') + '</td>';
+                        html += '</tr>';
+                    });
+                });
+                html += '</tbody></table>';
+                body.innerHTML = html;
+            } catch(e) { console.error(e); }
+        }
         function openSoporte() { document.getElementById("soporteModal").classList.add("show"); }
 
         function checkPw() {
