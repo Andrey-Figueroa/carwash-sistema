@@ -52,10 +52,10 @@
         .hamburger span { display: block; width: 18px; height: 2px; background: var(--accent); border-radius: 2px; transition: all 0.2s; }
 
         .fab-menu { position: absolute; bottom: calc(100% + 12px); right: 0; background: var(--card); border: 1px solid var(--border); border-radius: 18px; overflow: hidden; min-width: 220px; box-shadow: 0 8px 32px rgba(0,0,0,0.5); opacity: 0; transform: translateY(10px) scale(0.97); pointer-events: none; transition: all 0.22s cubic-bezier(.4,0,.2,1); transform-origin: bottom right; }
-        .fab-wrap:hover .fab-menu, .fab-wrap.open .fab-menu { opacity: 1; transform: translateY(0) scale(1); pointer-events: auto; }
-        .fab-wrap:hover .hamburger span:nth-child(1) { transform: translateY(6px) rotate(45deg); }
-        .fab-wrap:hover .hamburger span:nth-child(2) { opacity: 0; }
-        .fab-wrap:hover .hamburger span:nth-child(3) { transform: translateY(-6px) rotate(-45deg); }
+        .fab-wrap.open .fab-menu { opacity: 1; transform: translateY(0) scale(1); pointer-events: auto; }
+        .fab-wrap.open .hamburger span:nth-child(1) { transform: translateY(6px) rotate(45deg); }
+        .fab-wrap.open .hamburger span:nth-child(2) { opacity: 0; }
+        .fab-wrap.open .hamburger span:nth-child(3) { transform: translateY(-6px) rotate(-45deg); }
 
         .fab-item { display: flex; align-items: center; gap: 12px; padding: 14px 18px; cursor: pointer; color: var(--text); text-decoration: none; font-size: 14px; font-weight: 500; border-bottom: 1px solid var(--border); transition: background 0.15s; }
         .fab-item:last-child { border-bottom: none; }
@@ -187,7 +187,7 @@
             <a class="fab-item" href="https://docs.google.com/spreadsheets/d/1w1FrHexVpTWLANQJVVyEQ_mQ-4iGAfzuQ2O6zdtRKow/edit?usp=drive_link" target="_blank"><span class="fi">📄</span> Ver cuentas por cobrar</a>
             <a class="fab-item" onclick="openHorario()"><span class="fi">📅</span> Ver horario próxima semana</a>
         </div>
-        <button class="fab-btn">
+        <button class="fab-btn" onclick="document.getElementById('fabWrap').classList.toggle('open')" id="fabBtn">
             <div class="hamburger"><span></span><span></span><span></span></div>
             Menú rápido
         </button>
@@ -328,9 +328,14 @@
             m.addEventListener("click", e => { if (e.target === m) closeModal(m.id); });
         });
 
+        function closeFab(){ document.getElementById("fabWrap").classList.remove("open"); }
+        function openCalc(){ closeFab(); document.getElementById("calcModal").classList.add("show"); }
         function openAdmin() { document.getElementById("adminModal").classList.add("show"); setTimeout(()=>document.getElementById("pwInput").focus(),100); }
-        function openCalc() { document.getElementById("calcModal").classList.add("show"); }
-        function openHorario() {
+        document.addEventListener("click", e => {
+            const fab = document.getElementById("fabWrap");
+            if (!fab.contains(e.target)) fab.classList.remove("open");
+        });
+        function openHorario() { closeFab();
             document.getElementById("horarioModal").classList.add("show");
             renderHorarioModal();
         }
@@ -361,7 +366,7 @@
                 body.innerHTML = html;
             } catch(e) { console.error(e); }
         }
-        function openSoporte() { document.getElementById("soporteModal").classList.add("show"); }
+        function openSoporte() { closeFab(); document.getElementById("soporteModal").classList.add("show"); }
 
         function checkPw() {
             const val = document.getElementById("pwInput").value;
