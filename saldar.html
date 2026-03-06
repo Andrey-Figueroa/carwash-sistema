@@ -3,669 +3,496 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>CarWash — Saldar Cuenta</title>
+    <title>CarWash — Cobro de Cuentas por Cobrar</title>
     <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet">
     <style>
         *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
         :root {
-            --bg: #080b0f;
-            --surface: #0e1318;
-            --surface2: #141c24;
-            --border: #1f2d3a;
-            --border2: #263544;
-            --accent: #c8ff00;
-            --accent-dim: rgba(200,255,0,0.1);
-            --accent-mid: rgba(200,255,0,0.25);
-            --text: #ddeeff;
-            --text2: #6a8ba8;
-            --red: #ff4d6a;
-            --red-dim: rgba(255,77,106,0.1);
+            --bg: #080b0f; --surface: #0e1318; --surface2: #141c24;
+            --border: #1f2d3a; --border2: #263544;
+            --accent: #c8ff00; --accent-dim: rgba(200,255,0,0.1); --accent-mid: rgba(200,255,0,0.25);
+            --text: #ddeeff; --text2: #6a8ba8;
+            --red: #ff4d6a; --red-dim: rgba(255,77,106,0.1);
+            --blue: #00c6ff; --blue-dim: rgba(0,198,255,0.1);
         }
+        html, body { background: var(--bg); font-family: 'Syne', sans-serif; color: var(--text); min-height: 100vh; }
+        body::before { content: ''; position: fixed; inset: 0; background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E"); pointer-events: none; z-index: 0; opacity: 0.5; }
 
-        html, body {
-            background: var(--bg);
-            font-family: 'Syne', sans-serif;
-            color: var(--text);
-            min-height: 100vh;
-        }
+        .page { position: relative; z-index: 1; max-width: 520px; margin: 0 auto; padding: 20px 16px 60px; display: flex; flex-direction: column; gap: 0; }
 
-        /* Noise texture overlay */
-        body::before {
-            content: '';
-            position: fixed;
-            inset: 0;
-            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
-            pointer-events: none;
-            z-index: 0;
-            opacity: 0.5;
-        }
-
-        .page {
-            position: relative;
-            z-index: 1;
-            max-width: 520px;
-            margin: 0 auto;
-            padding: 20px 16px 60px;
-            display: flex;
-            flex-direction: column;
-            gap: 0;
-        }
-
-        /* ── HEADER ── */
-        .top-bar {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding-bottom: 28px;
-        }
-
-        .btn-back {
-            display: inline-flex;
-            align-items: center;
-            gap: 7px;
-            text-decoration: none;
-            color: var(--text2);
-            font-size: 12px;
-            font-weight: 700;
-            letter-spacing: 1.5px;
-            text-transform: uppercase;
-            border: 1px solid var(--border2);
-            padding: 8px 14px;
-            border-radius: 6px;
-            transition: all 0.2s;
-        }
+        /* TOP BAR */
+        .top-bar { display: flex; align-items: center; justify-content: space-between; padding-bottom: 28px; }
+        .btn-back { display: inline-flex; align-items: center; gap: 7px; text-decoration: none; color: var(--text2); font-size: 12px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; border: 1px solid var(--border2); padding: 8px 14px; border-radius: 6px; transition: all 0.2s; cursor: pointer; background: none; font-family: inherit; }
         .btn-back:hover { color: var(--text); border-color: var(--accent); }
+        .page-title { font-size: 11px; font-weight: 700; letter-spacing: 3px; text-transform: uppercase; color: var(--text2); }
 
-        .page-title {
-            font-size: 11px;
-            font-weight: 700;
-            letter-spacing: 3px;
-            text-transform: uppercase;
-            color: var(--text2);
-        }
+        /* SCREENS */
+        .screen { display: none; flex-direction: column; gap: 16px; }
+        .screen.active { display: flex; }
 
-        /* ── CARD ── */
-        .card {
-            background: var(--surface);
-            border: 1px solid var(--border);
-            border-radius: 16px;
-            overflow: hidden;
-        }
+        /* ── ENTRY ── */
+        .entry-card { background: var(--surface); border: 1px solid var(--border); border-radius: 24px; padding: 36px 28px; display: flex; flex-direction: column; align-items: center; gap: 24px; margin-top: 20px; }
+        .entry-icon-big { font-size: 52px; }
+        .entry-title { font-size: 22px; font-weight: 800; letter-spacing: 1px; text-transform: uppercase; text-align: center; }
+        .entry-sub { font-size: 14px; color: var(--text2); text-align: center; line-height: 1.6; }
+        .entry-btns { display: flex; flex-direction: column; gap: 12px; width: 100%; }
+        .btn-entry-primary { background: var(--accent); color: #000; border: none; border-radius: 14px; padding: 16px; font-size: 16px; font-weight: 800; cursor: pointer; font-family: 'Syne', sans-serif; transition: background 0.2s, transform 0.1s; display: flex; align-items: center; justify-content: center; gap: 10px; }
+        .btn-entry-primary:hover { background: #d8ff20; }
+        .btn-entry-primary:active { transform: scale(0.98); }
+        .btn-entry-secondary { background: rgba(200,255,0,0.06); color: var(--text); border: 1px solid var(--border2); border-radius: 14px; padding: 16px; font-size: 16px; font-weight: 700; cursor: pointer; font-family: 'Syne', sans-serif; transition: all 0.2s, transform 0.1s; display: flex; align-items: center; justify-content: center; gap: 10px; }
+        .btn-entry-secondary:hover { background: rgba(200,255,0,0.1); border-color: rgba(200,255,0,0.4); }
+        .btn-entry-secondary:active { transform: scale(0.98); }
 
-        .card-header {
-            padding: 22px 24px 18px;
-            border-bottom: 1px solid var(--border);
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-
-        .card-icon {
-            width: 40px;
-            height: 40px;
-            background: var(--accent-dim);
-            border: 1px solid rgba(200,255,0,0.3);
-            border-radius: 10px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 18px;
-            flex-shrink: 0;
-        }
-
-        .card-header-text h1 {
-            font-size: 17px;
-            font-weight: 800;
-            color: var(--text);
-            letter-spacing: 0.5px;
-        }
-        .card-header-text p {
-            font-size: 12px;
-            color: var(--text2);
-            margin-top: 2px;
-        }
-
-        .card-body {
-            padding: 24px;
-            display: flex;
-            flex-direction: column;
-            gap: 28px;
-        }
+        /* ── FORM CARD ── */
+        .card { background: var(--surface); border: 1px solid var(--border); border-radius: 16px; overflow: hidden; }
+        .card-header { padding: 22px 24px 18px; border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 12px; }
+        .card-icon { width: 40px; height: 40px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 18px; flex-shrink: 0; }
+        .card-icon.gold { background: var(--accent-dim); border: 1px solid rgba(200,255,0,0.3); }
+        .card-icon.blue { background: var(--blue-dim); border: 1px solid rgba(0,198,255,0.2); }
+        .card-header-text h1 { font-size: 17px; font-weight: 800; color: var(--text); letter-spacing: 0.5px; }
+        .card-header-text p { font-size: 12px; color: var(--text2); margin-top: 2px; }
+        .card-body { padding: 24px; display: flex; flex-direction: column; gap: 28px; }
 
         /* ── SECTION ── */
         .section { display: flex; flex-direction: column; gap: 14px; }
-        .section-title {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            font-size: 10px;
-            font-weight: 700;
-            letter-spacing: 2px;
-            text-transform: uppercase;
-            color: var(--accent);
-        }
-        .section-title::after {
-            content: '';
-            flex: 1;
-            height: 1px;
-            background: var(--border);
-        }
+        .section-title { display: flex; align-items: center; gap: 8px; font-size: 10px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: var(--accent); }
+        .section-title.blue { color: var(--blue); }
+        .section-title::after { content: ''; flex: 1; height: 1px; background: var(--border); }
 
         /* ── FIELD ── */
         .field { display: flex; flex-direction: column; gap: 7px; }
-        .field-label {
-            font-size: 12px;
-            font-weight: 600;
-            color: var(--text2);
-            letter-spacing: 0.5px;
-        }
+        .field-label { font-size: 12px; font-weight: 600; color: var(--text2); letter-spacing: 0.5px; }
         .field-label .req { color: var(--accent); margin-left: 3px; }
-
         .input-wrap { position: relative; }
-        .input-wrap .prefix {
-            position: absolute;
-            left: 13px;
-            top: 50%;
-            transform: translateY(-50%);
-            font-family: 'Space Mono', monospace;
-            font-size: 13px;
-            color: var(--text2);
-            pointer-events: none;
-        }
+        .input-wrap .prefix { position: absolute; left: 13px; top: 50%; transform: translateY(-50%); font-family: 'Space Mono', monospace; font-size: 13px; color: var(--text2); pointer-events: none; }
         .input-wrap input { padding-left: 32px !important; }
-
-        input[type="number"], input[type="text"] {
-            width: 100%;
-            background: var(--bg);
-            border: 1px solid var(--border2);
-            border-radius: 10px;
-            color: var(--text);
-            padding: 12px 14px;
-            font-size: 15px;
-            font-family: 'Space Mono', monospace;
-            outline: none;
-            transition: border-color 0.2s, box-shadow 0.2s;
-            -moz-appearance: textfield;
-        }
-        input[type="number"]::-webkit-outer-spin-button,
-        input[type="number"]::-webkit-inner-spin-button { -webkit-appearance: none; }
+        input[type="number"], input[type="text"] { width: 100%; background: var(--bg); border: 1px solid var(--border2); border-radius: 10px; color: var(--text); padding: 12px 14px; font-size: 15px; font-family: 'Space Mono', monospace; outline: none; transition: border-color 0.2s, box-shadow 0.2s; -moz-appearance: textfield; }
+        input[type="number"]::-webkit-outer-spin-button, input[type="number"]::-webkit-inner-spin-button { -webkit-appearance: none; }
         input:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(200,255,0,0.08); }
         input::placeholder { color: var(--border2); }
+        .hint { font-size: 11px; color: var(--text2); margin-top: -4px; }
 
-        /* ── LOCKED ── */
+        /* ── LOCKED SECTION ── */
         .locked { display: none; flex-direction: column; gap: 28px; }
-        .locked.on {
-            display: flex;
-            animation: slideDown 0.25s ease;
-        }
-        @keyframes slideDown {
-            from { opacity: 0; transform: translateY(-8px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
+        .locked.on { display: flex; animation: slideDown 0.25s ease; }
+        @keyframes slideDown { from { opacity: 0; transform: translateY(-8px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* ── ABONO BOX ── */
+        .abono-info { background: var(--blue-dim); border: 1px solid rgba(0,198,255,0.25); border-radius: 10px; padding: 14px 18px; display: flex; align-items: center; gap: 12px; font-size: 13px; color: var(--blue); }
+        .abono-info .ai-icon { font-size: 20px; }
 
         /* ── METODOS ── */
         .metodos-grid { display: flex; flex-direction: column; gap: 8px; }
-
-        .metodo-item { display: flex; flex-direction: column; gap: 8px; }
-
+        .metodo-item { display: flex; flex-direction: column; gap: 0; }
         .metodo-toggle { cursor: pointer; }
         .metodo-toggle input { display: none; }
-
-        .metodo-row {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            padding: 13px 16px;
-            border-radius: 10px;
-            border: 1px solid var(--border2);
-            background: var(--bg);
-            transition: all 0.18s;
-            user-select: none;
-        }
+        .metodo-row { display: flex; align-items: center; gap: 12px; padding: 13px 16px; border-radius: 10px; border: 1px solid var(--border2); background: var(--bg); transition: all 0.18s; user-select: none; }
         .metodo-toggle:hover .metodo-row { border-color: rgba(200,255,0,0.3); }
-        .metodo-toggle input:checked + .metodo-row {
-            border-color: var(--accent);
-            background: var(--accent-dim);
-        }
-
-        .metodo-check {
-            width: 20px; height: 20px;
-            border-radius: 6px;
-            border: 2px solid var(--border2);
-            flex-shrink: 0;
-            display: flex; align-items: center; justify-content: center;
-            transition: all 0.18s;
-            font-size: 11px;
-        }
-        .metodo-toggle input:checked + .metodo-row .metodo-check {
-            background: var(--accent);
-            border-color: var(--accent);
-            color: #000;
-        }
-
-        .metodo-name {
-            font-size: 14px;
-            font-weight: 600;
-            color: var(--text2);
-            transition: color 0.18s;
-        }
+        .metodo-toggle input:checked + .metodo-row { border-color: var(--accent); background: var(--accent-dim); border-radius: 10px 10px 0 0; }
+        .metodo-check { width: 20px; height: 20px; border-radius: 6px; border: 2px solid var(--border2); flex-shrink: 0; display: flex; align-items: center; justify-content: center; transition: all 0.18s; font-size: 11px; }
+        .metodo-toggle input:checked + .metodo-row .metodo-check { background: var(--accent); border-color: var(--accent); color: #000; }
+        .metodo-name { font-size: 14px; font-weight: 600; color: var(--text2); transition: color 0.18s; }
         .metodo-toggle input:checked + .metodo-row .metodo-name { color: var(--accent); }
-
-        .metodo-monto {
-            display: none;
-            animation: slideDown 0.2s ease;
-        }
+        .metodo-monto { display: none; animation: slideDown 0.2s ease; }
         .metodo-monto.on { display: block; }
-        .metodo-monto input {
-            border-radius: 0 0 10px 10px;
-            border-top: 1px dashed var(--border2);
-        }
-
-        /* ── TOTAL ── */
-        .total-box {
-            display: none;
-            background: var(--accent-dim);
-            border: 1px solid rgba(200,255,0,0.3);
-            border-radius: 10px;
-            padding: 14px 18px;
-            justify-content: space-between;
-            align-items: center;
-        }
+        .metodo-monto input { border-radius: 0 0 10px 10px !important; border-top: 1px dashed var(--border2) !important; }
+        .total-box { display: none; background: var(--accent-dim); border: 1px solid rgba(200,255,0,0.3); border-radius: 10px; padding: 14px 18px; justify-content: space-between; align-items: center; }
         .total-box.on { display: flex; animation: slideDown 0.2s ease; }
         .total-label { font-size: 12px; font-weight: 700; color: var(--text2); text-transform: uppercase; letter-spacing: 1px; }
         .total-value { font-family: 'Space Mono', monospace; font-size: 20px; font-weight: 700; color: var(--accent); }
 
-        /* ── RESPONSABLE CHIPS ── */
+        /* ── CHIPS ── */
         .resp-grid { display: flex; flex-wrap: wrap; gap: 8px; }
         .resp-label { cursor: pointer; }
         .resp-label input { display: none; }
-        .resp-chip {
-            padding: 9px 18px;
-            border-radius: 50px;
-            border: 1px solid var(--border2);
-            background: var(--bg);
-            color: var(--text2);
-            font-size: 13px;
-            font-weight: 600;
-            transition: all 0.18s;
-            user-select: none;
-        }
+        .resp-chip { padding: 9px 18px; border-radius: 50px; border: 1px solid var(--border2); background: var(--bg); color: var(--text2); font-size: 13px; font-weight: 600; transition: all 0.18s; user-select: none; display: inline-block; }
         .resp-label:hover .resp-chip { border-color: rgba(200,255,0,0.4); color: var(--text); }
-        .resp-label input:checked + .resp-chip {
-            border-color: var(--accent);
-            background: var(--accent-dim);
-            color: var(--accent);
-        }
+        .resp-label input:checked + .resp-chip { border-color: var(--accent); background: var(--accent-dim); color: var(--accent); }
 
-        /* ── FIDELIZACION ── */
+        /* ── FIDELIZACIÓN ── */
         .fidel-grid { display: flex; gap: 10px; }
         .fidel-label { cursor: pointer; flex: 1; }
         .fidel-label input { display: none; }
-        .fidel-chip {
-            display: flex; align-items: center; justify-content: center;
-            gap: 8px; padding: 14px;
-            border-radius: 10px;
-            border: 1px solid var(--border2);
-            background: var(--bg);
-            color: var(--text2);
-            font-size: 14px; font-weight: 700;
-            transition: all 0.18s;
-            user-select: none;
-        }
-        .fidel-label.si input:checked + .fidel-chip {
-            border-color: var(--accent);
-            background: var(--accent-dim);
-            color: var(--accent);
-        }
-        .fidel-label.no input:checked + .fidel-chip {
-            border-color: var(--red);
-            background: var(--red-dim);
-            color: var(--red);
-        }
+        .fidel-chip { display: flex; align-items: center; justify-content: center; gap: 8px; padding: 14px; border-radius: 10px; border: 1px solid var(--border2); background: var(--bg); color: var(--text2); font-size: 14px; font-weight: 700; transition: all 0.18s; user-select: none; }
+        .fidel-label.si input:checked + .fidel-chip { border-color: var(--accent); background: var(--accent-dim); color: var(--accent); }
+        .fidel-label.no input:checked + .fidel-chip { border-color: var(--red); background: var(--red-dim); color: var(--red); }
 
-        /* ── ERROR ── */
-        .error-box {
-            display: none;
-            background: var(--red-dim);
-            border: 1px solid rgba(255,77,106,0.3);
-            border-radius: 10px;
-            padding: 12px 16px;
-            font-size: 13px;
-            color: var(--red);
-            text-align: center;
-        }
-
-        /* ── SUBMIT ── */
-        .btn-submit {
-            width: 100%;
-            padding: 16px;
-            background: var(--accent);
-            color: #000;
-            border: none;
-            border-radius: 12px;
-            font-family: 'Syne', sans-serif;
-            font-size: 15px;
-            font-weight: 800;
-            letter-spacing: 1px;
-            cursor: pointer;
-            text-transform: uppercase;
-            transition: background 0.2s, transform 0.1s, box-shadow 0.2s;
-            box-shadow: 0 4px 20px rgba(200,255,0,0.2);
-        }
-        .btn-submit:hover { background: #d8ff20; box-shadow: 0 4px 30px rgba(200,255,0,0.35); }
+        /* ── ERROR / SUBMIT ── */
+        .error-box { display: none; background: var(--red-dim); border: 1px solid rgba(255,77,106,0.3); border-radius: 10px; padding: 12px 16px; font-size: 13px; color: var(--red); text-align: center; }
+        .btn-submit { width: 100%; padding: 16px; color: #000; border: none; border-radius: 12px; font-family: 'Syne', sans-serif; font-size: 15px; font-weight: 800; letter-spacing: 1px; cursor: pointer; text-transform: uppercase; transition: background 0.2s, transform 0.1s, box-shadow 0.2s; }
         .btn-submit:active { transform: scale(0.98); }
+        .btn-submit.gold { background: var(--accent); box-shadow: 0 4px 20px rgba(200,255,0,0.2); }
+        .btn-submit.gold:hover { background: #d8ff20; box-shadow: 0 4px 30px rgba(200,255,0,0.35); }
+        .btn-submit.blue-btn { background: var(--blue); box-shadow: 0 4px 20px rgba(0,198,255,0.2); }
+        .btn-submit.blue-btn:hover { background: #20d8ff; }
 
         /* ── SUCCESS ── */
-        .success-screen {
-            display: none;
-            flex-direction: column;
-            align-items: center;
-            text-align: center;
-            padding: 70px 20px;
-            gap: 16px;
-            animation: slideDown 0.3s ease;
-        }
-
-        .success-icon {
-            width: 80px; height: 80px;
-            background: var(--accent-dim);
-            border: 2px solid var(--accent);
-            border-radius: 50%;
-            display: flex; align-items: center; justify-content: center;
-            font-size: 36px;
-            margin-bottom: 8px;
-        }
-
-        .success-screen h2 {
-            font-size: 28px;
-            font-weight: 800;
-            letter-spacing: 1px;
-        }
-
-        .success-detail {
-            color: var(--text2);
-            font-size: 14px;
-            line-height: 1.8;
-        }
-
+        .success-screen { display: none; flex-direction: column; align-items: center; text-align: center; padding: 70px 20px; gap: 16px; animation: slideDown 0.3s ease; }
+        .success-screen.active { display: flex; }
+        .success-icon { width: 80px; height: 80px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 36px; margin-bottom: 8px; }
+        .success-icon.gold { background: var(--accent-dim); border: 2px solid var(--accent); }
+        .success-icon.blue { background: var(--blue-dim); border: 2px solid var(--blue); }
+        .success-screen h2 { font-size: 28px; font-weight: 800; letter-spacing: 1px; }
+        .success-detail { color: var(--text2); font-size: 14px; line-height: 1.8; }
         .success-detail strong { color: var(--accent); font-family: 'Space Mono', monospace; }
-
+        .success-detail strong.blue { color: var(--blue); }
         .success-actions { display: flex; flex-direction: column; gap: 10px; width: 100%; max-width: 300px; margin-top: 10px; }
-
-        .btn-nuevo {
-            background: var(--accent);
-            color: #000;
-            border: none;
-            border-radius: 10px;
-            padding: 13px 24px;
-            font-family: 'Syne', sans-serif;
-            font-size: 14px;
-            font-weight: 800;
-            cursor: pointer;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
-
-        .btn-menu {
-            display: block;
-            text-decoration: none;
-            border: 1px solid var(--border2);
-            border-radius: 10px;
-            padding: 12px 24px;
-            font-size: 13px;
-            font-weight: 600;
-            color: var(--text2);
-            text-align: center;
-            transition: all 0.2s;
-        }
+        .btn-nuevo { background: var(--accent); color: #000; border: none; border-radius: 10px; padding: 13px 24px; font-family: 'Syne', sans-serif; font-size: 14px; font-weight: 800; cursor: pointer; text-transform: uppercase; letter-spacing: 1px; }
+        .btn-menu { display: block; text-decoration: none; border: 1px solid var(--border2); border-radius: 10px; padding: 12px 24px; font-size: 13px; font-weight: 600; color: var(--text2); text-align: center; transition: all 0.2s; cursor: pointer; background: none; font-family: inherit; width: 100%; }
         .btn-menu:hover { border-color: var(--accent); color: var(--accent); }
     </style>
 </head>
 <body>
-    <div class="page">
+<div class="page">
 
-        <div class="top-bar">
-            <a href="index.html" class="btn-back">← Volver</a>
-            <span class="page-title">CarWash POS</span>
+    <div class="top-bar">
+        <button class="btn-back" id="btnBack" onclick="handleBack()">← Volver</button>
+        <span class="page-title" id="pageTitle">Cuentas por Cobrar</span>
+    </div>
+
+    <!-- ══ ENTRY ══ -->
+    <div class="screen active" id="screenEntry">
+        <div class="entry-card">
+            <div class="entry-icon-big">💳</div>
+            <div class="entry-title">Cobro de Cuentas por Cobrar</div>
+            <div class="entry-sub">¿Qué deseas hacer?</div>
+            <div class="entry-btns">
+                <button class="btn-entry-primary" onclick="goTo('screenFinalizar')">
+                    ✅ Finalizar Cuenta por Cobrar
+                </button>
+                <button class="btn-entry-secondary" onclick="goTo('screenAbono')">
+                    📥 Abonar a Cuenta Pendiente
+                </button>
+            </div>
         </div>
+    </div>
 
-        <!-- FORM CARD -->
-        <div class="card" id="formCard">
+    <!-- ══ SCREEN: ABONO ══ -->
+    <div class="screen" id="screenAbono">
+        <div class="card">
             <div class="card-header">
-                <div class="card-icon">💳</div>
+                <div class="card-icon blue">📥</div>
                 <div class="card-header-text">
-                    <h1>Saldar Cuenta</h1>
-                    <p>Registra el cobro de la orden</p>
+                    <h1>Abonar a Cuenta</h1>
+                    <p>Pago parcial — la cuenta sigue abierta</p>
                 </div>
             </div>
-
             <div class="card-body">
 
-                <!-- ORDEN -->
+                <div class="section">
+                    <div class="section-title blue">📋 Orden</div>
+                    <div class="field">
+                        <label class="field-label">Número de orden <span class="req">*</span></label>
+                        <div class="input-wrap">
+                            <span class="prefix">#</span>
+                            <input type="number" id="a_orden" placeholder="Ej: 42" min="1" oninput="toggleLocked('a_locked', this.value)">
+                        </div>
+                        <span class="hint">Puedes verificarlo en el Google Sheets</span>
+                    </div>
+                </div>
+
+                <div class="locked" id="a_locked">
+
+                    <div class="abono-info">
+                        <span class="ai-icon">ℹ️</span>
+                        <span>Este abono reducirá el saldo pendiente. La cuenta continuará abierta hasta ser finalizada.</span>
+                    </div>
+
+                    <div class="section">
+                        <div class="section-title blue">💳 Método de pago</div>
+                        <div class="metodos-grid" id="a_metodos">
+                            <div class="metodo-item">
+                                <label class="metodo-toggle">
+                                    <input type="checkbox" name="a_metodo" value="Tarjeta" onchange="toggleMonto(this,'a_wrap-tarjeta','a_monto-tarjeta','a_total')">
+                                    <div class="metodo-row"><div class="metodo-check">✓</div><span class="metodo-name">💳 Tarjeta crédito / débito</span></div>
+                                </label>
+                                <div class="metodo-monto" id="a_wrap-tarjeta"><div class="input-wrap"><span class="prefix">₡</span><input type="number" id="a_monto-tarjeta" placeholder="0" min="0" oninput="calcTotal('a_metodo','a_monto-tarjeta','a_monto-efectivo','a_monto-sinpe','a_total')"></div></div>
+                            </div>
+                            <div class="metodo-item">
+                                <label class="metodo-toggle">
+                                    <input type="checkbox" name="a_metodo" value="Efectivo" onchange="toggleMonto(this,'a_wrap-efectivo','a_monto-efectivo','a_total')">
+                                    <div class="metodo-row"><div class="metodo-check">✓</div><span class="metodo-name">💵 Efectivo</span></div>
+                                </label>
+                                <div class="metodo-monto" id="a_wrap-efectivo"><div class="input-wrap"><span class="prefix">₡</span><input type="number" id="a_monto-efectivo" placeholder="0" min="0" oninput="calcTotal('a_metodo','a_monto-tarjeta','a_monto-efectivo','a_monto-sinpe','a_total')"></div></div>
+                            </div>
+                            <div class="metodo-item">
+                                <label class="metodo-toggle">
+                                    <input type="checkbox" name="a_metodo" value="SINPE Móvil" onchange="toggleMonto(this,'a_wrap-sinpe','a_monto-sinpe','a_total')">
+                                    <div class="metodo-row"><div class="metodo-check">✓</div><span class="metodo-name">📱 SINPE Móvil</span></div>
+                                </label>
+                                <div class="metodo-monto" id="a_wrap-sinpe"><div class="input-wrap"><span class="prefix">₡</span><input type="number" id="a_monto-sinpe" placeholder="0" min="0" oninput="calcTotal('a_metodo','a_monto-tarjeta','a_monto-efectivo','a_monto-sinpe','a_total')"></div></div>
+                            </div>
+                        </div>
+                        <div class="total-box" id="a_total"><span class="total-label">Total abono</span><span class="total-value" id="a_total_val">₡0</span></div>
+                    </div>
+
+                    <div class="section">
+                        <div class="section-title blue">🧾 Responsable</div>
+                        <div class="resp-grid">
+                            <label class="resp-label"><input type="radio" name="a_resp" value="Juan"><span class="resp-chip">Juan</span></label>
+                            <label class="resp-label"><input type="radio" name="a_resp" value="Eder"><span class="resp-chip">Eder</span></label>
+                            <label class="resp-label"><input type="radio" name="a_resp" value="Massiel"><span class="resp-chip">Massiel</span></label>
+                            <label class="resp-label"><input type="radio" name="a_resp" value="Jesús"><span class="resp-chip">Jesús</span></label>
+                            <label class="resp-label"><input type="radio" name="a_resp" value="Andrey"><span class="resp-chip">Andrey</span></label>
+                            <label class="resp-label"><input type="radio" name="a_resp" value="Ronald"><span class="resp-chip">Ronald</span></label>
+                            <label class="resp-label"><input type="radio" name="a_resp" value="Ricardo"><span class="resp-chip">Ricardo</span></label>
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="error-box" id="a_error">⚠️ <span id="a_errorMsg">Completa todos los campos.</span></div>
+                <button class="btn-submit blue-btn" onclick="enviarAbono()">📥 Registrar Abono →</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ══ SCREEN: FINALIZAR ══ -->
+    <div class="screen" id="screenFinalizar">
+        <div class="card">
+            <div class="card-header">
+                <div class="card-icon gold">✅</div>
+                <div class="card-header-text">
+                    <h1>Finalizar Cuenta</h1>
+                    <p>Saldo total — cierra la cuenta definitivamente</p>
+                </div>
+            </div>
+            <div class="card-body">
+
                 <div class="section">
                     <div class="section-title">📋 Orden</div>
                     <div class="field">
                         <label class="field-label">Número de orden <span class="req">*</span></label>
                         <div class="input-wrap">
                             <span class="prefix">#</span>
-                            <input type="number" id="numOrden" placeholder="Ej: 42" min="1" step="1" oninput="onOrdenInput(this.value)">
+                            <input type="number" id="f_orden" placeholder="Ej: 42" min="1" oninput="toggleLocked('f_locked', this.value)">
                         </div>
+                        <span class="hint">Puedes verificarlo en el Google Sheets</span>
                     </div>
                 </div>
 
-                <!-- SECCIÓN BLOQUEADA -->
-                <div class="locked" id="mainSection">
+                <div class="locked" id="f_locked">
 
-                    <!-- PAGO -->
                     <div class="section">
                         <div class="section-title">💳 Método de pago</div>
-
                         <div class="metodos-grid">
-                            <!-- Tarjeta -->
                             <div class="metodo-item">
                                 <label class="metodo-toggle">
-                                    <input type="checkbox" name="metodo" value="Tarjeta" onchange="toggleMonto(this, 'monto-tarjeta')">
-                                    <div class="metodo-row">
-                                        <div class="metodo-check">✓</div>
-                                        <span class="metodo-name">💳 Tarjeta crédito / débito</span>
-                                    </div>
+                                    <input type="checkbox" name="f_metodo" value="Tarjeta" onchange="toggleMonto(this,'f_wrap-tarjeta','f_monto-tarjeta','f_total')">
+                                    <div class="metodo-row"><div class="metodo-check">✓</div><span class="metodo-name">💳 Tarjeta crédito / débito</span></div>
                                 </label>
-                                <div class="metodo-monto" id="wrap-tarjeta">
-                                    <div class="input-wrap">
-                                        <span class="prefix">₡</span>
-                                        <input type="number" id="monto-tarjeta" placeholder="0" min="0" oninput="actualizarTotal()">
-                                    </div>
-                                </div>
+                                <div class="metodo-monto" id="f_wrap-tarjeta"><div class="input-wrap"><span class="prefix">₡</span><input type="number" id="f_monto-tarjeta" placeholder="0" min="0" oninput="calcTotal('f_metodo','f_monto-tarjeta','f_monto-efectivo','f_monto-sinpe','f_total')"></div></div>
                             </div>
-
-                            <!-- Efectivo -->
                             <div class="metodo-item">
                                 <label class="metodo-toggle">
-                                    <input type="checkbox" name="metodo" value="Efectivo" onchange="toggleMonto(this, 'monto-efectivo')">
-                                    <div class="metodo-row">
-                                        <div class="metodo-check">✓</div>
-                                        <span class="metodo-name">💵 Efectivo</span>
-                                    </div>
+                                    <input type="checkbox" name="f_metodo" value="Efectivo" onchange="toggleMonto(this,'f_wrap-efectivo','f_monto-efectivo','f_total')">
+                                    <div class="metodo-row"><div class="metodo-check">✓</div><span class="metodo-name">💵 Efectivo</span></div>
                                 </label>
-                                <div class="metodo-monto" id="wrap-efectivo">
-                                    <div class="input-wrap">
-                                        <span class="prefix">₡</span>
-                                        <input type="number" id="monto-efectivo" placeholder="0" min="0" oninput="actualizarTotal()">
-                                    </div>
-                                </div>
+                                <div class="metodo-monto" id="f_wrap-efectivo"><div class="input-wrap"><span class="prefix">₡</span><input type="number" id="f_monto-efectivo" placeholder="0" min="0" oninput="calcTotal('f_metodo','f_monto-tarjeta','f_monto-efectivo','f_monto-sinpe','f_total')"></div></div>
                             </div>
-
-                            <!-- SINPE -->
                             <div class="metodo-item">
                                 <label class="metodo-toggle">
-                                    <input type="checkbox" name="metodo" value="SINPE Móvil" onchange="toggleMonto(this, 'monto-sinpe')">
-                                    <div class="metodo-row">
-                                        <div class="metodo-check">✓</div>
-                                        <span class="metodo-name">📱 SINPE Móvil</span>
-                                    </div>
+                                    <input type="checkbox" name="f_metodo" value="SINPE Móvil" onchange="toggleMonto(this,'f_wrap-sinpe','f_monto-sinpe','f_total')">
+                                    <div class="metodo-row"><div class="metodo-check">✓</div><span class="metodo-name">📱 SINPE Móvil</span></div>
                                 </label>
-                                <div class="metodo-monto" id="wrap-sinpe">
-                                    <div class="input-wrap">
-                                        <span class="prefix">₡</span>
-                                        <input type="number" id="monto-sinpe" placeholder="0" min="0" oninput="actualizarTotal()">
-                                    </div>
-                                </div>
+                                <div class="metodo-monto" id="f_wrap-sinpe"><div class="input-wrap"><span class="prefix">₡</span><input type="number" id="f_monto-sinpe" placeholder="0" min="0" oninput="calcTotal('f_metodo','f_monto-tarjeta','f_monto-efectivo','f_monto-sinpe','f_total')"></div></div>
                             </div>
                         </div>
-
-                        <!-- TOTAL -->
-                        <div class="total-box" id="totalBox">
-                            <span class="total-label">Total combinado</span>
-                            <span class="total-value" id="totalValor">₡0</span>
-                        </div>
+                        <div class="total-box" id="f_total"><span class="total-label">Total a saldar</span><span class="total-value" id="f_total_val">₡0</span></div>
                     </div>
 
-                    <!-- RESPONSABLE -->
                     <div class="section">
                         <div class="section-title">🧾 Responsable</div>
                         <div class="resp-grid">
-                            <label class="resp-label"><input type="radio" name="responsable" value="Juan"><span class="resp-chip">Juan</span></label>
-                            <label class="resp-label"><input type="radio" name="responsable" value="Eder"><span class="resp-chip">Eder</span></label>
-                            <label class="resp-label"><input type="radio" name="responsable" value="Massiel"><span class="resp-chip">Massiel</span></label>
-                            <label class="resp-label"><input type="radio" name="responsable" value="Jesús"><span class="resp-chip">Jesús</span></label>
-                            <label class="resp-label"><input type="radio" name="responsable" value="Andrey"><span class="resp-chip">Andrey</span></label>
+                            <label class="resp-label"><input type="radio" name="f_resp" value="Juan"><span class="resp-chip">Juan</span></label>
+                            <label class="resp-label"><input type="radio" name="f_resp" value="Eder"><span class="resp-chip">Eder</span></label>
+                            <label class="resp-label"><input type="radio" name="f_resp" value="Massiel"><span class="resp-chip">Massiel</span></label>
+                            <label class="resp-label"><input type="radio" name="f_resp" value="Jesús"><span class="resp-chip">Jesús</span></label>
+                            <label class="resp-label"><input type="radio" name="f_resp" value="Andrey"><span class="resp-chip">Andrey</span></label>
+                            <label class="resp-label"><input type="radio" name="f_resp" value="Ronald"><span class="resp-chip">Ronald</span></label>
+                            <label class="resp-label"><input type="radio" name="f_resp" value="Ricardo"><span class="resp-chip">Ricardo</span></label>
                         </div>
                     </div>
 
-                    <!-- FIDELIZACIÓN -->
                     <div class="section">
                         <div class="section-title">⭐ Plan de puntos</div>
                         <div class="fidel-grid">
-                            <label class="fidel-label si">
-                                <input type="radio" name="fidelizacion" value="Sí">
-                                <div class="fidel-chip">⭐ Sí, aplica</div>
-                            </label>
-                            <label class="fidel-label no">
-                                <input type="radio" name="fidelizacion" value="No">
-                                <div class="fidel-chip">❌ No aplica</div>
-                            </label>
+                            <label class="fidel-label si"><input type="radio" name="f_fidel" value="Sí"><div class="fidel-chip">⭐ Sí, aplica</div></label>
+                            <label class="fidel-label no"><input type="radio" name="f_fidel" value="No"><div class="fidel-chip">❌ No aplica</div></label>
                         </div>
                     </div>
 
                 </div>
-                <!-- /locked -->
 
-                <div class="error-box" id="errorBox">⚠️ <span id="errorMsg">Completa todos los campos requeridos.</span></div>
-
-                <button class="btn-submit" onclick="enviarCobro()">Saldar cuenta →</button>
-
+                <div class="error-box" id="f_error">⚠️ <span id="f_errorMsg">Completa todos los campos.</span></div>
+                <button class="btn-submit gold" onclick="enviarFinalizar()">✅ Finalizar y Saldar Cuenta →</button>
             </div>
         </div>
-        <!-- /form card -->
-
-        <!-- SUCCESS -->
-        <div class="success-screen" id="successScreen">
-            <div class="success-icon">✓</div>
-            <h2>¡Cuenta saldada!</h2>
-            <p class="success-detail" id="successDetail"></p>
-            <div class="success-actions">
-                <button class="btn-nuevo" onclick="location.reload()">+ Saldar otra cuenta</button>
-                <a href="index.html" class="btn-menu">← Volver al menú</a>
-            </div>
-        </div>
-
     </div>
 
-    <script>
-        const WEBHOOK = "https://n8n-production-6cc7.up.railway.app/webhook/saldar-cuenta";
+    <!-- ══ SUCCESS ══ -->
+    <div class="success-screen" id="screenSuccess">
+        <div class="success-icon gold" id="successIcon">✓</div>
+        <h2 id="successTitle">¡Listo!</h2>
+        <p class="success-detail" id="successDetail"></p>
+        <div class="success-actions">
+            <button class="btn-nuevo" onclick="goTo('screenEntry')">← Nueva operación</button>
+            <button class="btn-menu" onclick="window.location.href='index.html'">🏠 Menú principal</button>
+        </div>
+    </div>
 
-        function onOrdenInput(val) {
-            document.getElementById("mainSection").classList.toggle("on", val !== "" && parseInt(val) > 0);
-        }
+</div>
 
-        function toggleMonto(cb, id) {
-            const wrap = document.getElementById("wrap-" + id.replace("monto-",""));
-            wrap.classList.toggle("on", cb.checked);
-            if (!cb.checked) document.getElementById(id).value = "";
-            actualizarTotal();
-        }
+<script>
+    const WEBHOOK_ABONO     = "https://n8n-production-6cc7.up.railway.app/webhook/abono-cuenta";
+    const WEBHOOK_FINALIZAR = "https://n8n-production-6cc7.up.railway.app/webhook/saldar-cuenta";
 
-        function actualizarTotal() {
-            const checked = document.querySelectorAll('input[name="metodo"]:checked');
-            let total = 0;
-            checked.forEach(cb => {
-                const key = cb.value === "Tarjeta" ? "monto-tarjeta"
-                          : cb.value === "Efectivo" ? "monto-efectivo"
-                          : "monto-sinpe";
-                total += parseFloat(document.getElementById(key)?.value) || 0;
-            });
-            document.getElementById("totalValor").textContent = "₡" + total.toLocaleString("es-CR");
-            document.getElementById("totalBox").classList.toggle("on", checked.length > 1);
-            return total;
-        }
+    let currentScreen = "screenEntry";
 
-        function enviarCobro() {
-            const numOrden    = document.getElementById("numOrden").value.trim();
-            const seleccionados = Array.from(document.querySelectorAll('input[name="metodo"]:checked'));
-            const responsable = document.querySelector('input[name="responsable"]:checked');
-            const fidel       = document.querySelector('input[name="fidelizacion"]:checked');
+    function goTo(id) {
+        document.querySelectorAll(".screen").forEach(s => s.classList.remove("active"));
+        document.getElementById(id).classList.add("active");
+        currentScreen = id;
+        const titles = { screenEntry:"Cuentas por Cobrar", screenAbono:"Abonar Cuenta", screenFinalizar:"Finalizar Cuenta", screenSuccess:"Completado" };
+        document.getElementById("pageTitle").textContent = titles[id] || "Cuentas por Cobrar";
+        window.scrollTo(0,0);
+    }
 
-            // Validación
-            if (!numOrden || seleccionados.length === 0 || !responsable || !fidel) {
-                mostrarError("Completa todos los campos requeridos.");
-                return;
-            }
+    function handleBack() {
+        if (currentScreen === "screenEntry" || currentScreen === "screenSuccess") window.location.href = "index.html";
+        else goTo("screenEntry");
+    }
 
-            const mTarjeta  = parseFloat(document.getElementById("monto-tarjeta")?.value) || 0;
-            const mEfectivo = parseFloat(document.getElementById("monto-efectivo")?.value) || 0;
-            const mSinpe    = parseFloat(document.getElementById("monto-sinpe")?.value) || 0;
+    function toggleLocked(lockedId, val) {
+        document.getElementById(lockedId).classList.toggle("on", val !== "" && parseInt(val) > 0);
+    }
 
-            // Validar que los montos seleccionados sean > 0
-            const montoInvalido = seleccionados.some(cb => {
-                const key = cb.value === "Tarjeta" ? "monto-tarjeta"
-                          : cb.value === "Efectivo" ? "monto-efectivo"
-                          : "monto-sinpe";
-                return !(parseFloat(document.getElementById(key)?.value) > 0);
-            });
+    function toggleMonto(cb, wrapId, inputId, totalId) {
+        const wrap = document.getElementById(wrapId);
+        wrap.classList.toggle("on", cb.checked);
+        if (!cb.checked) { const inp = document.getElementById(inputId); if(inp) inp.value = ""; }
+        // find prefix from inputId
+        const prefix = inputId.startsWith("a_") ? "a_metodo" : "f_metodo";
+        const [t, e, s] = inputId.startsWith("a_")
+            ? ["a_monto-tarjeta","a_monto-efectivo","a_monto-sinpe"]
+            : ["f_monto-tarjeta","f_monto-efectivo","f_monto-sinpe"];
+        calcTotal(prefix.replace("-tarjeta","").replace("-efectivo","").replace("-sinpe",""), t, e, s, totalId);
+    }
 
-            if (montoInvalido) {
-                mostrarError("Ingresa el monto para cada método seleccionado.");
-                return;
-            }
+    function calcTotal(metodoName, tId, eId, sId, boxId) {
+        const checked = document.querySelectorAll(`input[name="${metodoName}"]:checked`);
+        let total = 0;
+        checked.forEach(cb => {
+            const key = cb.value === "Tarjeta" ? tId : cb.value === "Efectivo" ? eId : sId;
+            total += parseFloat(document.getElementById(key)?.value) || 0;
+        });
+        const valEl = document.getElementById(boxId + "_val");
+        if(valEl) valEl.textContent = "₡" + total.toLocaleString("es-CR");
+        document.getElementById(boxId).classList.toggle("on", checked.length > 1);
+        return total;
+    }
 
-            const total = actualizarTotal();
+    function getTotal(metodoName, tId, eId, sId) {
+        const checked = document.querySelectorAll(`input[name="${metodoName}"]:checked`);
+        let total = 0;
+        checked.forEach(cb => {
+            const key = cb.value === "Tarjeta" ? tId : cb.value === "Efectivo" ? eId : sId;
+            total += parseFloat(document.getElementById(key)?.value) || 0;
+        });
+        return total;
+    }
 
-            const payload = {
-                numero_orden:   parseInt(numOrden),
-                metodo_pago:    seleccionados.map(c => c.value).join(", "),
-                monto_tarjeta:  mTarjeta,
-                monto_efectivo: mEfectivo,
-                monto_sinpe:    mSinpe,
-                total:          total,
-                responsable:    responsable.value,
-                plan_puntos:    fidel.value,
-                fecha_pago:     new Date().toLocaleString("es-CR")
-            };
+    function showError(errId, msgId, msg) {
+        document.getElementById(msgId).textContent = msg;
+        document.getElementById(errId).style.display = "block";
+        setTimeout(() => document.getElementById(errId).style.display = "none", 4000);
+    }
 
-            // Mostrar éxito de inmediato
-            document.getElementById("formCard").style.display = "none";
-            document.getElementById("successScreen").style.display = "flex";
-            document.getElementById("successDetail").innerHTML =
-                `Orden <strong>#${numOrden}</strong> registrada.<br>` +
-                `Total: <strong>₡${total.toLocaleString("es-CR")}</strong><br>` +
-                `Responsable: <strong>${responsable.value}</strong>`;
+    // ── ABONO ──────────────────────────────────────────────
+    async function enviarAbono() {
+        const orden = document.getElementById("a_orden").value.trim();
+        const seleccionados = Array.from(document.querySelectorAll('input[name="a_metodo"]:checked'));
+        const resp = document.querySelector('input[name="a_resp"]:checked');
 
-            // Enviar en segundo plano
-            fetch(WEBHOOK, {
-                method: "POST",
-                mode: "no-cors",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(payload)
-            }).catch(() => {});
-        }
+        if (!orden || seleccionados.length === 0 || !resp) { showError("a_error","a_errorMsg","Completa todos los campos requeridos."); return; }
 
-        function mostrarError(msg) {
-            const box = document.getElementById("errorBox");
-            document.getElementById("errorMsg").textContent = msg;
-            box.style.display = "block";
-            setTimeout(() => box.style.display = "none", 4000);
-        }
-    </script>
+        const montoInvalido = seleccionados.some(cb => {
+            const key = cb.value==="Tarjeta" ? "a_monto-tarjeta" : cb.value==="Efectivo" ? "a_monto-efectivo" : "a_monto-sinpe";
+            return !(parseFloat(document.getElementById(key)?.value) > 0);
+        });
+        if (montoInvalido) { showError("a_error","a_errorMsg","Ingresa el monto para cada método seleccionado."); return; }
+
+        const mT = parseFloat(document.getElementById("a_monto-tarjeta")?.value)||0;
+        const mE = parseFloat(document.getElementById("a_monto-efectivo")?.value)||0;
+        const mS = parseFloat(document.getElementById("a_monto-sinpe")?.value)||0;
+        const total = mT + mE + mS;
+
+        const payload = {
+            tipo: "abono_cuenta",
+            numero_orden: parseInt(orden),
+            metodo_pago: seleccionados.map(c=>c.value).join(", "),
+            monto_tarjeta: mT, monto_efectivo: mE, monto_sinpe: mS,
+            total_abono: total,
+            responsable: resp.value,
+            fecha: new Date().toLocaleString("es-CR")
+        };
+
+        document.getElementById("successIcon").className = "success-icon blue";
+        document.getElementById("successIcon").textContent = "📥";
+        document.getElementById("successTitle").textContent = "¡Abono Registrado!";
+        document.getElementById("successDetail").innerHTML =
+            `Orden <strong class="blue">#${orden}</strong><br>` +
+            `Abono: <strong class="blue">₡${total.toLocaleString("es-CR")}</strong><br>` +
+            `Responsable: <strong class="blue">${resp.value}</strong><br>` +
+            `<span style="color:var(--text2);font-size:12px">La cuenta sigue abierta.</span>`;
+        goTo("screenSuccess");
+
+        fetch(WEBHOOK_ABONO, { method:"POST", mode:"no-cors", headers:{"Content-Type":"application/json"}, body:JSON.stringify(payload) }).catch(()=>{});
+    }
+
+    // ── FINALIZAR ──────────────────────────────────────────
+    async function enviarFinalizar() {
+        const orden = document.getElementById("f_orden").value.trim();
+        const seleccionados = Array.from(document.querySelectorAll('input[name="f_metodo"]:checked'));
+        const resp = document.querySelector('input[name="f_resp"]:checked');
+        const fidel = document.querySelector('input[name="f_fidel"]:checked');
+
+        if (!orden || seleccionados.length === 0 || !resp || !fidel) { showError("f_error","f_errorMsg","Completa todos los campos requeridos."); return; }
+
+        const montoInvalido = seleccionados.some(cb => {
+            const key = cb.value==="Tarjeta" ? "f_monto-tarjeta" : cb.value==="Efectivo" ? "f_monto-efectivo" : "f_monto-sinpe";
+            return !(parseFloat(document.getElementById(key)?.value) > 0);
+        });
+        if (montoInvalido) { showError("f_error","f_errorMsg","Ingresa el monto para cada método seleccionado."); return; }
+
+        const mT = parseFloat(document.getElementById("f_monto-tarjeta")?.value)||0;
+        const mE = parseFloat(document.getElementById("f_monto-efectivo")?.value)||0;
+        const mS = parseFloat(document.getElementById("f_monto-sinpe")?.value)||0;
+        const total = mT + mE + mS;
+
+        const payload = {
+            tipo: "finalizar_cuenta",
+            numero_orden: parseInt(orden),
+            metodo_pago: seleccionados.map(c=>c.value).join(", "),
+            monto_tarjeta: mT, monto_efectivo: mE, monto_sinpe: mS,
+            total: total,
+            responsable: resp.value,
+            plan_puntos: fidel.value,
+            fecha_pago: new Date().toLocaleString("es-CR")
+        };
+
+        document.getElementById("successIcon").className = "success-icon gold";
+        document.getElementById("successIcon").textContent = "✓";
+        document.getElementById("successTitle").textContent = "¡Cuenta Saldada!";
+        document.getElementById("successDetail").innerHTML =
+            `Orden <strong>#${orden}</strong> cerrada.<br>` +
+            `Total: <strong>₡${total.toLocaleString("es-CR")}</strong><br>` +
+            `Responsable: <strong>${resp.value}</strong><br>` +
+            `Puntos: ${fidel.value === "Sí" ? "⭐ Aplica" : "❌ No aplica"}`;
+        goTo("screenSuccess");
+
+        fetch(WEBHOOK_FINALIZAR, { method:"POST", mode:"no-cors", headers:{"Content-Type":"application/json"}, body:JSON.stringify(payload) }).catch(()=>{});
+    }
+</script>
 </body>
 </html>
