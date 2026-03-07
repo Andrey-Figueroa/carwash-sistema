@@ -233,7 +233,7 @@ function render(cars) {
 
 function enviarWA(num, cliente, placa) {
   if(!num || num.length < 7) return showToast("⚠️ Cliente sin teléfono");
-  const msg = encodeURIComponent(`¡Hola ${cliente}! ✨ Tu vehículo con placa ${placa} ya está listo para ser retirado en el CarWash.`);
+  const msg = encodeURIComponent(`¡Hola ${cliente}! ✨ Tu vehículo con placa ${placa} ya está listo para ser retirado en Sus Amigos Detailers Center. Gracias por preferirnos.`);
   window.open(`https://wa.me/${num}?text=${msg}`, '_blank');
 }
 
