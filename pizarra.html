@@ -385,8 +385,8 @@ const COL = {
   estado: 8   // I — Estado (ajusta según tu sheet)
 };
 
-// Estado global del vehículo seleccionado
 let selectedCar = null;
+let carsCache = [];
 
 // ════════════════════════════════════════
 // CARGA Y PARSEO DE DATOS
@@ -430,6 +430,7 @@ function parseCSV(text) {
 // RENDER
 // ════════════════════════════════════════
 function render(cars) {
+  carsCache = [];
   const groups = { proceso: [], terminado: [], retirado: [] };
 
   cars.forEach(car => {
@@ -460,17 +461,18 @@ function render(cars) {
 
     grid.innerHTML = groups[z].map((car, i) => {
       const carEmoji = carTypes[i % carTypes.length];
-      const isPaid   = paid.some(p => car.estado.includes(p)) || paid.some(p => car.metodoPago.toLowerCase().includes(p));
+      const idx      = carsCache.length;
+      carsCache.push({ ...car, zone: z, emoji: carEmoji });
+      const isPaid   = paid.some(p => car.estado.includes(p)) || paid.some(p => (car.metodoPago||"").toLowerCase().includes(p));
       const badgeHtml = z !== "proceso"
         ? `<div class="paid-badge ${isPaid ? "pagado" : "pendiente-pago"}">${isPaid ? "✅ Pagado" : "⏳ Por cobrar"}</div>`
         : "";
       const waBtn = z === "terminado"
-        ? `<button class="btn-wa" onclick="event.stopPropagation();enviarWA('${car.celular}','${car.cliente}','${car.placa}')">📲 AVISAR POR WA</button>`
+        ? `<button class="btn-wa" onclick="event.stopPropagation();enviarWAIdx(${idx})">📲 AVISAR POR WA</button>`
         : "";
 
       return `
-        <div class="car-card zone-${z}-active clickable-hint"
-             onclick="openActionModal(${JSON.stringify(car).replace(/"/g,'&quot;')}, '${z}', '${carEmoji}')">
+        <div class="car-card zone-${z}-active clickable-hint" data-idx="${idx}" onclick="openActionModalIdx(${idx})">
           <div class="car-emoji">${carEmoji}${emojis[z]}</div>
           <div class="car-plate">${car.placa}</div>
           <div class="car-name">${car.cliente || "Sin nombre"}</div>
@@ -486,6 +488,18 @@ function render(cars) {
 // ════════════════════════════════════════
 // MODAL DE ACCIONES
 // ════════════════════════════════════════
+function openActionModalIdx(idx) {
+  const entry = carsCache[idx];
+  if (!entry) return;
+  openActionModal(entry, entry.zone, entry.emoji);
+}
+
+function enviarWAIdx(idx) {
+  const entry = carsCache[idx];
+  if (!entry) return;
+  enviarWA(entry.celular, entry.cliente, entry.placa);
+}
+
 function openActionModal(car, zone, emoji) {
   selectedCar = { ...car, zone };
 
