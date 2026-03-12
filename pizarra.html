@@ -107,41 +107,53 @@ body{background:var(--bg);font-family:"DM Sans",sans-serif;color:var(--text);min
 .action-divider{height:1px;background:var(--border);margin:4px 0}
 
 /* ── MODAL: COBRO ── */
-.cobro-box{background:var(--surface);border:1px solid var(--border);border-radius:24px;width:100%;max-width:480px;overflow:hidden;animation:modalIn .25s cubic-bezier(.34,1.2,.64,1)}
+.cobro-box{background:var(--surface);border:1px solid var(--border);border-radius:24px;width:100%;max-width:500px;overflow:hidden;animation:modalIn .25s cubic-bezier(.34,1.2,.64,1)}
 .cobro-header{padding:20px 24px 16px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
 .cobro-header h2{font-size:17px;font-weight:700;display:flex;align-items:center;gap:10px}
-.cobro-body{padding:20px 24px 24px;display:flex;flex-direction:column;gap:14px;max-height:70vh;overflow-y:auto}
+.cobro-body{padding:20px 24px 24px;display:flex;flex-direction:column;gap:16px;max-height:80vh;overflow-y:auto}
 
-.info-row{display:flex;justify-content:space-between;align-items:center;background:rgba(0,212,255,0.05);border:1px solid rgba(0,212,255,0.12);border-radius:10px;padding:10px 14px;font-size:13px}
-.info-row .lbl{color:var(--muted)}
-.info-row .val{font-weight:700;font-family:"DM Mono",monospace;color:var(--accent)}
+/* Sección dentro del cobro */
+.cobro-section{border:1px solid var(--border);border-radius:14px;overflow:hidden}
+.cobro-section-title{padding:10px 16px;background:rgba(255,255,255,0.03);border-bottom:1px solid var(--border);font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:1.5px;display:flex;align-items:center;gap:6px}
+.cobro-section-body{padding:16px}
+
+/* Campo de orden */
+.orden-field{display:flex;align-items:center;background:var(--bg);border:1px solid var(--border);border-radius:10px;overflow:hidden}
+.orden-field input{flex:1;background:none;border:none;color:var(--text);padding:12px 14px;font-size:15px;font-family:"DM Mono",monospace;outline:none}
+.orden-field .orden-hash{padding:12px 14px;color:var(--muted);font-family:"DM Mono",monospace;border-left:1px solid var(--border)}
+.orden-hint{font-size:11px;color:var(--muted);margin-top:5px}
+
+/* Checkboxes de método de pago — estilo lista */
+.metodo-list{display:flex;flex-direction:column;gap:8px}
+.metodo-row{display:flex;align-items:center;gap:14px;padding:12px 16px;border:1px solid var(--border);border-radius:12px;cursor:pointer;transition:all .18s;background:var(--bg);user-select:none}
+.metodo-row:hover{border-color:var(--muted);background:rgba(255,255,255,0.03)}
+.metodo-row input[type=checkbox]{width:18px;height:18px;accent-color:var(--accent);cursor:pointer;flex-shrink:0}
+.metodo-row.checked{border-color:var(--accent);background:rgba(0,212,255,0.07)}
+.metodo-row .met-icon{font-size:20px}
+.metodo-row .met-name{font-size:14px;font-weight:500;flex:1}
+
+/* Campos de monto individuales */
+.monto-input-row{display:flex;flex-direction:column;gap:6px}
+.monto-input-row label{font-size:12px;font-weight:600;color:var(--text)}
+.monto-input-wrap{display:flex;align-items:center;background:var(--bg);border:1px solid var(--border);border-radius:10px;overflow:hidden;transition:border-color .2s}
+.monto-input-wrap:focus-within{border-color:var(--accent)}
+.monto-input-wrap input{flex:1;background:none;border:none;color:var(--text);padding:11px 14px;font-size:15px;font-family:"DM Mono",monospace;outline:none}
+.monto-input-wrap .currency{padding:11px 14px;color:var(--muted);font-family:"DM Mono",monospace;font-size:14px;border-left:1px solid var(--border)}
+
+/* Total */
+.total-row{display:flex;justify-content:space-between;align-items:center;padding:14px 16px;background:rgba(255,193,7,0.06);border:1px solid rgba(255,193,7,0.25);border-radius:12px}
+.total-row .total-lbl{color:var(--yellow);font-weight:600;display:flex;align-items:center;gap:8px}
+.total-row .total-val{font-family:"DM Mono",monospace;font-size:20px;font-weight:800;color:var(--yellow)}
+
+/* Chips de responsable */
+.responsable-chips{display:flex;flex-wrap:wrap;gap:8px}
+.resp-chip{padding:8px 16px;border:1px solid var(--border);border-radius:50px;font-size:13px;font-weight:500;cursor:pointer;transition:all .18s;background:var(--bg);color:var(--muted)}
+.resp-chip:hover{border-color:var(--muted);color:var(--text)}
+.resp-chip.selected{border-color:var(--accent);background:rgba(0,212,255,0.12);color:var(--accent)}
 
 .form-label{font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:4px;display:block}
-.form-select,.form-input{background:var(--bg);border:1px solid var(--border);border-radius:10px;color:var(--text);padding:10px 14px;font-size:14px;font-family:inherit;outline:none;transition:border-color .2s;width:100%}
-.form-select:focus,.form-input:focus{border-color:var(--accent)}
-.form-select option{background:var(--card)}
 
-/* Métodos de pago — chips */
-.metodos-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px}
-.metodo-chip{position:relative;border:1px solid var(--border);border-radius:10px;padding:10px 8px;text-align:center;cursor:pointer;transition:all .18s;user-select:none;background:var(--bg)}
-.metodo-chip input{position:absolute;opacity:0;width:0;height:0}
-.metodo-chip .chip-icon{font-size:20px;display:block;margin-bottom:4px}
-.metodo-chip .chip-label{font-size:10px;font-weight:600;color:var(--muted);letter-spacing:0.5px}
-.metodo-chip:has(input:checked){border-color:var(--accent);background:rgba(0,212,255,0.1)}
-.metodo-chip:has(input:checked) .chip-label{color:var(--accent)}
-
-.monto-fields{display:flex;flex-direction:column;gap:8px}
-.monto-field{display:flex;align-items:center;gap:10px;background:var(--bg);border:1px solid var(--border);border-radius:10px;padding:8px 14px;transition:border-color .2s}
-.monto-field:focus-within{border-color:var(--accent)}
-.monto-field .mf-label{font-size:11px;color:var(--muted);width:70px;flex-shrink:0}
-.monto-field .mf-currency{font-size:13px;color:var(--muted);font-family:"DM Mono",monospace}
-.monto-field input{flex:1;background:none;border:none;color:var(--text);font-size:14px;font-family:"DM Mono",monospace;outline:none;text-align:right}
-
-.total-row{display:flex;justify-content:space-between;align-items:center;padding:12px 14px;background:rgba(255,193,7,0.06);border:1px solid rgba(255,193,7,0.2);border-radius:10px;font-size:14px}
-.total-row .total-lbl{color:var(--yellow);font-weight:600}
-.total-row .total-val{font-family:"DM Mono",monospace;font-size:18px;font-weight:700;color:var(--yellow)}
-
-.btn-cobrar{width:100%;padding:14px;background:linear-gradient(135deg,#ffc107,#e6a800);color:#000;border:none;border-radius:12px;font-size:15px;font-weight:800;cursor:pointer;font-family:inherit;transition:opacity .2s;letter-spacing:.5px}
+.btn-cobrar{width:100%;padding:15px;background:linear-gradient(135deg,#ffc107,#e6a800);color:#000;border:none;border-radius:12px;font-size:15px;font-weight:800;cursor:pointer;font-family:inherit;transition:opacity .2s;letter-spacing:.5px}
 .btn-cobrar:hover{opacity:.88}
 .btn-cobrar:disabled{opacity:.4;cursor:not-allowed}
 
@@ -217,76 +229,130 @@ body{background:var(--bg);font-family:"DM Sans",sans-serif;color:var(--text);min
       <button class="modal-close" onclick="closeCobroModal()">✕</button>
     </div>
     <div class="cobro-body">
-      <!-- Info de la orden -->
-      <div class="info-row">
-        <span class="lbl">N° Orden</span>
-        <span class="val" id="cOrden">—</span>
-      </div>
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
-        <div class="info-row"><span class="lbl">Placa</span><span class="val" id="cPlate">—</span></div>
-        <div class="info-row"><span class="lbl">Monto Total</span><span class="val" id="cMonto">₡0</span></div>
-      </div>
 
-      <!-- Facturador -->
-      <div>
-        <label class="form-label">👤 Persona que factura</label>
-        <select class="form-select" id="cFacturador">
-          <option value="">Seleccionar...</option>
-          <option>Eder</option>
-          <option>Juan (Chamo)</option>
-          <option>Massiel</option>
-          <option>Jesús</option>
-          <option>Andrey</option>
-          <option>Ronald</option>
-          <option>Angie</option>
-        </select>
-      </div>
-
-      <!-- Métodos de pago — multiselección -->
-      <div>
-        <label class="form-label">💳 Método(s) de pago</label>
-        <div class="metodos-grid">
-          <label class="metodo-chip">
-            <input type="checkbox" value="Efectivo" id="metEfectivo" onchange="updateMontoFields()">
-            <span class="chip-icon">💵</span>
-            <span class="chip-label">EFECTIVO</span>
-          </label>
-          <label class="metodo-chip">
-            <input type="checkbox" value="Tarjeta" id="metTarjeta" onchange="updateMontoFields()">
-            <span class="chip-icon">💳</span>
-            <span class="chip-label">TARJETA</span>
-          </label>
-          <label class="metodo-chip">
-            <input type="checkbox" value="Sinpe" id="metSinpe" onchange="updateMontoFields()">
-            <span class="chip-icon">📱</span>
-            <span class="chip-label">SINPE</span>
-          </label>
+      <!-- SECCIÓN: ORDEN -->
+      <div class="cobro-section">
+        <div class="cobro-section-title">📋 Orden</div>
+        <div class="cobro-section-body" style="display:flex;flex-direction:column;gap:10px">
+          <div>
+            <label class="form-label">Número de orden del vehículo</label>
+            <div class="orden-field">
+              <input type="text" id="cOrden" readonly style="color:var(--accent);font-weight:700">
+              <span class="orden-hash">#</span>
+            </div>
+            <div class="orden-hint">Puedes verificarlo en el Google Sheets</div>
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+            <div>
+              <label class="form-label">Placa</label>
+              <div class="orden-field"><input type="text" id="cPlate" readonly style="color:var(--text)"></div>
+            </div>
+            <div>
+              <label class="form-label">Monto total</label>
+              <div class="orden-field"><input type="text" id="cMonto" readonly style="color:var(--green);font-weight:700"></div>
+            </div>
+          </div>
         </div>
       </div>
 
-      <!-- Montos por método -->
-      <div class="monto-fields" id="montoFields" style="display:none">
-        <div class="monto-field" id="fieldEfectivo" style="display:none">
-          <span class="mf-label">Efectivo</span>
-          <span class="mf-currency">₡</span>
-          <input type="number" id="montoEfectivo" placeholder="0" oninput="calcTotal()" min="0">
-        </div>
-        <div class="monto-field" id="fieldTarjeta" style="display:none">
-          <span class="mf-label">Tarjeta</span>
-          <span class="mf-currency">₡</span>
-          <input type="number" id="montoTarjeta" placeholder="0" oninput="calcTotal()" min="0">
-        </div>
-        <div class="monto-field" id="fieldSinpe" style="display:none">
-          <span class="mf-label">Sinpe</span>
-          <span class="mf-currency">₡</span>
-          <input type="number" id="montoSinpe" placeholder="0" oninput="calcTotal()" min="0">
+      <!-- SECCIÓN: MÉTODOS DE PAGO -->
+      <div class="cobro-section">
+        <div class="cobro-section-title">💳 Detalles de Pago</div>
+        <div class="cobro-section-body" style="display:flex;flex-direction:column;gap:14px">
+          <div>
+            <label class="form-label">Método de pago</label>
+            <div class="metodo-list">
+              <label class="metodo-row" id="rowTarjeta" onclick="toggleMetodo('Tarjeta',this)">
+                <input type="checkbox" id="metTarjeta" onchange="calcTotal()">
+                <span class="met-icon">💳</span>
+                <span class="met-name">Tarjeta crédito / débito</span>
+              </label>
+              <label class="metodo-row" id="rowCxC" onclick="toggleMetodo('CuentaPorCobrar',this)">
+                <input type="checkbox" id="metCxC" onchange="calcTotal()">
+                <span class="met-icon">📋</span>
+                <span class="met-name">Cuenta por cobrar</span>
+              </label>
+              <label class="metodo-row" id="rowEfectivo" onclick="toggleMetodo('Efectivo',this)">
+                <input type="checkbox" id="metEfectivo" onchange="calcTotal()">
+                <span class="met-icon">💵</span>
+                <span class="met-name">Efectivo</span>
+              </label>
+              <label class="metodo-row" id="rowSinpe" onclick="toggleMetodo('Sinpe',this)">
+                <input type="checkbox" id="metSinpe" onchange="calcTotal()">
+                <span class="met-icon">📱</span>
+                <span class="met-name">SINPE Móvil</span>
+              </label>
+              <label class="metodo-row" id="rowRegalo" onclick="toggleMetodo('TarjetaRegalo',this)">
+                <input type="checkbox" id="metRegalo" onchange="calcTotal()">
+                <span class="met-icon">🎁</span>
+                <span class="met-name">Tarjeta de regalo</span>
+              </label>
+            </div>
+          </div>
+
+          <!-- Campos de monto — siempre visibles, se habilitan al seleccionar -->
+          <div style="display:flex;flex-direction:column;gap:10px">
+            <div class="monto-input-row" id="fieldTarjeta">
+              <label>Monto en tarjeta</label>
+              <div class="monto-input-wrap">
+                <input type="number" id="montoTarjeta" placeholder="0" min="0" oninput="calcTotal()">
+                <span class="currency">₡</span>
+              </div>
+            </div>
+            <div class="monto-input-row" id="fieldCxC">
+              <label>Monto en cuenta por cobrar</label>
+              <div class="monto-input-wrap">
+                <input type="number" id="montoCxC" placeholder="0" min="0" oninput="calcTotal()">
+                <span class="currency">₡</span>
+              </div>
+            </div>
+            <div class="monto-input-row" id="fieldEfectivo">
+              <label>Monto en efectivo</label>
+              <div class="monto-input-wrap">
+                <input type="number" id="montoEfectivo" placeholder="0" min="0" oninput="calcTotal()">
+                <span class="currency">₡</span>
+              </div>
+            </div>
+            <div class="monto-input-row" id="fieldSinpe">
+              <label>Monto en SINPE</label>
+              <div class="monto-input-wrap">
+                <input type="number" id="montoSinpe" placeholder="0" min="0" oninput="calcTotal()">
+                <span class="currency">₡</span>
+              </div>
+            </div>
+            <div class="monto-input-row" id="fieldRegalo">
+              <label>Monto en tarjeta de regalo</label>
+              <div class="monto-input-wrap">
+                <input type="number" id="montoRegalo" placeholder="0" min="0" oninput="calcTotal()">
+                <span class="currency">₡</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Total -->
+          <div class="total-row">
+            <span class="total-lbl">💰 Total</span>
+            <span class="total-val" id="totalIngresado">₡0</span>
+          </div>
         </div>
       </div>
 
-      <!-- Total ingresado vs total esperado -->
-      <div class="total-row" id="totalRow" style="display:none">
-        <span class="total-lbl">Total ingresado</span>
-        <span class="total-val" id="totalIngresado">₡0</span>
+      <!-- SECCIÓN: FACTURACIÓN -->
+      <div class="cobro-section">
+        <div class="cobro-section-title">🧾 Facturación</div>
+        <div class="cobro-section-body">
+          <label class="form-label">Responsable que recibe el pago</label>
+          <div class="responsable-chips" id="respChips">
+            <div class="resp-chip" onclick="selectResp(this,'Juan')">Juan</div>
+            <div class="resp-chip" onclick="selectResp(this,'Eder')">Eder</div>
+            <div class="resp-chip" onclick="selectResp(this,'Massiel')">Massiel</div>
+            <div class="resp-chip" onclick="selectResp(this,'Jesús')">Jesús</div>
+            <div class="resp-chip" onclick="selectResp(this,'Andrey')">Andrey</div>
+            <div class="resp-chip" onclick="selectResp(this,'Ronald')">Ronald</div>
+            <div class="resp-chip" onclick="selectResp(this,'Ricardo')">Ricardo</div>
+          </div>
+          <input type="hidden" id="cFacturador" value="">
+        </div>
       </div>
 
       <button class="btn-cobrar" id="btnCobrar" onclick="enviarCobro()">
@@ -525,77 +591,96 @@ function abrirCobro() {
   if (!selectedCar) return;
   closeActionModal();
 
-  // Llenar datos de la orden
-  document.getElementById("cOrden").textContent = selectedCar.orden || "—";
-  document.getElementById("cPlate").textContent = selectedCar.placa;
-  document.getElementById("cMonto").textContent = selectedCar.monto
-    ? "₡" + Number(selectedCar.monto).toLocaleString("es-CR")
-    : "₡0";
+  document.getElementById("cOrden").value  = selectedCar.orden || "—";
+  document.getElementById("cPlate").value  = selectedCar.placa;
+  document.getElementById("cMonto").value  = selectedCar.monto
+    ? "₡" + Number(selectedCar.monto).toLocaleString("es-CR") : "₡0";
 
-  // Resetear formulario
-  ["metEfectivo","metTarjeta","metSinpe"].forEach(id => {
+  // Resetear checkboxes y montos
+  ["metTarjeta","metCxC","metEfectivo","metSinpe","metRegalo"].forEach(id => {
     document.getElementById(id).checked = false;
   });
-  ["montoEfectivo","montoTarjeta","montoSinpe"].forEach(id => {
+  ["montoTarjeta","montoCxC","montoEfectivo","montoSinpe","montoRegalo"].forEach(id => {
     document.getElementById(id).value = "";
+    document.getElementById(id).disabled = true;
   });
+  // Quitar .checked de las rows
+  document.querySelectorAll(".metodo-row").forEach(r => r.classList.remove("checked"));
+  // Resetear responsable
+  document.querySelectorAll(".resp-chip").forEach(c => c.classList.remove("selected"));
   document.getElementById("cFacturador").value = "";
-  document.getElementById("montoFields").style.display = "none";
-  document.getElementById("totalRow").style.display = "none";
-  updateMontoFields();
+  // Reset total
+  document.getElementById("totalIngresado").textContent = "₡0";
+  // Reset botón
+  const btn = document.getElementById("btnCobrar");
+  btn.disabled = false;
+  btn.innerHTML = "💰 Confirmar Cobro";
 
   document.getElementById("cobroModal").classList.add("show");
+}
+
+function toggleMetodo(metodo, rowEl) {
+  // Evitar doble toggle por el click en el label
+  const checkMap = {
+    Tarjeta:         "metTarjeta",
+    CuentaPorCobrar: "metCxC",
+    Efectivo:        "metEfectivo",
+    Sinpe:           "metSinpe",
+    TarjetaRegalo:   "metRegalo"
+  };
+  const fieldMap = {
+    Tarjeta:         "montoTarjeta",
+    CuentaPorCobrar: "montoCxC",
+    Efectivo:        "montoEfectivo",
+    Sinpe:           "montoSinpe",
+    TarjetaRegalo:   "montoRegalo"
+  };
+  const chk   = document.getElementById(checkMap[metodo]);
+  const input = document.getElementById(fieldMap[metodo]);
+  // El checkbox ya cambió por el click nativo; leemos su nuevo estado
+  const isChecked = chk.checked;
+  rowEl.classList.toggle("checked", isChecked);
+  input.disabled = !isChecked;
+  if (!isChecked) input.value = "";
+  calcTotal();
+}
+
+function selectResp(el, nombre) {
+  document.querySelectorAll(".resp-chip").forEach(c => c.classList.remove("selected"));
+  el.classList.add("selected");
+  document.getElementById("cFacturador").value = nombre;
+}
+
+function calcTotal() {
+  const ids = ["montoTarjeta","montoCxC","montoEfectivo","montoSinpe","montoRegalo"];
+  const total = ids.reduce((sum, id) => {
+    const el = document.getElementById(id);
+    return sum + (el.disabled ? 0 : parseFloat(el.value) || 0);
+  }, 0);
+  document.getElementById("totalIngresado").textContent = "₡" + total.toLocaleString("es-CR");
 }
 
 function closeCobroModal() {
   document.getElementById("cobroModal").classList.remove("show");
 }
 
-function updateMontoFields() {
-  const checks = {
-    Efectivo: document.getElementById("metEfectivo").checked,
-    Tarjeta:  document.getElementById("metTarjeta").checked,
-    Sinpe:    document.getElementById("metSinpe").checked
-  };
-  const anyChecked = Object.values(checks).some(Boolean);
-
-  document.getElementById("fieldEfectivo").style.display = checks.Efectivo ? "flex" : "none";
-  document.getElementById("fieldTarjeta").style.display  = checks.Tarjeta  ? "flex" : "none";
-  document.getElementById("fieldSinpe").style.display    = checks.Sinpe    ? "flex" : "none";
-  document.getElementById("montoFields").style.display   = anyChecked ? "flex" : "none";
-  document.getElementById("totalRow").style.display      = anyChecked ? "flex" : "none";
-
-  if (!checks.Efectivo) document.getElementById("montoEfectivo").value = "";
-  if (!checks.Tarjeta)  document.getElementById("montoTarjeta").value  = "";
-  if (!checks.Sinpe)    document.getElementById("montoSinpe").value    = "";
-  calcTotal();
-}
-
-function calcTotal() {
-  const e = parseFloat(document.getElementById("montoEfectivo").value) || 0;
-  const t = parseFloat(document.getElementById("montoTarjeta").value)  || 0;
-  const s = parseFloat(document.getElementById("montoSinpe").value)    || 0;
-  const total = e + t + s;
-  document.getElementById("totalIngresado").textContent = "₡" + total.toLocaleString("es-CR");
-}
-
 async function enviarCobro() {
   const facturador = document.getElementById("cFacturador").value;
-  const checks = {
-    Efectivo: document.getElementById("metEfectivo").checked,
-    Tarjeta:  document.getElementById("metTarjeta").checked,
-    Sinpe:    document.getElementById("metSinpe").checked
-  };
-  const anyMethod = Object.values(checks).some(Boolean);
+  const metodos = [];
+  if (document.getElementById("metTarjeta").checked)  metodos.push("Tarjeta");
+  if (document.getElementById("metCxC").checked)      metodos.push("Cuenta por cobrar");
+  if (document.getElementById("metEfectivo").checked) metodos.push("Efectivo");
+  if (document.getElementById("metSinpe").checked)    metodos.push("Sinpe");
+  if (document.getElementById("metRegalo").checked)   metodos.push("Tarjeta de regalo");
 
-  if (!facturador)  return showToast("⚠️ Selecciona quién factura");
-  if (!anyMethod)   return showToast("⚠️ Selecciona al menos un método de pago");
+  if (!facturador)        return showToast("⚠️ Selecciona quién recibe el pago");
+  if (!metodos.length)    return showToast("⚠️ Selecciona al menos un método de pago");
 
-  const montoEfectivo = parseFloat(document.getElementById("montoEfectivo").value) || 0;
   const montoTarjeta  = parseFloat(document.getElementById("montoTarjeta").value)  || 0;
-  const montoSinpe    = parseFloat(document.getElementById("montoSinpe").value)    || 0;
-
-  const metodos = Object.entries(checks).filter(([,v]) => v).map(([k]) => k).join(", ");
+  const montoCxC      = parseFloat(document.getElementById("montoCxC").value)       || 0;
+  const montoEfectivo = parseFloat(document.getElementById("montoEfectivo").value)  || 0;
+  const montoSinpe    = parseFloat(document.getElementById("montoSinpe").value)     || 0;
+  const montoRegalo   = parseFloat(document.getElementById("montoRegalo").value)    || 0;
 
   const btn = document.getElementById("btnCobrar");
   btn.disabled = true;
@@ -606,15 +691,17 @@ async function enviarCobro() {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
-        numeroOrden:    selectedCar?.orden || document.getElementById("cOrden").textContent,
-        placa:          document.getElementById("cPlate").textContent,
+        numeroOrden:    document.getElementById("cOrden").value,
+        placa:          document.getElementById("cPlate").value,
         montoTotal:     selectedCar?.monto || "0",
-        metodoPago:     metodos,
-        montoEfectivo:  montoEfectivo,
-        montoTarjeta:   montoTarjeta,
-        montoSinpe:     montoSinpe,
-        totalRecibido:  montoEfectivo + montoTarjeta + montoSinpe,
-        facturador:     facturador,
+        metodoPago:     metodos.join(", "),
+        montoTarjeta,
+        montoCuentaPorCobrar: montoCxC,
+        montoEfectivo,
+        montoSinpe,
+        montoTarjetaRegalo: montoRegalo,
+        totalRecibido:  montoTarjeta + montoCxC + montoEfectivo + montoSinpe + montoRegalo,
+        facturador,
         timestamp:      new Date().toISOString()
       })
     });
