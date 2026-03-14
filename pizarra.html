@@ -21,10 +21,6 @@ body{background:var(--bg);font-family:"DM Sans",sans-serif;color:var(--text);min
 .page-title{font-family:"Bebas Neue",sans-serif;font-size:26px;letter-spacing:3px;background:linear-gradient(90deg,#fff 40%,var(--accent));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
 .back-btn{background:transparent;border:1px solid var(--border);color:var(--muted);border-radius:8px;padding:7px 14px;cursor:pointer;font-size:13px;font-family:inherit;transition:all .2s;text-decoration:none;display:flex;align-items:center;gap:6px}
 .back-btn:hover{color:var(--text);border-color:var(--muted);background:rgba(255,255,255,0.05)}
-.topbar-right{display:flex;align-items:center;gap:15px}
-.status-pill{display:flex;align-items:center;gap:7px;font-size:12px;color:var(--muted);background:rgba(0,0,0,0.3);border:1px solid var(--border);border-radius:20px;padding:5px 12px}
-.pulse-dot{width:7px;height:7px;border-radius:50%;background:var(--green);animation:pulse 2s infinite}
-@keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(0,230,118,0.5)}50%{box-shadow:0 0 0 5px rgba(0,230,118,0)}}
 
 /* ── STATS ── */
 .stats-bar{display:flex;border-bottom:1px solid var(--border);background:var(--surface)}
@@ -39,112 +35,35 @@ body{background:var(--bg);font-family:"DM Sans",sans-serif;color:var(--text);min
 .cars-grid{display:flex;flex-wrap:wrap;gap:14px;align-content:flex-start}
 
 /* ── CARDS ── */
-.car-card{width:175px;background:rgba(0,0,0,0.45);border-radius:18px;border:1px solid rgba(255,255,255,0.06);padding:14px;transition:transform 0.2s,border-color 0.2s,box-shadow 0.2s;position:relative;overflow:hidden;animation:carIn .42s cubic-bezier(.34,1.56,.64,1) forwards;cursor:pointer}
+.car-card{width:175px;background:rgba(0,0,0,0.45);border-radius:18px;border:1px solid rgba(255,255,255,0.06);padding:14px;transition:transform 0.2s,border-color 0.2s,box-shadow 0.2s;position:relative;overflow:hidden;cursor:pointer}
 .car-card:hover{transform:translateY(-5px);border-color:var(--accent);box-shadow:0 8px 24px rgba(0,212,255,0.15)}
-.orden-badge{position:absolute;top:9px;right:10px;font-family:"DM Mono",monospace;font-size:10px;font-weight:800;color:var(--accent);background:rgba(0,212,255,0.1);border:1px solid rgba(0,212,255,0.25);border-radius:5px;padding:2px 6px;letter-spacing:.5px;line-height:1.4}
+.car-plate{font-family:"DM Mono",monospace;font-size:13px;font-weight:bold;background:rgba(0,212,255,0.1);border:1px solid rgba(0,212,255,0.3);border-radius:6px;padding:4px;text-align:center;color:#fff}
 
-@keyframes carIn{from{opacity:0;transform:scale(.82) translateY(12px)}to{opacity:1;transform:scale(1) translateY(0)}}
-@keyframes shimmer{0%{opacity:.2}100%{opacity:.8}}
-
-.car-emoji{font-size:32px;display:block;text-align:center;margin-bottom:10px;position:relative}
-.car-plate{font-family:"DM Mono",monospace;font-size:13px;font-weight:bold;background:rgba(0,212,255,0.1);border:1px solid rgba(0,212,255,0.3);border-radius:6px;padding:4px;text-align:center;letter-spacing:1px;margin-bottom:8px;color:#fff}
-.car-name{font-size:12px;font-weight:600;margin-bottom:4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.car-service{font-size:10px;color:var(--muted);line-height:1.2;height:24px;overflow:hidden}
-
-.paid-badge{display:inline-flex;align-items:center;gap:4px;font-size:9px;font-weight:700;padding:2px 7px;border-radius:20px;margin-top:6px}
-.paid-badge.pagado{background:rgba(0,230,118,0.15);color:var(--green);border:1px solid rgba(0,230,118,0.3)}
-.paid-badge.pendiente-pago{background:rgba(255,193,7,0.12);color:var(--yellow);border:1px solid rgba(255,193,7,0.25)}
-
-.btn-wa{width:100%;margin-top:10px;padding:8px;background:rgba(0,230,118,0.1);border:1px solid rgba(0,230,118,0.3);color:var(--green);border-radius:9px;cursor:pointer;font-weight:bold;font-size:11px;transition:0.2s;position:relative;z-index:1}
-.btn-wa:hover{background:var(--green);color:#000}
-
-/* ── MODALS BASE ── */
+/* ── MODAL COBRO ── */
 .modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.85);backdrop-filter:blur(8px);z-index:2000;display:none;align-items:center;justify-content:center;padding:20px}
 .modal-overlay.show{display:flex}
-.modal-box{background:var(--surface);border:1px solid var(--border);border-radius:24px;width:100%;max-width:460px;overflow:hidden;animation:modalIn .25s cubic-bezier(.34,1.2,.64,1)}
-
-@keyframes modalIn{from{opacity:0;transform:scale(.93) translateY(12px)}to{opacity:1;transform:scale(1) translateY(0)}}
-
-/* ── MODAL: FINALIZAR COBRO — CORRECCIÓN SCROLL ── */
 .cobro-box {
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: 24px;
-  width: 100%;
-  max-width: 580px;
-  max-height: 90vh; /* Altura máxima para no salir de pantalla */
-  display: flex;
-  flex-direction: column; /* Clave para el layout fijo/scroll */
-  overflow: hidden;
-  box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+  background: var(--surface); border: 1px solid var(--border); border-radius: 24px;
+  width: 100%; max-width: 580px; max-height: 90vh; display: flex; flex-direction: column; overflow: hidden;
 }
+.cobro-header { padding: 22px 28px; border-bottom: 1px solid var(--border); flex-shrink: 0; display: flex; align-items: center; justify-content: space-between; }
+.cobro-body { padding: 24px 28px; flex: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 20px; }
+.cobro-footer { padding: 20px 28px; border-top: 1px solid var(--border); flex-shrink: 0; }
 
-.cobro-header {
-  padding: 22px 28px;
-  border-bottom: 1px solid var(--border);
-  background: linear-gradient(135deg, rgba(255,193,7,0.06), transparent);
-  display: flex; align-items: center; justify-content: space-between;
-  flex-shrink: 0; /* No se encoge */
-}
-
-.cobro-body {
-  padding: 24px 28px;
-  flex: 1; /* Ocupa el resto del espacio */
-  overflow-y: auto; /* ACTIVA EL SCROLL AQUÍ */
-  min-height: 0;
-  display: flex; flex-direction: column; gap: 20px;
-  -webkit-overflow-scrolling: touch;
-}
-.cobro-body::-webkit-scrollbar { width: 6px; }
-.cobro-body::-webkit-scrollbar-thumb { background: var(--border); border-radius: 10px; }
-
-.cobro-footer {
-  padding: 20px 28px;
-  border-top: 1px solid var(--border);
-  background: rgba(0,0,0,0.2);
-  flex-shrink: 0; /* Siempre visible abajo */
-}
-
-/* ── ELEMENTOS INTERNOS ── */
-.cobro-title{font-family:"Bebas Neue",sans-serif;font-size:24px;letter-spacing:2px;color:var(--yellow)}
-.orden-chip-val{font-family:"DM Mono",monospace;font-size:22px;font-weight:900;color:var(--accent);background:rgba(0,212,255,0.1);border:1px solid rgba(0,212,255,0.35);border-radius:8px;padding:5px 14px}
-
-.cobro-vehicle-bar{display:flex;align-items:center;gap:16px;padding:12px 0px;border-bottom:1px solid var(--border);margin-bottom:10px}
-.cobro-veh-plate{font-family:"DM Mono",monospace;font-size:15px;font-weight:700;background:rgba(0,212,255,0.08);border:1px solid rgba(0,212,255,0.2);border-radius:7px;padding:5px 12px}
-
-.metodos-btns{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
-.met-btn{display:flex;flex-direction:column;align-items:center;gap:6px;padding:14px 5px;border:2px solid var(--border);border-radius:14px;background:rgba(0,0,0,0.3);cursor:pointer;transition:all .2s;color:var(--muted);text-align:center}
+.metodos-btns{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.met-btn{display:flex;flex-direction:column;align-items:center;gap:6px;padding:12px 5px;border:2px solid var(--border);border-radius:14px;background:rgba(0,0,0,0.3);cursor:pointer;transition:all .2s;color:var(--muted);text-align:center}
 .met-btn.active{border-color:var(--accent);background:rgba(0,212,255,0.1);color:var(--accent)}
-.met-btn-icon{font-size:22px}
 .met-btn-name{font-size:10px;font-weight:700}
 
 .montos-isla{display:none;flex-direction:column;gap:12px;background:rgba(0,212,255,0.04);border:1px solid rgba(0,212,255,0.2);border-radius:16px;padding:18px}
 .montos-isla.show{display:flex}
 .monto-field-row{display:flex;align-items:center;gap:14px}
-.monto-field-label{font-size:12px;font-weight:600;color:var(--muted);min-width:120px}
-.monto-input-wrap{flex:1;display:flex;background:var(--bg);border:1px solid var(--border);border-radius:10px;overflow:hidden}
-.monto-input-wrap input{flex:1;background:none;border:none;color:var(--text);padding:10px 14px;font-family:"DM Mono",monospace;outline:none}
+.monto-input-wrap input{flex:1;background:var(--bg);border:1px solid var(--border);color:var(--text);padding:10px;border-radius:8px;outline:none;font-family:"DM Mono"}
 
-.total-row{display:flex;justify-content:space-between;align-items:center;padding:16px;background:rgba(255,193,7,0.1);border:1px solid var(--yellow);border-radius:12px;margin-top:10px}
-.total-val{font-family:"DM Mono",monospace;font-size:22px;font-weight:800;color:var(--yellow)}
-
-.responsable-chips{display:flex;flex-wrap:wrap;gap:8px}
-.resp-chip{padding:8px 16px;border:1px solid var(--border);border-radius:50px;font-size:13px;cursor:pointer;background:var(--bg);color:var(--muted)}
+.resp-chip{padding:8px 16px;border:1px solid var(--border);border-radius:50px;font-size:13px;cursor:pointer;background:var(--bg);color:var(--muted);display:inline-block;margin:4px}
 .resp-chip.selected{border-color:var(--accent);background:rgba(0,212,255,0.12);color:var(--accent)}
 
-.btn-cobrar{width:100%;padding:16px;background:linear-gradient(135deg,#ffc107,#e6a800);color:#000;border:none;border-radius:14px;font-size:16px;font-weight:800;cursor:pointer;transition:transform 0.1s}
-.btn-cobrar:active{transform:scale(0.98)}
-
-.loading-overlay{position:fixed;inset:0;background:var(--bg);display:flex;flex-direction:column;justify-content:center;align-items:center;z-index:3000;gap:15px;transition:opacity 0.4s}
-.spinner{width:40px;height:40px;border:3px solid var(--border);border-top-color:var(--accent);border-radius:50%;animation:spin 1s linear infinite}
-@keyframes spin{to{transform:rotate(360deg)}}
-.toast{position:fixed;bottom:25px;left:50%;transform:translateX(-50%);background:var(--card);border:1px solid var(--border);padding:12px 25px;border-radius:12px;opacity:0;transition:0.3s;z-index:4000}
-.toast.show{opacity:1}
-
-@media(max-width:600px){
-  .metodos-btns{grid-template-columns:1fr 1fr}
-  .cobro-box{max-height:100vh;border-radius:0}
-}
+.btn-cobrar{width:100%;padding:16px;background:linear-gradient(135deg,#ffc107,#e6a800);color:#000;border:none;border-radius:14px;font-size:16px;font-weight:800;cursor:pointer}
 </style>
 </head>
 <body>
@@ -155,12 +74,7 @@ body{background:var(--bg);font-family:"DM Sans",sans-serif;color:var(--text);min
     <div class="logo-chip">CW</div>
     <div class="page-title">GESTIÓN DE LAVADO</div>
   </div>
-  <div class="topbar-right">
-    <div class="status-pill">
-      <div class="pulse-dot"></div>
-      <span id="lastUpdate">Sincronizando...</span>
-    </div>
-  </div>
+  <div id="lastUpdate" style="font-size:12px; color:var(--muted)">Sincronizando...</div>
 </div>
 
 <div class="stats-bar">
@@ -177,267 +91,150 @@ body{background:var(--bg);font-family:"DM Sans",sans-serif;color:var(--text);min
 
 <div class="modal-overlay" id="cobroModal">
   <div class="cobro-box">
-    
     <div class="cobro-header">
-      <div>
-        <div class="cobro-title">💰 Finalizar Cobro</div>
-        <div style="font-size:11px;color:var(--muted)">Registra el pago del servicio</div>
-      </div>
-      <div style="text-align:right">
-        <div style="font-size:9px;color:var(--muted);text-transform:uppercase">Orden #</div>
-        <span class="orden-chip-val" id="cOrden">—</span>
-      </div>
-      <button onclick="closeCobroModal()" style="background:none;border:none;color:var(--muted);font-size:20px;margin-left:15px;cursor:pointer">✕</button>
+      <div class="page-title" style="font-size:20px">💰 Finalizar Cobro</div>
+      <button onclick="closeCobroModal()" style="background:none;border:none;color:var(--muted);font-size:20px;cursor:pointer">✕</button>
     </div>
 
     <div class="cobro-body">
-      <div class="cobro-vehicle-bar">
-        <span class="cobro-veh-plate" id="cPlate">---</span>
-        <span style="font-size:14px;font-weight:600;flex:1" id="cClienteName">—</span>
-        <span style="color:var(--green);font-family:'DM Mono';font-weight:800" id="cMonto">₡0</span>
+      <div style="display:flex; justify-content:space-between; align-items:center; background:rgba(0,0,0,0.2); padding:15px; border-radius:12px">
+        <span id="cPlate" style="font-family:'DM Mono'; font-weight:bold; color:var(--accent)">---</span>
+        <span id="cMonto" style="font-family:'DM Mono'; font-weight:800; color:var(--green)">₡0</span>
       </div>
 
-      <div style="font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:5px">💳 Métodos de Pago</div>
       <div class="metodos-btns">
-        <div class="met-btn" id="btnEfectivo" onclick="toggleBloque('Efectivo')">
-          <span class="met-btn-icon">💵</span><span class="met-btn-name">EFECTIVO</span>
-        </div>
-        <div class="met-btn" id="btnSinpe" onclick="toggleBloque('Sinpe')">
-          <span class="met-btn-icon">📱</span><span class="met-btn-name">SINPE</span>
-        </div>
-        <div class="met-btn" id="btnTarjeta" onclick="toggleBloque('Tarjeta')">
-          <span class="met-btn-icon">💳</span><span class="met-btn-name">TARJETA</span>
-        </div>
-        <div class="met-btn" id="btnCxC" onclick="toggleBloque('CxC')">
-          <span class="met-btn-icon">📋</span><span class="met-btn-name">CxC</span>
-        </div>
+        <div class="met-btn" id="btnEfectivo" onclick="toggleBloque('Efectivo')"><span>💵</span><span class="met-btn-name">EFECTIVO</span></div>
+        <div class="met-btn" id="btnSinpe" onclick="toggleBloque('Sinpe')"><span>📱</span><span class="met-btn-name">SINPE</span></div>
+        <div class="met-btn" id="btnTarjeta" onclick="toggleBloque('Tarjeta')"><span>💳</span><span class="met-btn-name">TARJETA</span></div>
+        <div class="met-btn" id="btnRegalo" onclick="toggleBloque('Regalo')"><span>🎁</span><span class="met-btn-name">REGALO</span></div>
+        <div class="met-btn" id="btnCxC" onclick="toggleBloque('CxC')"><span>📋</span><span class="met-btn-name">DEUDA (CxC)</span></div>
       </div>
 
       <div class="montos-isla" id="montosIsla">
-        <div id="fieldRowEfectivo" style="display:none" class="monto-field-row">
-          <span class="monto-field-label">💵 Efectivo</span>
-          <div class="monto-input-wrap"><input type="number" id="montoEfectivo" placeholder="0" oninput="calcTotal()"></div>
-        </div>
-        <div id="fieldRowSinpe" style="display:none" class="monto-field-row">
-          <span class="monto-field-label">📱 SINPE</span>
-          <div class="monto-input-wrap"><input type="number" id="montoSinpe" placeholder="0" oninput="calcTotal()"></div>
-        </div>
-        <div id="fieldRowTarjeta" style="display:none" class="monto-field-row">
-          <span class="monto-field-label">💳 Tarjeta</span>
-          <div class="monto-input-wrap"><input type="number" id="montoTarjeta" placeholder="0" oninput="calcTotal()"></div>
-        </div>
-        <div id="fieldRowCxC" style="display:none" class="monto-field-row">
-          <span class="monto-field-label">📋 CxC</span>
-          <div class="monto-input-wrap"><input type="number" id="montoCxC" placeholder="0" oninput="calcTotal()"></div>
-        </div>
-
-        <div class="total-row">
-          <span style="color:var(--yellow);font-weight:600;font-size:14px">Total ingresado</span>
-          <span class="total-val" id="totalIngresado">₡0</span>
-        </div>
-        <div id="diffRow" style="text-align:right;font-size:11px;font-family:'DM Mono'"></div>
+        <div id="rowEfectivo" style="display:none" class="monto-field-row"><span>💵</span><div class="monto-input-wrap"><input type="number" id="mEfectivo" placeholder="Monto Efectivo" oninput="calcTotal()"></div></div>
+        <div id="rowSinpe" style="display:none" class="monto-field-row"><span>📱</span><div class="monto-input-wrap"><input type="number" id="mSinpe" placeholder="Monto SINPE" oninput="calcTotal()"></div></div>
+        <div id="rowTarjeta" style="display:none" class="monto-field-row"><span>💳</span><div class="monto-input-wrap"><input type="number" id="mTarjeta" placeholder="Monto Tarjeta" oninput="calcTotal()"></div></div>
+        <div id="rowRegalo" style="display:none" class="monto-field-row"><span>🎁</span><div class="monto-input-wrap"><input type="number" id="mRegalo" placeholder="Monto Regalo" oninput="calcTotal()"></div></div>
+        <div id="rowCxC" style="display:none; color:var(--yellow); font-size:12px; text-align:center">⚠️ Registrando como cuenta por cobrar (Deuda total)</div>
       </div>
 
-      <div style="font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:1px">👤 Responsable</div>
-      <div class="responsable-chips" id="respChips">
-        <div class="resp-chip" onclick="selectResp(this,'Eder')">Eder</div>
-        <div class="resp-chip" onclick="selectResp(this,'Massiel')">Massiel</div>
-        <div class="resp-chip" onclick="selectResp(this,'Andrey')">Andrey</div>
-        <div class="resp-chip" onclick="selectResp(this,'Angie')">Angie</div>
+      <div>
+        <div style="font-size:10px;color:var(--muted);margin-bottom:8px">RESPONSABLE</div>
+        <div id="respChips">
+          <div class="resp-chip" onclick="selectResp(this,'Eder')">Eder</div>
+          <div class="resp-chip" onclick="selectResp(this,'Massiel')">Massiel</div>
+          <div class="resp-chip" onclick="selectResp(this,'Andrey')">Andrey</div>
+          <div class="resp-chip" onclick="selectResp(this,'Angie')">Angie</div>
+        </div>
       </div>
-      <input type="hidden" id="cFacturador" value="">
     </div>
 
     <div class="cobro-footer">
-      <button class="btn-cobrar" id="btnCobrar" onclick="enviarCobro()">
-        💰 Confirmar Cobro
-      </button>
+      <button class="btn-cobrar" id="btnConfirmar" onclick="enviarCobro()">CONFIRMAR COBRO</button>
     </div>
-
   </div>
 </div>
 
-<div id="loadingOverlay" class="loading-overlay">
-  <div class="spinner"></div>
-  <div style="font-family:'DM Mono'">CONECTANDO...</div>
-</div>
-<div id="toast" class="toast"></div>
-
 <script>
 const CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRZKI99U4UgQBDH7Can0vVO9TO0hhi6TkTYx4jNdTDxYDsM1dQrEG5UaIoftDmOdzkXAr8LOscVFxv-/pub?gid=0&single=true&output=csv";
-const WEBHOOK_COBRO = "https://neuraloom.app.n8n.cloud/webhook-test/finalizar-cobro";
+const WEBHOOK = "https://neuraloom.app.n8n.cloud/webhook-test/finalizar-cobro";
 
 let carsCache = [];
 let selectedCar = null;
-let metodosSeleccionados = new Set();
+let metodos = new Set();
+let responsable = "";
 
 async function loadData() {
-  try {
-    const res = await fetch(CSV_URL, { cache: "no-store" });
-    const text = await res.text();
-    render(parseCSV(text));
-    document.getElementById("lastUpdate").textContent = "En vivo: " + new Date().toLocaleTimeString();
-    document.getElementById("loadingOverlay").style.display = "none";
-  } catch(e) { showToast("⚠️ Error de carga"); }
+  const res = await fetch(CSV_URL);
+  const text = await res.text();
+  const rows = text.split('\n').slice(1);
+  carsCache = rows.map(r => {
+    const c = r.split(',');
+    return { orden: c[0], placa: c[2], cliente: c[3], servicio: c[7], estado: (c[8]||"").toLowerCase(), monto: (c[12]||"0").replace(/\D/g,"") };
+  }).filter(c => c.placa);
+  render();
 }
 
-function parseCSV(text) {
-  const lines = text.trim().split(/\r?\n/);
-  return lines.slice(1).map(line => {
-    const cols = line.split(/,(?=(?:[^"]*"[^"]*")*[^"]*$)/);
-    const clean = v => (v || "").replace(/^["']|["']$/g, "").trim();
-    return {
-      orden: clean(cols[0]),
-      hora: clean(cols[1]),
-      placa: clean(cols[2]),
-      cliente: clean(cols[3]),
-      celular: clean(cols[4]),
-      servicio: clean(cols[7]),
-      estado: clean(cols[8]).toLowerCase(),
-      monto: clean(cols[12]).replace(/\D/g, "") || "0"
-    };
-  }).filter(r => r.placa.length >= 3);
-}
-
-function render(cars) {
-  carsCache = cars;
-  const groups = { proceso: [], terminado: [], retirado: [] };
+function render() {
+  const grids = { proceso: document.getElementById('grid-proceso'), terminado: document.getElementById('grid-terminado'), retirado: document.getElementById('grid-retirado') };
+  Object.values(grids).forEach(g => g.innerHTML = "");
   
-  cars.forEach(car => {
-    let z = "proceso";
-    if (car.estado.includes("listo") || car.estado.includes("terminado")) z = "terminado";
-    else if (car.estado.includes("retirado") || car.estado.includes("entregado")) z = "retirado";
-    groups[z].push(car);
-  });
-
-  ["proceso","terminado","retirado"].forEach(z => {
-    const grid = document.getElementById("grid-" + z);
-    document.getElementById("cnt-" + z).textContent = groups[z].length;
-    grid.innerHTML = groups[z].map(car => `
-      <div class="car-card" onclick="abrirCobroDirecto('${car.placa}')">
-        <span class="orden-badge">#${car.orden}</span>
-        <div class="car-emoji">🚗</div>
+  carsCache.forEach(car => {
+    let zone = "proceso";
+    if(car.estado.includes("listo")) zone = "terminado";
+    if(car.estado.includes("retirado")) zone = "retirado";
+    
+    grids[zone].innerHTML += `
+      <div class="car-card" onclick="openCobro('${car.placa}')">
         <div class="car-plate">${car.placa}</div>
-        <div class="car-name">${car.cliente}</div>
-        <div class="car-service">${car.servicio}</div>
-      </div>
-    `).join("");
+        <div style="font-size:11px; margin-top:5px">${car.cliente}</div>
+      </div>`;
   });
 }
 
-function abrirCobroDirecto(placa) {
+function openCobro(placa) {
   selectedCar = carsCache.find(c => c.placa === placa);
-  if (!selectedCar) return;
-  
-  document.getElementById("cOrden").textContent = selectedCar.orden;
-  document.getElementById("cPlate").textContent = selectedCar.placa;
-  document.getElementById("cClienteName").textContent = selectedCar.cliente;
-  document.getElementById("cMonto").textContent = "₡" + parseInt(selectedCar.monto).toLocaleString();
-  
-  document.getElementById("cobroModal").classList.add("show");
+  document.getElementById('cPlate').textContent = selectedCar.placa;
+  document.getElementById('cMonto').textContent = "₡" + parseInt(selectedCar.monto).toLocaleString();
+  document.getElementById('cobroModal').classList.add('show');
 }
 
-function toggleBloque(metodo) {
-  const btn = document.getElementById("btn" + metodo);
-  const row = document.getElementById("fieldRow" + metodo);
-  
-  if (metodosSeleccionados.has(metodo)) {
-    metodosSeleccionados.delete(metodo);
-    btn.classList.remove("active");
-    row.style.display = "none";
-    document.getElementById("monto" + metodo).value = "";
+function toggleBloque(m) {
+  const btn = document.getElementById('btn'+m);
+  const row = document.getElementById('row'+m);
+  if(metodos.has(m)) {
+    metodos.delete(m);
+    btn.classList.remove('active');
+    if(row) row.style.display = "none";
   } else {
-    metodosSeleccionados.add(metodo);
-    btn.classList.add("active");
-    row.style.display = "flex";
+    metodos.add(m);
+    btn.classList.add('active');
+    if(row) row.style.display = "flex";
   }
-  
-  document.getElementById("montosIsla").classList.toggle("show", metodosSeleccionados.size > 0);
-  calcTotal();
+  document.getElementById('montosIsla').classList.toggle('show', metodos.size > 0);
 }
 
-function calcTotal() {
-  let total = 0;
-  ["Efectivo","Sinpe","Tarjeta","CxC"].forEach(m => {
-    total += parseInt(document.getElementById("monto" + m).value || 0);
-  });
-  
-  const totalEl = document.getElementById("totalIngresado");
-  const diffEl = document.getElementById("diffRow");
-  const montoEsperado = parseInt(selectedCar.monto);
-  
-  totalEl.textContent = "₡" + total.toLocaleString();
-  
-  if (total < montoEsperado) {
-    diffEl.innerHTML = `<span style="color:var(--red)">Faltan ₡${(montoEsperado - total).toLocaleString()}</span>`;
-  } else if (total > montoEsperado) {
-    diffEl.innerHTML = `<span style="color:var(--green)">Vuelto: ₡${(total - montoEsperado).toLocaleString()}</span>`;
-  } else {
-    diffEl.innerHTML = `<span style="color:var(--green)">✓ Monto exacto</span>`;
-  }
-}
-
-function selectResp(el, nombre) {
+function selectResp(el, name) {
   document.querySelectorAll('.resp-chip').forEach(c => c.classList.remove('selected'));
   el.classList.add('selected');
-  document.getElementById("cFacturador").value = nombre;
+  responsable = name;
 }
 
 function closeCobroModal() {
-  document.getElementById("cobroModal").classList.remove("show");
-  metodosSeleccionados.clear();
-  document.querySelectorAll('.met-btn').forEach(b => b.classList.remove('active'));
-  document.querySelectorAll('.monto-field-row').forEach(r => r.style.display = 'none');
-  document.getElementById("montosIsla").classList.remove("show");
+  document.getElementById('cobroModal').classList.remove('show');
+  metodos.clear();
+  responsable = "";
+  document.querySelectorAll('.met-btn, .resp-chip').forEach(b => b.classList.remove('active','selected'));
 }
 
 async function enviarCobro() {
-  const facturador = document.getElementById("cFacturador").value;
-  if (!facturador) return showToast("⚠️ Selecciona un responsable");
-
-  const btn = document.getElementById("btnCobrar");
-  btn.disabled = true;
-  btn.textContent = "⌛ Procesando...";
+  if(!responsable) return alert("Selecciona responsable");
+  const btn = document.getElementById('btnConfirmar');
+  btn.disabled = true; btn.textContent = "Procesando...";
 
   const payload = {
     orden: selectedCar.orden,
     placa: selectedCar.placa,
     cliente: selectedCar.cliente,
     totalServicio: selectedCar.monto,
-    responsable: facturador,
+    responsable: responsable,
     pagos: {
-      efectivo: document.getElementById("montoEfectivo").value || 0,
-      sinpe: document.getElementById("montoSinpe").value || 0,
-      tarjeta: document.getElementById("montoTarjeta").value || 0,
-      cxc: document.getElementById("montoCxC").value || 0
+      efectivo: document.getElementById('mEfectivo').value || 0,
+      sinpe: document.getElementById('mSinpe').value || 0,
+      tarjeta: document.getElementById('mTarjeta').value || 0,
+      regalo: document.getElementById('mRegalo').value || 0,
+      cxc: metodos.has('CxC') ? selectedCar.monto : 0
     }
   };
 
-  try {
-    const res = await fetch(WEBHOOK_COBRO, {
-      method: "POST",
-      body: JSON.stringify(payload)
-    });
-    if (res.ok) {
-      showToast("✅ Cobro registrado con éxito");
-      closeCobroModal();
-      setTimeout(loadData, 1000);
-    }
-  } catch(e) { showToast("⚠️ Error al conectar con el servidor"); }
-  
-  btn.disabled = false;
-  btn.textContent = "💰 Confirmar Cobro";
-}
-
-function showToast(m) {
-  const t = document.getElementById("toast");
-  t.textContent = m;
-  t.classList.add("show");
-  setTimeout(() => t.classList.remove("show"), 3000);
+  await fetch(WEBHOOK, { method: 'POST', body: JSON.stringify(payload) });
+  alert("Cobro exitoso");
+  closeCobroModal();
+  loadData();
+  btn.disabled = false; btn.textContent = "CONFIRMAR COBRO";
 }
 
 loadData();
-setInterval(loadData, 30000);
 </script>
 </body>
 </html>
