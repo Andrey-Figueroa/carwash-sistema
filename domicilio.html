@@ -190,6 +190,19 @@
 
 
 
+        /* CAMPOS CONDICIONALES DOMICILIO */
+        .monto-field { display: none; flex-direction: column; gap: 8px; animation: fadeIn 0.2s ease; }
+        .monto-field.visible { display: flex; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(-6px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* TOTAL */
+        .total-row { display: flex; justify-content: space-between; align-items: center; background: rgba(0,198,255,0.07); border: 1px solid rgba(0,198,255,0.2); border-radius: 10px; padding: 12px 16px; font-size: 15px; font-weight: 600; margin-top: 10px; }
+        .total-row span:last-child { color: var(--accent); font-size: 18px; }
+
+        .input-wrap { position: relative; }
+        .input-wrap .symbol { position: absolute; right: 14px; top: 50%; transform: translateY(-50%); color: var(--muted); font-size: 15px; pointer-events: none; }
+        .input-wrap .form-input { padding-right: 36px; }
+
         /* ERROR / SUBMIT */
 
         .error-banner { display: none; background: rgba(255,80,80,0.1); border: 1px solid rgba(255,80,80,0.3); border-radius: 10px; color: #ff7b7b; padding: 12px 16px; font-size: 13px; text-align: center; }
@@ -319,77 +332,88 @@
 
 
             <!-- PAGO -->
-
             <div class="section-label">💳 Detalles de pago</div>
-
             <div class="form-group">
-
                 <label class="form-label">Método de pago <span class="req">*</span> <span style="font-size:11px;color:var(--muted);font-weight:400">(puede elegir varios)</span></label>
-
                 <div class="pay-grid">
-
                     <label class="pay-label">
-
-                        <input type="checkbox" class="pay-cb" value="Tarjeta crédito / débito"/>
-
+                        <input type="checkbox" class="pay-cb" value="Tarjeta crédito / débito" onchange="toggleMontoDom(this)"/>
                         <div class="pay-check"></div>
-
                         <span class="pay-icon">💳</span>
-
                         <span class="pay-text">Tarjeta crédito / débito</span>
-
                     </label>
-
                     <label class="pay-label">
-
-                        <input type="checkbox" class="pay-cb" value="Cuenta por cobrar"/>
-
+                        <input type="checkbox" class="pay-cb" value="Cuenta por cobrar" onchange="toggleMontoDom(this)"/>
                         <div class="pay-check"></div>
-
                         <span class="pay-icon">📄</span>
-
                         <span class="pay-text">Cuenta por cobrar</span>
-
                     </label>
-
                     <label class="pay-label">
-
-                        <input type="checkbox" class="pay-cb" value="Efectivo"/>
-
+                        <input type="checkbox" class="pay-cb" value="Efectivo" onchange="toggleMontoDom(this)"/>
                         <div class="pay-check"></div>
-
                         <span class="pay-icon">💵</span>
-
                         <span class="pay-text">Efectivo</span>
-
                     </label>
-
                     <label class="pay-label">
-
-                        <input type="checkbox" class="pay-cb" value="SINPE Móvil"/>
-
+                        <input type="checkbox" class="pay-cb" value="SINPE Móvil" onchange="toggleMontoDom(this)"/>
                         <div class="pay-check"></div>
-
                         <span class="pay-icon">📱</span>
-
                         <span class="pay-text">SINPE Móvil</span>
-
                     </label>
-
                     <label class="pay-label">
-
-                        <input type="checkbox" class="pay-cb" value="Tarjeta de regalo"/>
-
+                        <input type="checkbox" class="pay-cb" value="Tarjeta de regalo" onchange="toggleMontoDom(this)"/>
                         <div class="pay-check"></div>
-
                         <span class="pay-icon">🎁</span>
-
                         <span class="pay-text">Tarjeta de regalo</span>
-
                     </label>
-
                 </div>
+            </div>
 
+            <!-- MONTOS CONDICIONALES DOMICILIO -->
+            <div class="monto-field" id="campo-Tarjeta crédito / débito">
+                <label class="form-label">Monto en tarjeta <span class="req">*</span></label>
+                <div class="input-wrap">
+                    <input class="form-input" type="number" id="monto-Tarjeta crédito / débito" placeholder="0" min="0" oninput="actualizarTotalDom()">
+                    <span class="symbol">₡</span>
+                </div>
+            </div>
+
+            <div class="monto-field" id="campo-Cuenta por cobrar">
+                <label class="form-label">Monto en cuenta por cobrar <span class="req">*</span></label>
+                <div class="input-wrap">
+                    <input class="form-input" type="number" id="monto-Cuenta por cobrar" placeholder="0" min="0" oninput="actualizarTotalDom()">
+                    <span class="symbol">₡</span>
+                </div>
+            </div>
+
+            <div class="monto-field" id="campo-Efectivo">
+                <label class="form-label">Monto en efectivo <span class="req">*</span></label>
+                <div class="input-wrap">
+                    <input class="form-input" type="number" id="monto-Efectivo" placeholder="0" min="0" oninput="actualizarTotalDom()">
+                    <span class="symbol">₡</span>
+                </div>
+            </div>
+
+            <div class="monto-field" id="campo-SINPE Móvil">
+                <label class="form-label">Monto en SINPE <span class="req">*</span></label>
+                <div class="input-wrap">
+                    <input class="form-input" type="number" id="monto-SINPE Móvil" placeholder="0" min="0" oninput="actualizarTotalDom()">
+                    <span class="symbol">₡</span>
+                </div>
+            </div>
+
+            <div class="monto-field" id="campo-Tarjeta de regalo">
+                <label class="form-label">Monto en Tarjeta de regalo <span class="req">*</span></label>
+                <div class="input-wrap">
+                    <input class="form-input" type="number" id="monto-Tarjeta de regalo" placeholder="0" min="0" oninput="actualizarTotalDom()">
+                    <span class="symbol">₡</span>
+                </div>
+            </div>
+
+            <!-- TOTAL DOMICILIO -->
+            <div class="total-row" id="totalRowDom" style="display:none;">
+                <span>💰 Total</span>
+                <span id="totalValorDom">₡0</span>
             </div>
 
 
@@ -424,17 +448,7 @@
 
 
 
-            <!-- MONTO -->
 
-            <div class="section-label">💰 Monto</div>
-
-            <div class="form-group">
-
-                <label class="form-label">Total cobrado (₡) <span class="req">*</span></label>
-
-                <input class="form-input" type="number" id="c_monto" placeholder="Ej: 25000" min="0"/>
-
-            </div>
 
 
 
@@ -670,72 +684,97 @@
 
 
 
+    function toggleMontoDom(checkbox) {
+        const campo = document.getElementById("campo-" + checkbox.value);
+        if (!campo) return;
+        campo.classList.toggle("visible", checkbox.checked);
+        if (!checkbox.checked) {
+            const input = document.getElementById("monto-" + checkbox.value);
+            if (input) input.value = "";
+        }
+        actualizarTotalDom();
+    }
+
+    function actualizarTotalDom() {
+        const seleccionados = document.querySelectorAll('.pay-cb:checked');
+        const totalRow = document.getElementById("totalRowDom");
+        if (seleccionados.length > 0) {
+            let suma = 0;
+            seleccionados.forEach(ch => {
+                suma += parseFloat(document.getElementById("monto-" + ch.value)?.value) || 0;
+            });
+            document.getElementById("totalValorDom").textContent = "₡" + suma.toLocaleString("es-CR");
+            totalRow.style.display = "flex";
+        } else {
+            totalRow.style.display = "none";
+            document.getElementById("totalValorDom").textContent = "₡0";
+        }
+    }
+
     // ── COBRO ──────────────────────────────────────────────
 
     async function enviarCobro() {
-
         const orden = document.getElementById("c_orden").value.trim();
-
-        const metodos = Array.from(document.querySelectorAll(".pay-cb:checked")).map(el => el.value);
-
+        const seleccionados = Array.from(document.querySelectorAll(".pay-cb:checked"));
+        const metodos = seleccionados.map(el => el.value);
         const respEl = document.querySelector('input[name="c_resp"]:checked');
-
-        const monto = document.getElementById("c_monto").value.trim();
-
+        
         const errBanner = document.getElementById("errorCobro");
-
         const errMsg = document.getElementById("errorMsgCobro");
 
-
-
-        if (!orden || metodos.length === 0 || !respEl || !monto) {
-
+        if (!orden || metodos.length === 0 || !respEl) {
             errMsg.textContent = "Completa todos los campos requeridos.";
-
             errBanner.style.display = "block";
-
             errBanner.scrollIntoView({ behavior: "smooth", block: "center" });
-
             return;
-
         }
+
+        // Validate that all selected methods have an amount > 0
+        for (const ch of seleccionados) {
+            const val = parseFloat(document.getElementById("monto-" + ch.value)?.value);
+            if (!val || val <= 0) {
+                errMsg.textContent = `Ingresa un monto válido mayor a 0 para: ${ch.value}`;
+                errBanner.style.display = "block";
+                errBanner.scrollIntoView({ behavior: "smooth", block: "center" });
+                return;
+            }
+        }
+
+        let totalSuma = 0;
+        seleccionados.forEach(ch => {
+            totalSuma += parseFloat(document.getElementById("monto-" + ch.value)?.value) || 0;
+        });
 
         errBanner.style.display = "none";
 
-
-
         const btn = document.getElementById("btnCobro");
-
         btn.disabled = true;
-
         btn.innerHTML = '<span class="spinner"></span> Enviando...';
 
-
-
         const ahora = new Date();
-
         const fecha = ahora.toLocaleDateString("es-CR", { timeZone: "America/Costa_Rica", day: "2-digit", month: "2-digit", year: "numeric" });
-
         const hora  = ahora.toLocaleTimeString("es-CR", { timeZone: "America/Costa_Rica", hour: "2-digit", minute: "2-digit" });
 
-
+        // Get individual amounts (or empty strings if not selected) to send in payload
+        const monto_efectivo = parseFloat(document.getElementById("monto-Efectivo")?.value) || 0;
+        const monto_tarjeta  = parseFloat(document.getElementById("monto-Tarjeta crédito / débito")?.value) || 0;
+        const monto_sinpe    = parseFloat(document.getElementById("monto-SINPE Móvil")?.value) || 0;
+        const monto_cxc      = parseFloat(document.getElementById("monto-Cuenta por cobrar")?.value) || 0;
+        const monto_regalo   = parseFloat(document.getElementById("monto-Tarjeta de regalo")?.value) || 0;
 
         const payload = {
-
             tipo: "cobro_domicilio",
-
             fecha,
-
             hora,
-
             numero_orden: orden,
-
             metodo_pago: metodos.join(", "),
-
             responsable: respEl.value,
-
-            monto_total: monto
-
+            monto_total: totalSuma,
+            monto_efectivo: monto_efectivo || "",
+            monto_tarjeta: monto_tarjeta || "",
+            monto_sinpe: monto_sinpe || "",
+            monto_cuenta_por_cobrar: monto_cxc || "",
+            monto_tarjeta_regalo: monto_regalo || ""
         };
 
 
@@ -764,7 +803,7 @@
 
                 `<strong>${metodos.join(" + ")}</strong><br>` +
 
-                `₡${Number(monto).toLocaleString("es-CR")} — ${respEl.value}`;
+                `₡${Number(totalSuma).toLocaleString("es-CR")} — ${respEl.value}`;
 
             goTo("screenSuccess");
 
