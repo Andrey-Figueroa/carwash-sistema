@@ -41,8 +41,18 @@ body{background:var(--bg);font-family:"DM Sans",sans-serif;color:var(--text);min
 /* ── CARDS ── */
 .car-card{width:175px;background:rgba(0,0,0,0.45);border-radius:18px;border:1px solid rgba(255,255,255,0.06);padding:14px;transition:transform 0.2s,border-color 0.2s,box-shadow 0.2s;position:relative;overflow:hidden;animation:carIn .42s cubic-bezier(.34,1.56,.64,1) forwards;cursor:pointer}
 .car-card:hover{transform:translateY(-5px);border-color:var(--accent);box-shadow:0 8px 24px rgba(0,212,255,0.15)}
-.car-card.clickable-hint::after{content:"TAP";position:absolute;top:8px;right:8px;font-size:8px;font-family:"DM Mono",monospace;letter-spacing:1px;color:var(--muted);opacity:0;transition:opacity 0.2s}
-.car-card:hover.clickable-hint::after{opacity:1}
+.orden-badge{
+  position:absolute;top:9px;right:10px;
+  font-family:"DM Mono",monospace;
+  font-size:10px;font-weight:800;
+  color:var(--accent);
+  background:rgba(0,212,255,0.1);
+  border:1px solid rgba(0,212,255,0.25);
+  border-radius:5px;
+  padding:2px 6px;
+  letter-spacing:.5px;
+  line-height:1.4
+}
 
 @keyframes carIn{from{opacity:0;transform:scale(.82) translateY(12px)}to{opacity:1;transform:scale(1) translateY(0)}}
 @keyframes shimmer{0%{opacity:.2}100%{opacity:.8}}
@@ -102,181 +112,144 @@ body{background:var(--bg);font-family:"DM Sans",sans-serif;color:var(--text);min
 .action-divider{height:1px;background:var(--border);margin:4px 0}
 
 /* ══════════════════════════════════════
-   MODAL: FINALIZAR COBRO — REDISEÑADO
+   MODAL: FINALIZAR COBRO — v3
 ══════════════════════════════════════ */
 .cobro-box{
   background:var(--surface);
   border:1px solid var(--border);
   border-radius:24px;
   width:100%;
-  max-width:520px;
+  max-width:640px;
   overflow:hidden;
   animation:modalIn .25s cubic-bezier(.34,1.2,.64,1)
 }
 
-/* Header con placa + orden en una sola fila */
 .cobro-header{
-  padding:20px 24px 18px;
+  padding:22px 28px 20px;
   border-bottom:1px solid var(--border);
-  background:linear-gradient(135deg,rgba(255,193,7,0.05),transparent);
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  gap:12px
+  background:linear-gradient(135deg,rgba(255,193,7,0.06),transparent);
+  display:flex;align-items:center;justify-content:space-between;gap:14px
 }
-.cobro-header-left{display:flex;align-items:center;gap:12px}
-.cobro-title{font-family:"Bebas Neue",sans-serif;font-size:22px;letter-spacing:2px;color:var(--yellow)}
+.cobro-title{font-family:"Bebas Neue",sans-serif;font-size:24px;letter-spacing:2px;color:var(--yellow)}
 .cobro-subtitle{font-size:11px;color:var(--muted);margin-top:2px}
 
-/* Chip de orden — visible siempre en el header */
-.orden-chip{
-  display:flex;
-  flex-direction:column;
-  align-items:flex-end;
-  gap:2px
-}
+.orden-chip{display:flex;flex-direction:column;align-items:flex-end;gap:3px}
 .orden-chip-label{font-size:9px;color:var(--muted);text-transform:uppercase;letter-spacing:1px}
 .orden-chip-val{
-  font-family:"DM Mono",monospace;
-  font-size:18px;
-  font-weight:800;
-  color:var(--accent);
-  background:rgba(0,212,255,0.1);
-  border:1px solid rgba(0,212,255,0.3);
-  border-radius:8px;
-  padding:4px 12px;
-  letter-spacing:2px
+  font-family:"DM Mono",monospace;font-size:22px;font-weight:900;
+  color:var(--accent);background:rgba(0,212,255,0.1);
+  border:1px solid rgba(0,212,255,0.35);border-radius:8px;
+  padding:5px 14px;letter-spacing:2px
 }
 
-/* Resumen del vehículo debajo del header */
 .cobro-vehicle-bar{
-  display:flex;
-  align-items:center;
-  gap:16px;
-  padding:12px 24px;
-  background:rgba(0,0,0,0.25);
-  border-bottom:1px solid var(--border)
+  display:flex;align-items:center;gap:16px;
+  padding:14px 28px;
+  background:rgba(0,0,0,0.3);border-bottom:1px solid var(--border)
 }
 .cobro-veh-plate{
-  font-family:"DM Mono",monospace;
-  font-size:14px;
-  font-weight:700;
-  background:rgba(0,212,255,0.08);
-  border:1px solid rgba(0,212,255,0.2);
-  border-radius:6px;
-  padding:4px 10px;
-  color:#fff;
-  letter-spacing:1px
+  font-family:"DM Mono",monospace;font-size:15px;font-weight:700;
+  background:rgba(0,212,255,0.08);border:1px solid rgba(0,212,255,0.2);
+  border-radius:7px;padding:5px 12px;color:#fff;letter-spacing:1.5px
 }
-.cobro-veh-name{font-size:13px;font-weight:600;flex:1}
-.cobro-veh-monto{
-  font-family:"DM Mono",monospace;
-  font-size:14px;
-  font-weight:700;
-  color:var(--green)
-}
+.cobro-veh-name{font-size:14px;font-weight:600;flex:1}
+.cobro-veh-monto{font-family:"DM Mono",monospace;font-size:16px;font-weight:800;color:var(--green)}
 
-/* Body scrollable */
 .cobro-body{
-  padding:20px 24px 24px;
-  display:flex;
-  flex-direction:column;
-  gap:18px;
-  max-height:65vh;
-  overflow-y:auto
+  padding:24px 28px 28px;
+  display:flex;flex-direction:column;gap:20px;
+  max-height:68vh;overflow-y:auto
 }
 .cobro-body::-webkit-scrollbar{width:4px}
 .cobro-body::-webkit-scrollbar-track{background:transparent}
 .cobro-body::-webkit-scrollbar-thumb{background:var(--border);border-radius:4px}
 
-/* Sección */
-.cobro-section{border:1px solid var(--border);border-radius:14px;overflow:hidden}
+.cobro-section{border:1px solid var(--border);border-radius:16px;overflow:hidden}
 .cobro-section-title{
-  padding:10px 16px;
-  background:rgba(255,255,255,0.03);
+  padding:11px 18px;background:rgba(255,255,255,0.03);
   border-bottom:1px solid var(--border);
-  font-size:10px;font-weight:700;
-  color:var(--muted);
+  font-size:10px;font-weight:700;color:var(--muted);
   text-transform:uppercase;letter-spacing:1.5px;
   display:flex;align-items:center;gap:6px
 }
-.cobro-section-body{padding:16px;display:flex;flex-direction:column;gap:12px}
+.cobro-section-body{padding:18px;display:flex;flex-direction:column;gap:14px}
 
-/* ── MÉTODOS DE PAGO — 4 bloques ── */
-.metodos-grid{
+/* ── MÉTODOS: 4 botones grandes ── */
+.metodos-btns{
   display:grid;
-  grid-template-columns:1fr 1fr;
+  grid-template-columns:1fr 1fr 1fr 1fr;
   gap:10px
 }
-.metodo-block{
-  border:1px solid var(--border);
-  border-radius:12px;
-  overflow:hidden;
-  transition:border-color .2s, box-shadow .2s;
-  background:var(--bg)
+.met-btn{
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  gap:6px;padding:16px 10px;
+  border:2px solid var(--border);border-radius:14px;
+  background:rgba(0,0,0,0.3);
+  cursor:pointer;user-select:none;
+  transition:all .2s;color:var(--muted)
 }
-.metodo-block.active{
+.met-btn:hover{border-color:var(--muted);color:var(--text);background:rgba(255,255,255,0.04)}
+.met-btn.active{
   border-color:var(--accent);
-  box-shadow:0 0 12px rgba(0,212,255,0.1)
+  background:rgba(0,212,255,0.1);
+  color:var(--accent);
+  box-shadow:0 0 18px rgba(0,212,255,0.15)
 }
-/* Header del bloque = toggle */
-.metodo-toggle{
-  display:flex;
-  align-items:center;
-  gap:10px;
-  padding:11px 14px;
-  cursor:pointer;
-  user-select:none;
-  transition:background .18s
+.met-btn-icon{font-size:24px;line-height:1}
+.met-btn-name{font-size:12px;font-weight:700;letter-spacing:.5px}
+.met-btn .met-check{
+  width:18px;height:18px;border-radius:50%;
+  border:2px solid currentColor;
+  display:flex;align-items:center;justify-content:center;
+  font-size:10px;transition:all .2s;margin-top:2px;opacity:.4
 }
-.metodo-toggle:hover{background:rgba(255,255,255,0.03)}
-.metodo-toggle input[type=checkbox]{
-  width:16px;height:16px;
-  accent-color:var(--accent);
-  cursor:pointer;flex-shrink:0;
-  pointer-events:none /* el click lo maneja el div padre */
-}
-.metodo-icon{font-size:18px;flex-shrink:0}
-.metodo-name{font-size:13px;font-weight:600;flex:1}
+.met-btn.active .met-check{opacity:1;background:var(--accent);border-color:var(--accent);color:#000}
 
-/* Campo de monto dentro del bloque */
-.metodo-amount{
-  border-top:1px solid var(--border);
-  display:flex;
-  align-items:center;
-  overflow:hidden;
-  background:rgba(0,0,0,0.2)
+/* ── ISLA DE MONTOS (se llena dinámicamente) ── */
+.montos-isla{
+  display:none;flex-direction:column;gap:10px;
+  background:rgba(0,0,0,0.25);
+  border:1px solid rgba(0,212,255,0.15);
+  border-radius:14px;
+  padding:16px 18px;
+  animation:fadeSlide .2s ease
 }
-.metodo-amount input{
-  flex:1;
-  background:none;border:none;
-  color:var(--text);
-  padding:10px 12px;
-  font-size:15px;
-  font-family:"DM Mono",monospace;
-  outline:none;
-  width:100%
+.montos-isla.show{display:flex}
+@keyframes fadeSlide{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:translateY(0)}}
+
+.monto-field-row{
+  display:flex;align-items:center;gap:14px
 }
-.metodo-amount input:disabled{color:var(--muted);cursor:not-allowed}
-.metodo-amount input::placeholder{color:var(--border)}
-.metodo-amount .currency{
-  padding:10px 12px;
-  color:var(--muted);
-  font-family:"DM Mono",monospace;
-  font-size:13px;
+.monto-field-label{
+  font-size:12px;font-weight:600;color:var(--muted);
+  min-width:130px;display:flex;align-items:center;gap:7px
+}
+.monto-field-label .mf-icon{font-size:16px}
+.monto-input-wrap{
+  flex:1;display:flex;align-items:center;
+  background:var(--bg);border:1px solid var(--border);
+  border-radius:10px;overflow:hidden;transition:border-color .2s
+}
+.monto-input-wrap:focus-within{border-color:var(--accent)}
+.monto-input-wrap input{
+  flex:1;background:none;border:none;
+  color:var(--text);padding:11px 14px;
+  font-size:15px;font-family:"DM Mono",monospace;outline:none
+}
+.monto-input-wrap .currency{
+  padding:11px 14px;color:var(--muted);
+  font-family:"DM Mono",monospace;font-size:13px;
   border-left:1px solid var(--border)
 }
 
 /* Total */
 .total-row{
   display:flex;justify-content:space-between;align-items:center;
-  padding:14px 16px;
-  background:rgba(255,193,7,0.06);
-  border:1px solid rgba(255,193,7,0.25);
-  border-radius:12px
+  padding:16px 18px;
+  background:rgba(255,193,7,0.07);border:1px solid rgba(255,193,7,0.28);border-radius:12px
 }
 .total-lbl{color:var(--yellow);font-weight:600;display:flex;align-items:center;gap:8px;font-size:14px}
-.total-val{font-family:"DM Mono",monospace;font-size:22px;font-weight:800;color:var(--yellow)}
+.total-val{font-family:"DM Mono",monospace;font-size:24px;font-weight:800;color:var(--yellow)}
 
 /* Dif positiva/negativa */
 .diff-row{
@@ -408,76 +381,71 @@ body{background:var(--bg);font-family:"DM Sans",sans-serif;color:var(--text);min
         <div class="cobro-section-title">💳 Métodos de Pago</div>
         <div class="cobro-section-body">
 
-          <div class="metodos-grid">
+          <!-- 4 botones toggle -->
+          <div class="metodos-btns">
+            <div class="met-btn" id="btnEfectivo" onclick="toggleBloque('Efectivo')">
+              <span class="met-btn-icon">💵</span>
+              <span class="met-btn-name">EFECTIVO</span>
+              <span class="met-check">✓</span>
+            </div>
+            <div class="met-btn" id="btnSinpe" onclick="toggleBloque('Sinpe')">
+              <span class="met-btn-icon">📱</span>
+              <span class="met-btn-name">SINPE</span>
+              <span class="met-check">✓</span>
+            </div>
+            <div class="met-btn" id="btnTarjeta" onclick="toggleBloque('Tarjeta')">
+              <span class="met-btn-icon">💳</span>
+              <span class="met-btn-name">TARJETA</span>
+              <span class="met-check">✓</span>
+            </div>
+            <div class="met-btn" id="btnCxC" onclick="toggleBloque('CxC')">
+              <span class="met-btn-icon">📋</span>
+              <span class="met-btn-name">CxC</span>
+              <span class="met-check">✓</span>
+            </div>
+          </div>
 
-            <!-- EFECTIVO -->
-            <div class="metodo-block" id="blockEfectivo">
-              <div class="metodo-toggle" onclick="toggleBloque('Efectivo')">
-                <input type="checkbox" id="chkEfectivo">
-                <span class="metodo-icon">💵</span>
-                <span class="metodo-name">Efectivo</span>
-              </div>
-              <div class="metodo-amount">
-                <input type="number" id="montoEfectivo" placeholder="0" min="0"
-                       disabled oninput="calcTotal()">
+          <!-- ISLA DE MONTOS — aparece cuando hay al menos un método activo -->
+          <div class="montos-isla" id="montosIsla">
+            <div class="monto-field-row" id="fieldRowEfectivo" style="display:none">
+              <span class="monto-field-label"><span class="mf-icon">💵</span>Efectivo</span>
+              <div class="monto-input-wrap">
+                <input type="number" id="montoEfectivo" placeholder="0" min="0" oninput="calcTotal()">
                 <span class="currency">₡</span>
               </div>
             </div>
-
-            <!-- SINPE -->
-            <div class="metodo-block" id="blockSinpe">
-              <div class="metodo-toggle" onclick="toggleBloque('Sinpe')">
-                <input type="checkbox" id="chkSinpe">
-                <span class="metodo-icon">📱</span>
-                <span class="metodo-name">SINPE</span>
-              </div>
-              <div class="metodo-amount">
-                <input type="number" id="montoSinpe" placeholder="0" min="0"
-                       disabled oninput="calcTotal()">
+            <div class="monto-field-row" id="fieldRowSinpe" style="display:none">
+              <span class="monto-field-label"><span class="mf-icon">📱</span>SINPE</span>
+              <div class="monto-input-wrap">
+                <input type="number" id="montoSinpe" placeholder="0" min="0" oninput="calcTotal()">
                 <span class="currency">₡</span>
               </div>
             </div>
-
-            <!-- TARJETA -->
-            <div class="metodo-block" id="blockTarjeta">
-              <div class="metodo-toggle" onclick="toggleBloque('Tarjeta')">
-                <input type="checkbox" id="chkTarjeta">
-                <span class="metodo-icon">💳</span>
-                <span class="metodo-name">Tarjeta</span>
-              </div>
-              <div class="metodo-amount">
-                <input type="number" id="montoTarjeta" placeholder="0" min="0"
-                       disabled oninput="calcTotal()">
+            <div class="monto-field-row" id="fieldRowTarjeta" style="display:none">
+              <span class="monto-field-label"><span class="mf-icon">💳</span>Tarjeta</span>
+              <div class="monto-input-wrap">
+                <input type="number" id="montoTarjeta" placeholder="0" min="0" oninput="calcTotal()">
                 <span class="currency">₡</span>
               </div>
             </div>
-
-            <!-- CUENTA POR COBRAR -->
-            <div class="metodo-block" id="blockCxC">
-              <div class="metodo-toggle" onclick="toggleBloque('CxC')">
-                <input type="checkbox" id="chkCxC">
-                <span class="metodo-icon">📋</span>
-                <span class="metodo-name">CxC</span>
-              </div>
-              <div class="metodo-amount">
-                <input type="number" id="montoCxC" placeholder="0" min="0"
-                       disabled oninput="calcTotal()">
+            <div class="monto-field-row" id="fieldRowCxC" style="display:none">
+              <span class="monto-field-label"><span class="mf-icon">📋</span>Cta. por Cobrar</span>
+              <div class="monto-input-wrap">
+                <input type="number" id="montoCxC" placeholder="0" min="0" oninput="calcTotal()">
                 <span class="currency">₡</span>
               </div>
             </div>
+          </div><!-- /montos-isla -->
 
-          </div><!-- /metodos-grid -->
-
-          <!-- Total ingresado -->
+          <!-- Total -->
           <div class="total-row">
             <span class="total-lbl">💰 Total ingresado</span>
             <span class="total-val" id="totalIngresado">₡0</span>
           </div>
-          <!-- Diferencia vs monto esperado -->
           <div class="diff-row" id="diffRow"></div>
 
         </div>
-      </div><!-- /seccion pago -->
+      </div>
 
       <!-- SECCIÓN: RESPONSABLE -->
       <div class="cobro-section">
@@ -612,7 +580,8 @@ function render(cars) {
         ? `<button class="btn-wa" onclick="event.stopPropagation();enviarWAIdx(${idx})">📲 AVISAR POR WA</button>`
         : "";
       return `
-        <div class="car-card zone-${z}-active clickable-hint" onclick="openActionModalIdx(${idx})">
+        <div class="car-card zone-${z}-active" onclick="openActionModalIdx(${idx})">
+          ${car.orden ? `<span class="orden-badge">#${car.orden}</span>` : ""}
           <div class="car-emoji">${carEmoji}${emojis[z]}</div>
           <div class="car-plate">${car.placa}</div>
           <div class="car-name">${car.cliente || "Sin nombre"}</div>
@@ -713,16 +682,13 @@ function abrirCobro() {
   document.getElementById("cMonto").textContent      = selectedCar.monto
     ? "₡" + Number(selectedCar.monto).toLocaleString("es-CR") : "₡0";
 
-  // Reset métodos
+  // Reset métodos — botones y campos
   ["Efectivo","Sinpe","Tarjeta","CxC"].forEach(m => {
-    const chk   = document.getElementById("chk"  + m);
-    const input = document.getElementById("monto" + m);
-    const block = document.getElementById("block" + m);
-    chk.checked      = false;
-    input.value      = "";
-    input.disabled   = true;
-    block.classList.remove("active");
+    document.getElementById("btn"      + m).classList.remove("active");
+    document.getElementById("fieldRow" + m).style.display = "none";
+    document.getElementById("monto"    + m).value = "";
   });
+  document.getElementById("montosIsla").classList.remove("show");
 
   // Reset responsable
   document.querySelectorAll(".resp-chip").forEach(c => c.classList.remove("selected"));
@@ -740,26 +706,30 @@ function abrirCobro() {
   document.getElementById("cobroModal").classList.add("show");
 }
 
-// ── Toggle de cada bloque de método ──
-// Usamos onclick en el div.metodo-toggle (no en el label) para evitar
-// el doble-disparo que ocurre cuando un <label> contiene un <input checkbox>
+// ── Toggle de cada botón de método ──
 function toggleBloque(metodo) {
-  const chk   = document.getElementById("chk"   + metodo);
-  const input = document.getElementById("monto" + metodo);
-  const block = document.getElementById("block" + metodo);
+  const btn      = document.getElementById("btn"      + metodo);
+  const fieldRow = document.getElementById("fieldRow" + metodo);
+  const input    = document.getElementById("monto"    + metodo);
+  const isla     = document.getElementById("montosIsla");
 
-  // Invertimos manualmente el estado
-  chk.checked = !chk.checked;
+  const isActive = btn.classList.toggle("active");
 
-  if (chk.checked) {
-    input.disabled = false;
-    block.classList.add("active");
+  if (isActive) {
+    fieldRow.style.display = "flex";
+    isla.classList.add("show");
+    input.value = "";
     input.focus();
   } else {
-    input.disabled = true;
-    input.value    = "";
-    block.classList.remove("active");
+    fieldRow.style.display = "none";
+    input.value = "";
   }
+
+  // Ocultar isla si no hay ningún método activo
+  const anyActive = ["Efectivo","Sinpe","Tarjeta","CxC"]
+    .some(m => document.getElementById("btn" + m).classList.contains("active"));
+  if (!anyActive) isla.classList.remove("show");
+
   calcTotal();
 }
 
@@ -802,10 +772,10 @@ async function enviarCobro() {
   const facturador = document.getElementById("cFacturador").value;
 
   const metodos = [];
-  if (document.getElementById("chkEfectivo").checked) metodos.push("Efectivo");
-  if (document.getElementById("chkSinpe").checked)    metodos.push("Sinpe");
-  if (document.getElementById("chkTarjeta").checked)  metodos.push("Tarjeta");
-  if (document.getElementById("chkCxC").checked)      metodos.push("CxC");
+  if (document.getElementById("btnEfectivo").classList.contains("active")) metodos.push("Efectivo");
+  if (document.getElementById("btnSinpe").classList.contains("active"))    metodos.push("Sinpe");
+  if (document.getElementById("btnTarjeta").classList.contains("active"))  metodos.push("Tarjeta");
+  if (document.getElementById("btnCxC").classList.contains("active"))      metodos.push("CxC");
 
   if (!metodos.length)    return showToast("⚠️ Selecciona al menos un método de pago");
   if (!facturador)        return showToast("⚠️ Selecciona quién recibe el pago");
