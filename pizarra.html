@@ -2,460 +2,362 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8"/>
-<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>Pizarra CarWash — Control en Vivo</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+<title>Pizarra CarWash Pro</title>
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Mono:wght@400;500&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet"/>
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 :root{
   --bg:#07090d;--surface:#0d1219;--card:#111a25;--border:#1a2a3a;
   --accent:#00d4ff;--green:#00e676;--yellow:#ffc107;--red:#ff5252;
-  --text:#dff0ff;--muted:#4a6a85;--gift:#e040fb;
+  --text:#dff0ff;--muted:#4a6a85;--gift:#e040fb;--wa:#25d366;
 }
 body{background:var(--bg);font-family:"DM Sans",sans-serif;color:var(--text);min-height:100vh;display:flex;flex-direction:column;overflow-x:hidden}
 
 /* ── TOPBAR ── */
 .topbar{display:flex;align-items:center;justify-content:space-between;padding:14px 28px;background:linear-gradient(90deg,#050d14,#081525);border-bottom:1px solid var(--border);position:sticky;top:0;z-index:100}
-.topbar-left{display:flex;align-items:center;gap:15px}
-.logo-chip{background:rgba(0,212,255,0.08);border:1px solid rgba(0,212,255,0.25);border-radius:8px;padding:6px 14px;font-family:"Bebas Neue",sans-serif;font-size:18px;letter-spacing:2px;color:var(--accent)}
-.page-title{font-family:"Bebas Neue",sans-serif;font-size:26px;letter-spacing:3px;background:linear-gradient(90deg,#fff 40%,var(--accent));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
-.back-btn{background:transparent;border:1px solid var(--border);color:var(--muted);border-radius:8px;padding:7px 14px;cursor:pointer;font-size:13px;font-family:inherit;transition:all .2s;text-decoration:none;display:flex;align-items:center;gap:6px}
-.back-btn:hover{color:var(--text);border-color:var(--muted);background:rgba(255,255,255,0.05)}
-.topbar-right{display:flex;align-items:center;gap:15px}
-.status-pill{display:flex;align-items:center;gap:7px;font-size:12px;color:var(--muted);background:rgba(0,0,0,0.3);border:1px solid var(--border);border-radius:20px;padding:5px 12px}
+.logo-chip{background:rgba(0,212,255,0.08);border:1px solid rgba(0,212,255,0.25);border-radius:8px;padding:6px 14px;font-family:"Bebas Neue",sans-serif;font-size:18px;color:var(--accent);letter-spacing:1px}
+.status-pill{display:flex;align-items:center;gap:7px;font-size:11px;color:var(--muted);background:rgba(0,0,0,0.3);border:1px solid var(--border);border-radius:20px;padding:5px 12px}
 .pulse-dot{width:7px;height:7px;border-radius:50%;background:var(--green);animation:pulse 2s infinite}
 @keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(0,230,118,0.5)}50%{box-shadow:0 0 0 5px rgba(0,230,118,0)}}
 
 /* ── STATS ── */
 .stats-bar{display:flex;border-bottom:1px solid var(--border);background:var(--surface)}
-.stat{flex:1;padding:14px 20px;border-right:1px solid var(--border);display:flex;align-items:center;gap:12px}
-.stat-val{font-size:24px;font-weight:700;font-family:"DM Mono",monospace}
-.stat-lbl{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:1px}
+.stat{flex:1;padding:12px 20px;border-right:1px solid var(--border);text-align:center}
+.stat-val{font-size:22px;font-weight:700;font-family:"DM Mono",monospace;display:block}
+.stat-lbl{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:1px}
 
 /* ── BOARD ── */
-.board{display:grid;grid-template-columns:1fr 1fr 1fr;flex:1;min-height:calc(100vh - 130px)}
-.zone{position:relative;border:1px solid var(--border);padding:22px;overflow:hidden}
-.zone-title{font-family:"Bebas Neue",sans-serif;font-size:20px;letter-spacing:2px;color:var(--accent);margin-bottom:20px;display:block}
-.cars-grid{display:flex;flex-wrap:wrap;gap:14px;align-content:flex-start}
+.board{display:grid;grid-template-columns:1fr 1fr 1fr;flex:1}
+.zone{border-right:1px solid var(--border);padding:20px;min-height:300px}
+.zone-title{font-family:"Bebas Neue",sans-serif;font-size:18px;letter-spacing:1px;color:var(--accent);margin-bottom:15px;display:block}
+.cars-grid{display:flex;flex-wrap:wrap;gap:12px;align-content:flex-start}
 
 /* ── CARDS ── */
-.car-card{width:175px;background:rgba(0,0,0,0.45);border-radius:18px;border:1px solid rgba(255,255,255,0.06);padding:14px;transition:transform 0.2s,border-color 0.2s,box-shadow 0.2s;position:relative;overflow:hidden;animation:carIn .42s cubic-bezier(.34,1.56,.64,1) forwards;cursor:pointer}
-.car-card:hover{transform:translateY(-5px);border-color:var(--accent);box-shadow:0 8px 24px rgba(0,212,255,0.15)}
-.orden-badge{position:absolute;top:9px;right:10px;font-family:"DM Mono",monospace;font-size:10px;font-weight:800;color:var(--accent);background:rgba(0,212,255,0.1);border:1px solid rgba(0,212,255,0.25);border-radius:5px;padding:2px 6px;letter-spacing:.5px;line-height:1.4}
+.car-card{width:165px;background:var(--card);border-radius:16px;border:1px solid var(--border);padding:12px;position:relative;cursor:pointer;transition:0.2s}
+.car-card:hover{border-color:var(--accent);transform:translateY(-3px)}
+.car-card.disabled{opacity:0.4;cursor:not-allowed;filter:grayscale(1)}
+.car-card.disabled:hover{transform:none;border-color:var(--border)}
+.orden-badge{position:absolute;top:8px;right:8px;font-family:"DM Mono";font-size:9px;color:var(--accent);background:rgba(0,212,255,0.1);padding:2px 5px;border-radius:4px}
+.car-plate{font-family:"DM Mono";font-size:13px;font-weight:bold;color:#fff;background:rgba(255,255,255,0.05);text-align:center;padding:4px;border-radius:6px;margin:8px 0}
+.car-name{font-size:12px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.car-service{font-size:10px;color:var(--muted);margin-top:2px}
 
-@keyframes carIn{from{opacity:0;transform:scale(.82) translateY(12px)}to{opacity:1;transform:scale(1) translateY(0)}}
-
-.car-emoji{font-size:32px;display:block;text-align:center;margin-bottom:10px}
-.car-plate{font-family:"DM Mono",monospace;font-size:13px;font-weight:bold;background:rgba(0,212,255,0.1);border:1px solid rgba(0,212,255,0.3);border-radius:6px;padding:4px;text-align:center;letter-spacing:1px;margin-bottom:8px;color:#fff}
-.car-name{font-size:12px;font-weight:600;margin-bottom:4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.car-service{font-size:10px;color:var(--muted);line-height:1.2;height:24px;overflow:hidden}
-
-/* ── MODAL COBRO ── */
-.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.85);backdrop-filter:blur(8px);z-index:2000;display:none;align-items:center;justify-content:center;padding:20px}
+/* ── MODALES ── */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.8);backdrop-filter:blur(10px);z-index:1000;display:none;align-items:center;justify-content:center;padding:15px}
 .modal-overlay.show{display:flex}
-.cobro-box {
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: 24px;
-  width: 100%;
-  max-width: 580px;
-  max-height: 90vh;
-  display: flex;
-  flex-direction: column;
-  overflow: hidden;
-  box-shadow: 0 20px 50px rgba(0,0,0,0.5);
-  animation: modalIn .25s cubic-bezier(.34,1.2,.64,1);
-}
-@keyframes modalIn{from{opacity:0;transform:scale(.93) translateY(12px)}to{opacity:1;transform:scale(1) translateY(0)}}
 
-.cobro-header {
-  padding: 22px 28px;
-  border-bottom: 1px solid var(--border);
-  background: linear-gradient(135deg, rgba(255,193,7,0.06), transparent);
-  display: flex; align-items: center; justify-content: space-between;
-  flex-shrink: 0;
-}
-.cobro-body {
-  padding: 24px 28px;
-  flex: 1;
-  overflow-y: auto;
-  display: flex; flex-direction: column; gap: 20px;
-}
-.cobro-footer { padding: 20px 28px; border-top: 1px solid var(--border); background: rgba(0,0,0,0.2); flex-shrink: 0; }
+/* MENU ACCIONES */
+.action-box{background:var(--surface);border:1px solid var(--border);border-radius:24px;width:100%;max-width:320px;overflow:hidden;animation:slideUp 0.3s ease-out}
+@keyframes slideUp{from{transform:translateY(100px);opacity:0}to{transform:translateY(0);opacity:1}}
+.action-btn{width:100%;padding:18px;background:none;border:none;border-bottom:1px solid var(--border);color:#fff;font-size:14px;font-weight:600;cursor:pointer;transition:0.2s}
+.action-btn:hover{background:rgba(255,255,255,0.05)}
+.btn-wa{color:var(--wa) !important}
+.btn-cobrar{color:var(--yellow) !important}
 
-.cobro-title{font-family:"Bebas Neue",sans-serif;font-size:24px;letter-spacing:2px;color:var(--yellow)}
-.orden-chip-val{font-family:"DM Mono",monospace;font-size:22px;font-weight:900;color:var(--accent);background:rgba(0,212,255,0.1);border:1px solid rgba(0,212,255,0.35);border-radius:8px;padding:5px 14px}
+/* COBRO BOX */
+.cobro-box{background:var(--surface);border:1px solid var(--border);border-radius:24px;width:100%;max-width:500px;max-height:95vh;overflow-y:auto}
+.cobro-padding{padding:24px}
+.metodos-grid{display:grid;grid-template-columns:repeat(auto-fit, minmax(80px, 1fr));gap:8px;margin:15px 0}
+.met-btn{background:rgba(0,0,0,0.2);border:2px solid var(--border);border-radius:12px;padding:10px 5px;text-align:center;cursor:pointer;color:var(--muted);transition:0.2s}
+.met-btn.active{border-color:var(--accent);color:var(--accent);background:rgba(0,212,255,0.05)}
+.met-btn.active.gift{border-color:var(--gift);color:var(--gift)}
 
-.cobro-vehicle-bar{display:flex;align-items:center;gap:16px;padding-bottom:15px;border-bottom:1px solid var(--border)}
-.cobro-veh-plate{font-family:"DM Mono",monospace;font-size:15px;font-weight:700;background:rgba(0,212,255,0.08);border:1px solid var(--border);border-radius:7px;padding:5px 12px}
+.isla-montos{background:rgba(255,255,255,0.03);border-radius:16px;padding:15px;display:none;flex-direction:column;gap:10px}
+.monto-row{display:flex;align-items:center;justify-content:space-between;gap:10px}
+.monto-row input{background:var(--bg);border:1px solid var(--border);color:#fff;padding:8px;border-radius:8px;width:100px;text-align:right;font-family:"DM Mono"}
+.monto-row input:read-only{color:var(--gift);border-color:var(--gift);opacity:0.8}
 
-.metodos-btns{display:grid;grid-template-columns:repeat(auto-fit, minmax(90px, 1fr));gap:10px}
-.met-btn{display:flex;flex-direction:column;align-items:center;gap:6px;padding:12px 5px;border:2px solid var(--border);border-radius:14px;background:rgba(0,0,0,0.3);cursor:pointer;transition:all .2s;color:var(--muted);text-align:center}
-.met-btn.active{border-color:var(--accent);background:rgba(0,212,255,0.1);color:var(--accent)}
-.met-btn.active.gift{border-color:var(--gift);background:rgba(224,64,251,0.1);color:var(--gift)}
-.met-btn-icon{font-size:20px}
-.met-btn-name{font-size:9px;font-weight:700;text-transform:uppercase}
+.resp-grid{display:flex;flex-wrap:wrap;gap:8px;margin-top:15px}
+.chip{padding:8px 15px;border:1px solid var(--border);border-radius:50px;font-size:12px;cursor:pointer}
+.chip.selected{border-color:var(--accent);background:var(--accent);color:#000;font-weight:bold}
 
-.montos-isla{display:none;flex-direction:column;gap:12px;background:rgba(0,212,255,0.04);border:1px solid rgba(0,212,255,0.2);border-radius:16px;padding:18px}
-.montos-isla.show{display:flex}
-.monto-field-row{display:flex;align-items:center;gap:14px}
-.monto-field-label{font-size:12px;font-weight:600;color:var(--muted);min-width:110px}
-.monto-input-wrap{flex:1;display:flex;background:var(--bg);border:1px solid var(--border);border-radius:10px;overflow:hidden}
-.monto-input-wrap input{flex:1;background:none;border:none;color:var(--text);padding:10px 14px;font-family:"DM Mono",monospace;outline:none}
-.monto-input-wrap input:read-only{color:var(--gift);cursor:not-allowed}
+.btn-final{width:100%;padding:16px;background:var(--yellow);color:#000;border:none;border-radius:14px;font-weight:800;font-size:15px;cursor:pointer;margin-top:20px}
 
-.total-row{display:flex;justify-content:space-between;align-items:center;padding:16px;background:rgba(255,193,7,0.1);border:1px solid var(--yellow);border-radius:12px;margin-top:10px}
-.total-val{font-family:"DM Mono",monospace;font-size:22px;font-weight:800;color:var(--yellow)}
+/* UTILS */
+.toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:var(--accent);color:#000;padding:10px 20px;border-radius:10px;font-weight:bold;z-index:2000;display:none}
 
-.responsable-chips{display:flex;flex-wrap:wrap;gap:8px}
-.resp-chip{padding:8px 16px;border:1px solid var(--border);border-radius:50px;font-size:13px;cursor:pointer;background:var(--bg);color:var(--muted)}
-.resp-chip.selected{border-color:var(--accent);background:rgba(0,212,255,0.12);color:var(--accent)}
-
-.btn-cobrar{width:100%;padding:16px;background:linear-gradient(135deg,#ffc107,#e6a800);color:#000;border:none;border-radius:14px;font-size:16px;font-weight:800;cursor:pointer;transition:transform 0.1s}
-.btn-cobrar:disabled{opacity:0.5;cursor:not-allowed}
-
-.loading-overlay{position:fixed;inset:0;background:var(--bg);display:flex;flex-direction:column;justify-content:center;align-items:center;z-index:3000;gap:15px}
-.spinner{width:40px;height:40px;border:3px solid var(--border);border-top-color:var(--accent);border-radius:50%;animation:spin 1s linear infinite}
-@keyframes spin{to{transform:rotate(360deg)}}
-.toast{position:fixed;bottom:25px;left:50%;transform:translateX(-50%);background:var(--card);border:1px solid var(--border);padding:12px 25px;border-radius:12px;opacity:0;transition:0.3s;z-index:4000;pointer-events:none}
-.toast.show{opacity:1}
-
-@media(max-width:600px){
+@media(max-width:768px){
   .board{grid-template-columns:1fr}
-  .cobro-box{max-height:100vh;border-radius:0}
+  .zone{border-right:none;border-bottom:1px solid var(--border)}
 }
 </style>
 </head>
 <body>
 
 <div class="topbar">
-  <div class="topbar-left">
-    <a class="back-btn" href="index.html">← Menú</a>
-    <div class="logo-chip">CW</div>
-    <div class="page-title">GESTIÓN DE LAVADO</div>
-  </div>
-  <div class="topbar-right">
-    <div class="status-pill">
-      <div class="pulse-dot"></div>
-      <span id="lastUpdate">Sincronizando...</span>
-    </div>
-  </div>
+  <div class="logo-chip">CARWASH LIVE</div>
+  <div class="status-pill"><div class="pulse-dot"></div><span id="updateTimer">Sincronizando...</span></div>
 </div>
 
 <div class="stats-bar">
-  <div class="stat"><div><div class="stat-val" id="cnt-proceso">0</div><div class="stat-lbl">En Lavado</div></div></div>
-  <div class="stat"><div><div class="stat-val" id="cnt-terminado" style="color:var(--green)">0</div><div class="stat-lbl">Listos</div></div></div>
-  <div class="stat"><div><div class="stat-val" id="cnt-retirado" style="color:var(--red)">0</div><div class="stat-lbl">Entregados</div></div></div>
+  <div class="stat"><span class="stat-val" id="c-proceso">0</span><span class="stat-lbl">Lavando</span></div>
+  <div class="stat"><span class="stat-val" id="c-terminado" style="color:var(--green)">0</span><span class="stat-lbl">Listos</span></div>
+  <div class="stat"><span class="stat-val" id="c-retirado" style="color:var(--muted)">0</span><span class="stat-lbl">Retirados</span></div>
 </div>
 
 <div class="board">
-  <div class="zone"><span class="zone-title">🚿 EN PROCESO</span><div class="cars-grid" id="grid-proceso"></div></div>
-  <div class="zone"><span class="zone-title" style="color:var(--green)">🅿️ LISTOS</span><div class="cars-grid" id="grid-terminado"></div></div>
-  <div class="zone"><span class="zone-title" style="color:var(--muted)">🚗 ENTREGADOS</span><div class="cars-grid" id="grid-retirado"></div></div>
+  <div class="zone"><span class="zone-title">🚿 EN PROCESO</span><div class="cars-grid" id="g-proceso"></div></div>
+  <div class="zone"><span class="zone-title" style="color:var(--green)">🅿️ LISTOS PARA ENTREGA</span><div class="cars-grid" id="g-terminado"></div></div>
+  <div class="zone"><span class="zone-title" style="color:var(--muted)">🚗 RETIRADOS HOY</span><div class="cars-grid" id="g-retirado"></div></div>
 </div>
 
-<div class="modal-overlay" id="cobroModal">
+<div class="modal-overlay" id="modalActions">
+  <div class="action-box">
+    <div style="padding:20px; text-align:center; border-bottom:1px solid var(--border)">
+      <div id="aPlate" style="font-family:'DM Mono'; font-weight:bold; font-size:18px">---</div>
+      <div id="aClient" style="font-size:12px; color:var(--muted)">---</div>
+    </div>
+    <div id="aButtons"></div>
+    <button onclick="closeAll()" style="width:100%; padding:15px; background:none; border:none; color:var(--red); font-size:11px; cursor:pointer; letter-spacing:1px">CERRAR</button>
+  </div>
+</div>
+
+<div class="modal-overlay" id="modalCobro">
   <div class="cobro-box">
-    <div class="cobro-header">
-      <div>
-        <div class="cobro-title">💰 Finalizar Cobro</div>
-        <div style="font-size:11px;color:var(--muted)">Registra el pago del servicio</div>
-      </div>
-      <div style="text-align:right">
-        <div style="font-size:9px;color:var(--muted);text-transform:uppercase">Orden #</div>
-        <span class="orden-chip-val" id="cOrden">—</span>
-      </div>
-      <button onclick="closeCobroModal()" style="background:none;border:none;color:var(--muted);font-size:22px;margin-left:15px;cursor:pointer">✕</button>
-    </div>
-
-    <div class="cobro-body">
-      <div class="cobro-vehicle-bar">
-        <span class="cobro-veh-plate" id="cPlate">---</span>
-        <span style="font-size:14px;font-weight:600;flex:1" id="cClienteName">—</span>
-        <span style="color:var(--green);font-family:'DM Mono';font-weight:800;font-size:18px" id="cMonto">₡0</span>
+    <div class="cobro-padding">
+      <div style="display:flex; justify-content:space-between; align-items:flex-start">
+        <h3 style="font-family:'Bebas Neue'; letter-spacing:1px; color:var(--yellow)">FINALIZAR COBRO</h3>
+        <span id="cOrden" style="font-family:'DM Mono'; color:var(--muted)">#---</span>
       </div>
 
-      <div style="font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:1px">💳 Métodos de Pago</div>
-      <div class="metodos-btns">
-        <div class="met-btn" id="btnEfectivo" onclick="toggleBloque('Efectivo')">
-          <span class="met-btn-icon">💵</span><span class="met-btn-name">Efectivo</span>
-        </div>
-        <div class="met-btn" id="btnSinpe" onclick="toggleBloque('Sinpe')">
-          <span class="met-btn-icon">📱</span><span class="met-btn-name">Sinpe</span>
-        </div>
-        <div class="met-btn" id="btnTarjeta" onclick="toggleBloque('Tarjeta')">
-          <span class="met-btn-icon">💳</span><span class="met-btn-name">Tarjeta</span>
-        </div>
-        <div class="met-btn" id="btnGiftCard" onclick="toggleGiftCard()">
-          <span class="met-btn-icon">🎁</span><span class="met-btn-name">Gift Card</span>
-        </div>
-        <div class="met-btn" id="btnCxC" onclick="toggleBloque('CxC')">
-          <span class="met-btn-icon">📋</span><span class="met-btn-name">CxC</span>
+      <div style="margin:15px 0; padding:15px; background:rgba(255,255,255,0.03); border-radius:12px; border:1px solid var(--border)">
+        <div id="cPlate" style="font-family:'DM Mono'; font-weight:bold">---</div>
+        <div id="cTotal" style="font-size:26px; font-weight:800; color:var(--green)">₡0</div>
+      </div>
+
+      <p style="font-size:10px; color:var(--muted); text-transform:uppercase">Métodos de pago</p>
+      <div class="metodos-grid">
+        <div class="met-btn" id="m-Efectivo" onclick="toggleM('Efectivo')"><div style="font-size:20px">💵</div><small>Efectivo</small></div>
+        <div class="met-btn" id="m-Sinpe" onclick="toggleM('Sinpe')"><div style="font-size:20px">📱</div><small>Sinpe</small></div>
+        <div class="met-btn" id="m-Tarjeta" onclick="toggleM('Tarjeta')"><div style="font-size:20px">💳</div><small>Tarjeta</small></div>
+        <div class="met-btn" id="m-GiftCard" onclick="toggleGift()"><div style="font-size:20px">🎁</div><small>Gift Card</small></div>
+        <div class="met-btn" id="m-CxC" onclick="toggleM('CxC')"><div style="font-size:20px">📋</div><small>CxC</small></div>
+      </div>
+
+      <div class="isla-montos" id="isla">
+        <div id="row-Efectivo" class="monto-row" style="display:none"><span>💵 Efectivo</span><input type="number" id="in-Efectivo" oninput="recalc()"></div>
+        <div id="row-Sinpe" class="monto-row" style="display:none"><span>📱 Sinpe</span><input type="number" id="in-Sinpe" oninput="recalc()"></div>
+        <div id="row-Tarjeta" class="monto-row" style="display:none"><span>💳 Tarjeta</span><input type="number" id="in-Tarjeta" oninput="recalc()"></div>
+        <div id="row-GiftCard" class="monto-row" style="display:none"><span>🎁 Gift Card</span><input type="number" id="in-GiftCard" readonly value="0"></div>
+        <div id="row-CxC" class="monto-row" style="display:none"><span>📋 CxC</span><input type="number" id="in-CxC" oninput="recalc()"></div>
+        
+        <div style="border-top:1px solid var(--border); padding-top:10px; display:flex; justify-content:space-between; font-weight:bold">
+          <span>Cubierto:</span><span id="cubierto">₡0</span>
         </div>
       </div>
 
-      <div class="montos-isla" id="montosIsla">
-        <div id="fieldRowEfectivo" style="display:none" class="monto-field-row">
-          <span class="monto-field-label">💵 Efectivo</span>
-          <div class="monto-input-wrap"><input type="number" id="montoEfectivo" placeholder="0" oninput="calcTotal()"></div>
-        </div>
-        <div id="fieldRowSinpe" style="display:none" class="monto-field-row">
-          <span class="monto-field-label">📱 SINPE</span>
-          <div class="monto-input-wrap"><input type="number" id="montoSinpe" placeholder="0" oninput="calcTotal()"></div>
-        </div>
-        <div id="fieldRowTarjeta" style="display:none" class="monto-field-row">
-          <span class="monto-field-label">💳 Tarjeta</span>
-          <div class="monto-input-wrap"><input type="number" id="montoTarjeta" placeholder="0" oninput="calcTotal()"></div>
-        </div>
-        <div id="fieldRowGiftCard" style="display:none" class="monto-field-row">
-          <span class="monto-field-label">🎁 Gift Card</span>
-          <div class="monto-input-wrap"><input type="number" id="montoGiftCard" readonly value="0"></div>
-        </div>
-        <div id="fieldRowCxC" style="display:none" class="monto-field-row">
-          <span class="monto-field-label">📋 CxC</span>
-          <div class="monto-input-wrap"><input type="number" id="montoCxC" placeholder="0" oninput="calcTotal()"></div>
-        </div>
-
-        <div class="total-row">
-          <span style="color:var(--yellow);font-weight:600;font-size:14px">Total ingresado</span>
-          <span class="total-val" id="totalIngresado">₡0</span>
-        </div>
-        <div id="diffRow" style="text-align:right;font-size:11px;font-family:'DM Mono'"></div>
+      <p style="font-size:10px; color:var(--muted); text-transform:uppercase; margin-top:15px">Responsable</p>
+      <div class="resp-grid">
+        <div class="chip" onclick="selR(this,'Eder')">Eder</div>
+        <div class="chip" onclick="selR(this,'Massiel')">Massiel</div>
+        <div class="chip" onclick="selR(this,'Andrey')">Andrey</div>
+        <div class="chip" onclick="selR(this,'Angie')">Angie</div>
       </div>
-
-      <div style="font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:1px">👤 Responsable</div>
-      <div class="responsable-chips" id="respChips">
-        <div class="resp-chip" onclick="selectResp(this,'Eder')">Eder</div>
-        <div class="resp-chip" onclick="selectResp(this,'Massiel')">Massiel</div>
-        <div class="resp-chip" onclick="selectResp(this,'Andrey')">Andrey</div>
-        <div class="resp-chip" onclick="selectResp(this,'Angie')">Angie</div>
-      </div>
-      <input type="hidden" id="cFacturador" value="">
-    </div>
-
-    <div class="cobro-footer">
-      <button class="btn-cobrar" id="btnCobrar" onclick="enviarCobro()">
-        💰 Confirmar Cobro
-      </button>
+      
+      <button class="btn-final" id="btnSend" onclick="finalize()">CONFIRMAR REGISTRO</button>
     </div>
   </div>
 </div>
 
-<div id="loadingOverlay" class="loading-overlay">
-  <div class="spinner"></div>
-  <div style="font-family:'DM Mono'">CARGANDO...</div>
-</div>
-<div id="toast" class="toast"></div>
+<div class="toast" id="toast"></div>
 
 <script>
-const CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRZKI99U4UgQBDH7Can0vVO9TO0hhi6TkTYx4jNdTDxYDsM1dQrEG5UaIoftDmOdzkXAr8LOscVFxv-/pub?gid=0&single=true&output=csv";
-const WEBHOOK_COBRO = "https://neuraloom.app.n8n.cloud/webhook-test/finalizar-cobro";
+const CSV = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRZKI99U4UgQBDH7Can0vVO9TO0hhi6TkTYx4jNdTDxYDsM1dQrEG5UaIoftDmOdzkXAr8LOscVFxv-/pub?gid=0&single=true&output=csv";
+const WH_COBRO = "https://neuraloom.app.n8n.cloud/webhook-test/finalizar-cobro";
+const WH_ESTADO = "https://neuraloom.app.n8n.cloud/webhook-test/cambiar-estado";
 
-let carsCache = [];
-let selectedCar = null;
-let metodosSeleccionados = new Set();
-const METODOS_MANUALES = ["Efectivo", "Sinpe", "Tarjeta", "CxC"];
+let db = [];
+let cur = null;
+let selMethods = new Set();
+let resSel = "";
 
-async function loadData() {
+async function sync() {
   try {
-    const res = await fetch(CSV_URL, { cache: "no-store" });
-    const text = await res.text();
-    render(parseCSV(text));
-    document.getElementById("lastUpdate").textContent = "En vivo: " + new Date().toLocaleTimeString();
-    document.getElementById("loadingOverlay").style.display = "none";
-  } catch(e) { showToast("⚠️ Error de sincronización"); }
+    const r = await fetch(CSV, {cache:"no-store"});
+    const t = await r.text();
+    db = parse(t);
+    draw();
+    document.getElementById("updateTimer").textContent = "Vivo: " + new Date().toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'});
+  } catch(e) { toast("Error de red"); }
 }
 
-function parseCSV(text) {
-  const lines = text.trim().split(/\r?\n/);
-  return lines.slice(1).map(line => {
-    const cols = line.split(/,(?=(?:[^"]*"[^"]*")*[^"]*$)/);
-    const clean = v => (v || "").replace(/^["']|["']$/g, "").trim();
-    return {
-      orden: clean(cols[0]),
-      placa: clean(cols[2]),
-      cliente: clean(cols[3]),
-      servicio: clean(cols[7]),
-      estado: clean(cols[8]).toLowerCase(),
-      monto: clean(cols[12]).replace(/\D/g, "") || "0"
-    };
-  }).filter(r => r.placa.length >= 3);
+function parse(t) {
+  return t.trim().split("\n").slice(1).map(l => {
+    const c = l.split(/,(?=(?:[^"]*"[^"]*")*[^"]*$)/).map(v => v.replace(/^"|"$/g, '').trim());
+    return { id: c[0], plate: c[2], name: c[3], phone: c[4], serv: c[7], status: c[8].toLowerCase(), cash: c[12].replace(/\D/g,'')||0 };
+  }).filter(x => x.plate);
 }
 
-function render(cars) {
-  carsCache = cars;
-  const groups = { proceso: [], terminado: [], retirado: [] };
-  cars.forEach(car => {
-    let z = car.estado.includes("listo") || car.estado.includes("terminado") ? "terminado" : 
-            car.estado.includes("retirado") || car.estado.includes("entregado") ? "retirado" : "proceso";
-    groups[z].push(car);
+function draw() {
+  const g = { proceso: [], terminado: [], retirado: [] };
+  db.forEach(x => {
+    let s = "proceso";
+    if(x.status.includes("listo") || x.status.includes("terminado")) s = "terminado";
+    else if(x.status.includes("retirado") || x.status.includes("entregado")) s = "retirado";
+    g[s].push(x);
   });
-  ["proceso","terminado","retirado"].forEach(z => {
-    const grid = document.getElementById("grid-" + z);
-    document.getElementById("cnt-" + z).textContent = groups[z].length;
-    grid.innerHTML = groups[z].map(car => `
-      <div class="car-card" onclick="abrirCobroDirecto('${car.placa}')">
-        <span class="orden-badge">#${car.orden}</span>
-        <div class="car-emoji">🚗</div>
-        <div class="car-plate">${car.placa}</div>
-        <div class="car-name">${car.cliente}</div>
-        <div class="car-service">${car.servicio}</div>
+
+  ["proceso","terminado","retirado"].forEach(k => {
+    document.getElementById("c-"+k).textContent = g[k].length;
+    document.getElementById("g-"+k).innerHTML = g[k].map(x => `
+      <div class="car-card ${k==='retirado'?'disabled':''}" onclick="clickCar('${x.plate}','${k}')">
+        <span class="orden-badge">#${x.id}</span>
+        <div style="font-size:24px; text-align:center">🚗</div>
+        <div class="car-plate">${x.plate}</div>
+        <div class="car-name">${x.name}</div>
+        <div class="car-service">${x.serv}</div>
       </div>
     `).join("");
   });
 }
 
-function abrirCobroDirecto(placa) {
-  selectedCar = carsCache.find(c => c.placa === placa);
-  if (!selectedCar) return;
-  document.getElementById("cOrden").textContent = selectedCar.orden;
-  document.getElementById("cPlate").textContent = selectedCar.placa;
-  document.getElementById("cClienteName").textContent = selectedCar.cliente;
-  document.getElementById("cMonto").textContent = "₡" + parseInt(selectedCar.monto).toLocaleString();
-  document.getElementById("cobroModal").classList.add("show");
-  calcTotal();
-}
-
-function toggleBloque(metodo) {
-  const btn = document.getElementById("btn" + metodo);
-  const row = document.getElementById("fieldRow" + metodo);
-  if (metodosSeleccionados.has(metodo)) {
-    metodosSeleccionados.delete(metodo);
-    btn.classList.remove("active");
-    row.style.display = "none";
-    document.getElementById("monto" + metodo).value = "";
-  } else {
-    metodosSeleccionados.add(metodo);
-    btn.classList.add("active");
-    row.style.display = "flex";
-    setTimeout(() => row.querySelector('input').focus(), 50);
-  }
-  actualizarIslaYCalculos();
-}
-
-function toggleGiftCard() {
-  const metodo = "GiftCard";
-  const btn = document.getElementById("btnGiftCard");
-  const row = document.getElementById("fieldRowGiftCard");
+function clickCar(p, z) {
+  if(z === 'retirado') return;
+  cur = db.find(x => x.plate === p);
+  document.getElementById("aPlate").textContent = cur.plate;
+  document.getElementById("aClient").textContent = cur.name;
   
-  if (metodosSeleccionados.has(metodo)) {
-    metodosSeleccionados.delete(metodo);
-    btn.classList.remove("active", "gift");
-    row.style.display = "none";
-    document.getElementById("montoGiftCard").value = "0";
+  let h = "";
+  if(z === 'proceso') {
+    h += `<button class="action-btn" onclick="setSt('Terminado')">✅ MARCAR COMO LISTO</button>`;
+    h += `<button class="action-btn" onclick="setSt('Retirado')">🚗 MARCAR COMO ENTREGADO</button>`;
   } else {
-    metodosSeleccionados.add(metodo);
-    btn.classList.add("active", "gift");
-    row.style.display = "flex";
+    h += `<button class="action-btn" onclick="setSt('Retirado')">🚗 MARCAR COMO ENTREGADO</button>`;
+    h += `<button class="action-btn btn-wa" onclick="wa()">📱 ENVIAR WHATSAPP</button>`;
   }
-  actualizarIslaYCalculos();
-}
-
-function actualizarIslaYCalculos() {
-  document.getElementById("montosIsla").classList.toggle("show", metodosSeleccionados.size > 0);
-  calcTotal();
-}
-
-function calcTotal() {
-  const montoEsperado = parseInt(selectedCar?.monto || 0);
-  let sumaManual = 0;
+  h += `<button class="action-btn btn-cobrar" onclick="goCobro()">💰 FINALIZAR COBRO</button>`;
   
-  // Sumamos lo que el usuario escribió manualmente
-  METODOS_MANUALES.forEach(m => {
-    sumaManual += parseInt(document.getElementById("monto" + m).value || 0);
+  document.getElementById("aButtons").innerHTML = h;
+  document.getElementById("modalActions").classList.add("show");
+}
+
+async function setSt(s) {
+  toast("Procesando...");
+  try {
+    await fetch(WH_ESTADO, { method:"POST", body: JSON.stringify({id: cur.id, estado: s}) });
+    closeAll();
+    sync();
+  } catch(e) { toast("Error"); }
+}
+
+function wa() {
+  const m = encodeURIComponent(`¡Hola ${cur.name}! Tu vehículo (${cur.plate}) está listo en CarWash. 🚗✨`);
+  window.open(`https://wa.me/506${cur.phone.replace(/\D/g,'')}?text=${m}`, '_blank');
+}
+
+function goCobro() {
+  document.getElementById("modalActions").classList.remove("show");
+  document.getElementById("cOrden").textContent = "#"+cur.id;
+  document.getElementById("cPlate").textContent = cur.plate;
+  document.getElementById("cTotal").textContent = "₡"+parseInt(cur.cash).toLocaleString();
+  document.getElementById("modalCobro").classList.add("show");
+  recalc();
+}
+
+function toggleM(m) {
+  const b = document.getElementById("m-"+m);
+  const r = document.getElementById("row-"+m);
+  if(selMethods.has(m)) {
+    selMethods.delete(m);
+    b.classList.remove("active");
+    r.style.display = "none";
+    document.getElementById("in-"+m).value = "";
+  } else {
+    selMethods.add(m);
+    b.classList.add("active");
+    r.style.display = "flex";
+  }
+  document.getElementById("isla").style.display = selMethods.size > 0 ? "flex" : "none";
+  recalc();
+}
+
+function toggleGift() {
+  const b = document.getElementById("m-GiftCard");
+  const r = document.getElementById("row-GiftCard");
+  if(selMethods.has("GiftCard")) {
+    selMethods.delete("GiftCard");
+    b.classList.remove("active", "gift");
+    r.style.display = "none";
+  } else {
+    selMethods.add("GiftCard");
+    b.classList.add("active", "gift");
+    r.style.display = "flex";
+  }
+  recalc();
+}
+
+function recalc() {
+  const goal = parseInt(cur?.cash || 0);
+  let man = 0;
+  ["Efectivo","Sinpe","Tarjeta","CxC"].forEach(m => {
+    man += parseInt(document.getElementById("in-"+m).value || 0);
   });
 
-  // Si Gift Card está activa, calcula automáticamente el faltante
-  let montoGC = 0;
-  if (metodosSeleccionados.has("GiftCard")) {
-    montoGC = Math.max(0, montoEsperado - sumaManual);
-    document.getElementById("montoGiftCard").value = montoGC;
+  let gv = 0;
+  if(selMethods.has("GiftCard")) {
+    gv = Math.max(0, goal - man);
+    document.getElementById("in-GiftCard").value = gv;
   }
 
-  const totalFinal = sumaManual + montoGC;
-  document.getElementById("totalIngresado").textContent = "₡" + totalFinal.toLocaleString();
+  const total = man + gv;
+  document.getElementById("cubierto").textContent = "₡"+total.toLocaleString();
+  document.getElementById("cubierto").style.color = total >= goal ? "var(--green)" : "var(--red)";
+}
+
+function selR(el, n) {
+  document.querySelectorAll(".chip").forEach(c => c.classList.remove("selected"));
+  el.classList.add("selected");
+  resSel = n;
+}
+
+async function finalize() {
+  if(!resSel) return toast("Selecciona responsable");
+  if(selMethods.size === 0) return toast("Selecciona método");
   
-  const diffEl = document.getElementById("diffRow");
-  if (totalFinal < montoEsperado) {
-    diffEl.innerHTML = `<span style="color:var(--red)">Faltan ₡${(montoEsperado - totalFinal).toLocaleString()}</span>`;
-  } else if (totalFinal > montoEsperado) {
-    diffEl.innerHTML = `<span style="color:var(--green)">Vuelto: ₡${(totalFinal - montoEsperado).toLocaleString()}</span>`;
-  } else {
-    diffEl.innerHTML = `<span style="color:var(--green)">✓ Pago Cubierto</span>`;
-  }
-}
+  const b = document.getElementById("btnSend");
+  b.disabled = true; b.textContent = "ENVIANDO...";
 
-function selectResp(el, nombre) {
-  document.querySelectorAll('.resp-chip').forEach(c => c.classList.remove('selected'));
-  el.classList.add('selected');
-  document.getElementById("cFacturador").value = nombre;
-}
-
-function closeCobroModal() {
-  document.getElementById("cobroModal").classList.remove("show");
-  metodosSeleccionados.clear();
-  [...METODOS_MANUALES, "GiftCard"].forEach(m => {
-    const btn = document.getElementById("btn" + m);
-    if(btn) btn.classList.remove("active", "gift");
-    const row = document.getElementById("fieldRow" + m);
-    if(row) row.style.display = "none";
-    const input = document.getElementById("monto" + m);
-    if(input) input.value = (m === "GiftCard") ? "0" : "";
-  });
-  document.getElementById("montosIsla").classList.remove("show");
-  document.querySelectorAll('.resp-chip').forEach(c => c.classList.remove('selected'));
-  document.getElementById("cFacturador").value = "";
-}
-
-async function enviarCobro() {
-  const facturador = document.getElementById("cFacturador").value;
-  if (!facturador) return showToast("⚠️ Selecciona un responsable");
-  if (metodosSeleccionados.size === 0) return showToast("⚠️ Selecciona un método");
-
-  const btn = document.getElementById("btnCobrar");
-  btn.disabled = true;
-  btn.textContent = "⌛ Registrando...";
-
-  const payload = {
-    orden: selectedCar.orden,
-    placa: selectedCar.placa,
-    cliente: selectedCar.cliente,
-    totalServicio: selectedCar.monto,
-    responsable: facturador,
-    pagos: {
-      efectivo: document.getElementById("montoEfectivo").value || 0,
-      sinpe: document.getElementById("montoSinpe").value || 0,
-      tarjeta: document.getElementById("montoTarjeta").value || 0,
-      giftcard: document.getElementById("montoGiftCard").value || 0,
-      cxc: document.getElementById("montoCxC").value || 0
+  const p = {
+    id: cur.id,
+    plate: cur.plate,
+    resp: resSel,
+    pays: {
+      e: document.getElementById("in-Efectivo").value || 0,
+      s: document.getElementById("in-Sinpe").value || 0,
+      t: document.getElementById("in-Tarjeta").value || 0,
+      g: document.getElementById("in-GiftCard").value || 0,
+      c: document.getElementById("in-CxC").value || 0
     }
   };
 
   try {
-    const res = await fetch(WEBHOOK_COBRO, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(payload)
-    });
-    if (res.ok) {
-      showToast("✅ Cobro registrado");
-      closeCobroModal();
-      setTimeout(loadData, 1000);
-    }
-  } catch(e) { showToast("⚠️ Error de conexión"); }
-  btn.disabled = false;
-  btn.textContent = "💰 Confirmar Cobro";
+    await fetch(WH_COBRO, { method:"POST", body: JSON.stringify(p)});
+    toast("Cobro Exitoso");
+    closeAll();
+    sync();
+  } catch(e) { toast("Error"); }
+  b.disabled = false; b.textContent = "CONFIRMAR REGISTRO";
 }
 
-function showToast(m) {
+function closeAll() {
+  document.querySelectorAll(".modal-overlay").forEach(m => m.classList.remove("show"));
+  selMethods.clear();
+  resSel = "";
+  document.querySelectorAll(".met-btn").forEach(b => b.classList.remove("active","gift"));
+  document.querySelectorAll(".monto-row").forEach(r => r.style.display = "none");
+  document.querySelectorAll(".chip").forEach(c => c.classList.remove("selected"));
+  document.getElementById("isla").style.display = "none";
+}
+
+function toast(m) {
   const t = document.getElementById("toast");
-  t.textContent = m;
-  t.classList.add("show");
-  setTimeout(() => t.classList.remove("show"), 3000);
+  t.textContent = m; t.style.display = "block";
+  setTimeout(() => t.style.display = "none", 3000);
 }
 
-loadData();
-setInterval(loadData, 30000);
+sync();
+setInterval(sync, 30000);
 </script>
 </body>
 </html>
