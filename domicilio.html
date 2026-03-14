@@ -19,77 +19,62 @@
             --red: #ff4d6d;
         }
         html, body { background: var(--bg); font-family: 'DM Sans', sans-serif; color: var(--text); min-height: 100vh; }
-
         .container { display: flex; flex-direction: column; min-height: 100vh; padding: 16px; max-width: 580px; margin: 0 auto; padding-bottom: 40px; }
 
         /* HEADER */
         .header-area { display: flex; align-items: center; padding-bottom: 20px; position: relative; }
-        .btn-back { text-decoration: none; color: var(--text); font-size: 13px; font-weight: 600; background: rgba(0,198,255,0.1); padding: 8px 15px; border-radius: 8px; border: 1px solid var(--accent); z-index: 10; transition: background 0.2s; cursor: pointer; }
-        .btn-back:hover { background: rgba(0,198,255,0.2); }
+        .btn-back { text-decoration: none; color: var(--text); font-size: 13px; font-weight: 600; background: rgba(0,198,255,0.1); padding: 8px 15px; border-radius: 8px; border: 1px solid var(--accent); z-index: 10; cursor: pointer; }
         h2 { font-family: 'Bebas Neue', sans-serif; color: var(--accent); margin: 0; font-size: 22px; letter-spacing: 2px; position: absolute; width: 100%; text-align: center; left: 0; pointer-events: none; }
 
         /* SCREENS */
         .screen { display: none; }
         .screen.active { display: flex; flex-direction: column; gap: 16px; }
 
-        /* ENTRY SCREEN */
+        /* ENTRY CARDS */
         .entry-card { background: var(--card); border: 1px solid var(--border); border-radius: 24px; padding: 36px 28px; display: flex; flex-direction: column; align-items: center; gap: 24px; margin-top: 20px; }
-        .entry-icon { font-size: 52px; }
-        .entry-title { font-family: 'Bebas Neue', sans-serif; font-size: 26px; letter-spacing: 2px; text-align: center; color: var(--text); }
-        .entry-sub { font-size: 14px; color: var(--muted); text-align: center; line-height: 1.6; }
-        .entry-btns { display: flex; flex-direction: column; gap: 12px; width: 100%; }
+        .entry-title { font-family: 'Bebas Neue', sans-serif; font-size: 26px; letter-spacing: 2px; color: var(--text); }
+        .btn-entry-primary { background: var(--accent); color: #000; border: none; border-radius: 14px; padding: 16px; font-size: 16px; font-weight: 700; cursor: pointer; width: 100%; display: flex; align-items: center; justify-content: center; gap: 10px; }
+        .btn-entry-secondary { background: rgba(0,198,255,0.08); color: var(--accent); border: 1px solid rgba(0,198,255,0.3); border-radius: 14px; padding: 16px; font-size: 16px; font-weight: 600; cursor: pointer; width: 100%; display: flex; align-items: center; justify-content: center; gap: 10px; }
 
-        .btn-entry-primary { background: var(--accent); color: #000; border: none; border-radius: 14px; padding: 16px; font-size: 16px; font-weight: 700; cursor: pointer; font-family: inherit; transition: background 0.2s, transform 0.1s; display: flex; align-items: center; justify-content: center; gap: 10px; }
-        .btn-entry-primary:hover { background: #00aadd; }
-        .btn-entry-primary:active { transform: scale(0.98); }
-
-        .btn-entry-secondary { background: rgba(0,198,255,0.08); color: var(--accent); border: 1px solid rgba(0,198,255,0.3); border-radius: 14px; padding: 16px; font-size: 16px; font-weight: 600; cursor: pointer; font-family: inherit; transition: all 0.2s, transform 0.1s; display: flex; align-items: center; justify-content: center; gap: 10px; }
-        .btn-entry-secondary:hover { background: rgba(0,198,255,0.15); border-color: var(--accent); }
-
-        /* FORM CARD */
+        /* FORMS */
         .form-card { background: var(--card); border: 1px solid var(--border); border-radius: 20px; padding: 26px 22px; display: flex; flex-direction: column; gap: 22px; }
-        .form-title { font-family: 'Bebas Neue', sans-serif; font-size: 20px; letter-spacing: 1.5px; color: var(--text); padding-bottom: 4px; border-bottom: 1px solid var(--border); }
-        .section-label { font-size: 11px; font-weight: 700; color: var(--accent); text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: -8px; display: flex; align-items: center; gap: 6px; }
+        .form-title { font-family: 'Bebas Neue', sans-serif; font-size: 20px; color: var(--text); border-bottom: 1px solid var(--border); padding-bottom: 4px; }
+        .section-label { font-size: 11px; font-weight: 700; color: var(--accent); text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: -8px; }
         .form-group { display: flex; flex-direction: column; gap: 8px; }
-        .form-label { font-size: 13px; font-weight: 600; color: var(--text); display: flex; align-items: center; gap: 5px; }
-        .req { color: var(--accent); font-size: 16px; line-height: 1; }
-        .form-input, .form-select { background: var(--bg); border: 1px solid var(--border); border-radius: 10px; color: var(--text); padding: 12px 14px; font-size: 15px; font-family: inherit; outline: none; width: 100%; }
-        .form-input:focus { border-color: var(--accent); }
-        .form-select { cursor: pointer; appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%235a7a99' d='M6 8L1 3h10z'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 14px center; }
+        .form-label { font-size: 13px; font-weight: 600; }
+        .form-input, .form-select { background: var(--bg); border: 1px solid var(--border); border-radius: 10px; color: var(--text); padding: 12px 14px; outline: none; width: 100%; font-family: inherit; }
+        .row-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
 
-        /* CHIPS */
+        /* CHIPS & CHECKS */
         .chips-grid { display: flex; flex-wrap: wrap; gap: 9px; }
-        .chip-label input { display: none; }
-        .chip { display: inline-flex; align-items: center; padding: 8px 16px; border-radius: 50px; border: 1px solid var(--border); background: var(--bg); color: var(--muted); font-size: 13px; font-weight: 500; transition: all 0.18s ease; cursor: pointer; }
+        .chip-label input, .check-label input { display: none; }
+        .chip { padding: 8px 16px; border-radius: 50px; border: 1px solid var(--border); background: var(--bg); color: var(--muted); font-size: 13px; cursor: pointer; }
         .chip-label input:checked + .chip { background: rgba(0,198,255,0.15); border-color: var(--accent); color: var(--accent); }
+        
+        .check-grid { display: flex; flex-direction: column; gap: 8px; }
+        .check-label { display: flex; align-items: center; gap: 12px; padding: 11px 14px; border-radius: 10px; border: 1px solid var(--border); background: var(--bg); cursor: pointer; font-size: 14px; }
+        .custom-check { width: 18px; height: 18px; border-radius: 5px; border: 1.5px solid var(--border); background: var(--card); display: flex; align-items: center; justify-content: center; }
+        .check-label input:checked ~ .custom-check { background: var(--accent); border-color: var(--accent); color: #000; }
+        .check-label input:checked ~ .custom-check::after { content: "✓"; font-weight: 700; }
 
-        /* PAYMENT GRID */
-        .pay-grid { display: flex; flex-direction: column; gap: 9px; }
-        .pay-label { display: flex; align-items: center; gap: 14px; padding: 13px 16px; border-radius: 12px; border: 1.5px solid var(--border); background: var(--bg); cursor: pointer; color: var(--muted); }
-        .pay-label input { display: none; }
-        .pay-check { width: 20px; height: 20px; border-radius: 6px; border: 1.5px solid var(--border); background: var(--card); display: flex; align-items: center; justify-content: center; }
-        .pay-label input:checked ~ .pay-check { background: var(--accent); border-color: var(--accent); color: #000; }
-        .pay-label input:checked ~ .pay-check::after { content: "✓"; }
-        .pay-label:has(input:checked) { border-color: var(--accent); background: rgba(0,198,255,0.06); }
-
-        /* BUTTONS & SPINNER */
-        .btn-submit { background: var(--accent); color: #000; border: none; border-radius: 12px; padding: 15px; font-size: 16px; font-weight: 700; cursor: pointer; width: 100%; margin-top: 4px; }
+        /* SUBMIT & UTILS */
+        .btn-submit { background: var(--accent); color: #000; border: none; border-radius: 12px; padding: 15px; font-size: 16px; font-weight: 700; cursor: pointer; }
         .btn-submit.gold { background: linear-gradient(135deg, #c9a84c, #a07828); }
-        .error-banner { display: none; background: rgba(255,80,80,0.1); border: 1px solid rgba(255,80,80,0.3); border-radius: 10px; color: #ff7b7b; padding: 12px 16px; font-size: 13px; text-align: center; }
+        .error-banner { display: none; background: rgba(255,80,80,0.1); border: 1px solid rgba(255,80,80,0.3); border-radius: 10px; color: #ff7b7b; padding: 12px; text-align: center; }
         .spinner { display: inline-block; width: 18px; height: 18px; border: 2px solid rgba(0,0,0,0.3); border-top-color: #000; border-radius: 50%; animation: spin 0.6s linear infinite; }
         @keyframes spin { to { transform: rotate(360deg); } }
 
-        .success-screen { display: none; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 60px 20px; gap: 14px; }
+        .success-screen { display: none; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 60px 20px; }
         .success-screen.active { display: flex; }
 
-        @media (max-width: 420px) { .row-2 { display: grid; grid-template-columns: 1fr; gap: 12px; } }
+        @media (max-width: 420px) { .row-2 { grid-template-columns: 1fr; } }
     </style>
 </head>
 <body>
 <div class="container">
 
     <div class="header-area">
-        <button class="btn-back" id="btnBack" onclick="handleBack()">← VOLVER</button>
+        <button class="btn-back" onclick="handleBack()">← VOLVER</button>
         <h2 id="pageTitle">SERVICIO DOMICILIO</h2>
     </div>
 
@@ -108,63 +93,73 @@
     <div class="screen" id="screenCobro">
         <div class="form-card">
             <div class="form-title">💰 Completar Transacción</div>
-
             <div class="section-label">📋 Orden</div>
-            <div class="form-group">
-                <label class="form-label">Número de orden del vehículo <span class="req">*</span></label>
-                <input class="form-input" type="number" id="c_orden" placeholder="1"/>
-            </div>
-
+            <input class="form-input" type="number" id="c_orden" placeholder="Número de orden">
+            
             <div class="section-label">💳 Detalles de pago</div>
-            <div class="form-group">
-                <label class="form-label">Método de pago <span class="req">*</span></label>
-                <div class="pay-grid">
-                    <label class="pay-label"><input type="checkbox" class="pay-cb" value="Tarjeta crédito / débito"><div class="pay-check"></div><span>💳 Tarjeta</span></label>
-                    <label class="pay-label"><input type="checkbox" class="pay-cb" value="Cuenta por cobrar"><div class="pay-check"></div><span>📄 Cuenta por cobrar</span></label>
-                    <label class="pay-label"><input type="checkbox" class="pay-cb" value="Efectivo"><div class="pay-check"></div><span>💵 Efectivo</span></label>
-                    <label class="pay-label"><input type="checkbox" class="pay-cb" value="SINPE Móvil"><div class="pay-check"></div><span>📱 SINPE Móvil</span></label>
-                </div>
-            </div>
-
-            <div class="section-label">🧾 Facturación</div>
-            <div class="form-group">
-                <label class="form-label">Responsable <span class="req">*</span></label>
-                <div class="chips-grid">
-                    <label class="chip-label"><input type="radio" name="c_resp" value="Juan"><span class="chip">Juan</span></label>
-                    <label class="chip-label"><input type="radio" name="c_resp" value="Eder"><span class="chip">Eder</span></label>
-                    <label class="chip-label"><input type="radio" name="c_resp" value="Massiel"><span class="chip">Massiel</span></label>
-                    <label class="chip-label"><input type="radio" name="c_resp" value="Andrey"><span class="chip">Andrey</span></label>
-                </div>
+            <div class="pay-grid" style="display:flex; flex-direction:column; gap:8px;">
+                <label class="check-label"><input type="checkbox" class="pay-cb" value="Efectivo"><span class="custom-check"></span> 💵 Efectivo</label>
+                <label class="check-label"><input type="checkbox" class="pay-cb" value="SINPE Móvil"><span class="custom-check"></span> 📱 SINPE Móvil</label>
+                <label class="check-label"><input type="checkbox" class="pay-cb" value="Tarjeta"><span class="custom-check"></span> 💳 Tarjeta</label>
             </div>
 
             <div class="section-label">💰 Monto</div>
-            <div class="form-group">
-                <label class="form-label">Total cobrado (₡) <span class="req">*</span></label>
-                <input class="form-input" type="number" id="c_monto" placeholder="Ej: 25000"/>
-            </div>
+            <input class="form-input" type="number" id="c_monto" placeholder="Total cobrado ₡">
 
-            <div class="error-banner" id="errorCobro">⚠️ <span id="errorMsgCobro">Completa todos los campos.</span></div>
+            <div class="error-banner" id="errorCobro">⚠️ Completa los campos requeridos.</div>
             <button class="btn-submit gold" id="btnCobro" onclick="enviarCobro()">💰 Finalizar Cobro</button>
         </div>
     </div>
 
+    <div class="screen" id="screenRegistro">
+        <div class="form-card">
+            <div class="form-title">🚐 Agendar Domicilio</div>
+            
+            <div class="section-label">👤 Datos Cliente</div>
+            <input class="form-input" type="text" id="r_nombre" placeholder="Nombre completo">
+            <div class="row-2">
+                <input class="form-input" type="tel" id="r_celular" placeholder="Celular">
+                <input class="form-input" type="time" id="r_hora">
+            </div>
+            <input class="form-input" type="text" id="r_direccion" placeholder="Dirección exacta">
+
+            <div class="section-label">🚗 Vehículo</div>
+            <div class="chips-grid">
+                <label class="chip-label"><input type="radio" name="r_vehiculo" value="Sedán"><span class="chip">🚗 Sedán</span></label>
+                <label class="chip-label"><input type="radio" name="r_vehiculo" value="SUV"><span class="chip">🚙 SUV</span></label>
+                <label class="chip-label"><input type="radio" name="r_vehiculo" value="Pick-up"><span class="chip">🛻 Pick-up</span></label>
+            </div>
+
+            <div class="section-label">✨ Servicio</div>
+            <select class="form-select" id="r_servicio">
+                <option value="">Seleccionar...</option>
+                <option>Detallado Clásico</option>
+                <option>Detallado Premium</option>
+            </select>
+
+            <div class="error-banner" id="errorRegistro">⚠️ Completa los campos requeridos.</div>
+            <button class="btn-submit" id="btnRegistro" onclick="enviarRegistro()">📋 Agendar Domicilio</button>
+        </div>
+    </div>
+
     <div class="screen success-screen" id="screenSuccess">
-        <div class="check-icon-big" id="successIcon">✅</div>
+        <div style="font-size:64px;">✅</div>
         <h3 id="successTitle">¡Listo!</h3>
-        <p id="successDetail"></p>
-        <button class="btn-nuevo" onclick="goTo('screenEntry')">← Volver al inicio</button>
+        <p id="successDetail" style="color:var(--muted); margin:10px 0;"></p>
+        <button class="btn-entry-secondary" onclick="goTo('screenEntry')">Volver al inicio</button>
     </div>
 
 </div>
 
 <script>
-    const N8N_COBRO_DOM = "https://n8n-production-6cc7.up.railway.app/webhook/domicilio-cobro";
+    const N8N_COBRO = "https://n8n-production-6cc7.up.railway.app/webhook/domicilio-cobro";
+    const N8N_REGISTRO = "https://n8n-production-6cc7.up.railway.app/webhook/domicilio";
     let currentScreen = "screenEntry";
 
-    function goTo(screenId) {
+    function goTo(id) {
         document.querySelectorAll(".screen").forEach(s => s.classList.remove("active"));
-        document.getElementById(screenId).classList.add("active");
-        currentScreen = screenId;
+        document.getElementById(id).classList.add("active");
+        currentScreen = id;
         window.scrollTo(0, 0);
     }
 
@@ -174,50 +169,32 @@
     }
 
     async function enviarCobro() {
-        const orden = document.getElementById("c_orden").value.trim();
-        const metodos = Array.from(document.querySelectorAll(".pay-cb:checked")).map(el => el.value);
-        const respEl = document.querySelector('input[name="c_resp"]:checked');
-        const monto = document.getElementById("c_monto").value.trim();
-        const errBanner = document.getElementById("errorCobro");
-
-        // Eliminado fidValue de la validación
-        if (!orden || metodos.length === 0 || !respEl || !monto) {
-            errBanner.style.display = "block";
-            return;
-        }
-        errBanner.style.display = "none";
-
+        const orden = document.getElementById("c_orden").value;
+        const monto = document.getElementById("c_monto").value;
+        if(!orden || !monto) { document.getElementById("errorCobro").style.display="block"; return; }
+        
         const btn = document.getElementById("btnCobro");
-        btn.disabled = true;
-        btn.innerHTML = '<span class="spinner"></span> Enviando...';
-
-        const ahora = new Date();
-        const payload = {
-            tipo: "cobro_domicilio",
-            fecha: ahora.toLocaleDateString("es-CR"),
-            hora: ahora.toLocaleTimeString("es-CR"),
-            numero_orden: orden,
-            metodo_pago: metodos.join(", "),
-            responsable: respEl.value,
-            monto_total: monto
-            // Se eliminó el campo de fidelización del payload
-        };
+        btn.disabled = true; btn.innerHTML = '<span class="spinner"></span>';
 
         try {
-            const res = await fetch(N8N_COBRO_DOM, {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(payload)
-            });
-            if (!res.ok) throw new Error();
-            document.getElementById("successTitle").textContent = "¡Cobro Registrado!";
-            document.getElementById("successDetail").innerHTML = `Orden #${orden}<br>₡${Number(monto).toLocaleString("es-CR")}`;
+            await fetch(N8N_COBRO, { method: "POST", headers:{"Content-Type":"application/json"}, body: JSON.stringify({orden, monto, tipo:"cobro"}) });
+            document.getElementById("successDetail").textContent = `Cobro de orden #${orden} registrado.`;
             goTo("screenSuccess");
-        } catch (err) {
-            errBanner.style.display = "block";
-            btn.disabled = false;
-            btn.innerHTML = "💰 Finalizar Cobro";
-        }
+        } catch(e) { btn.disabled=false; btn.textContent="💰 Finalizar Cobro"; }
+    }
+
+    async function enviarRegistro() {
+        const nombre = document.getElementById("r_nombre").value;
+        if(!nombre) { document.getElementById("errorRegistro").style.display="block"; return; }
+        
+        const btn = document.getElementById("btnRegistro");
+        btn.disabled = true; btn.innerHTML = '<span class="spinner"></span>';
+
+        try {
+            await fetch(N8N_REGISTRO, { method: "POST", headers:{"Content-Type":"application/json"}, body: JSON.stringify({nombre, tipo:"registro"}) });
+            document.getElementById("successDetail").textContent = `Cita agendada para ${nombre}.`;
+            goTo("screenSuccess");
+        } catch(e) { btn.disabled=false; btn.textContent="📋 Agendar Domicilio"; }
     }
 </script>
 </body>
