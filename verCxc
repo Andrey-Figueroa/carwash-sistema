@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>CarWash — Ver Cuentas Pendientes</title>
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+        :root {
+            --bg: #0a0e14; --card: #111720; --card-hover: #161f2c; --border: #1e2d3d;
+            --accent: #00c6ff; --gold: #c9a84c; --text: #e8f1ff; --muted: #5a7a99; --green: #00e676; --red: #ff4d6d;
+        }
+        html, body { background: var(--bg); font-family: 'DM Sans', sans-serif; color: var(--text); min-height: 100vh; }
+        .container { display: flex; flex-direction: column; min-height: 100vh; padding: 16px; max-width: 800px; margin: 0 auto; padding-bottom: 40px; }
+        
+        .header-area { display: flex; justify-content: space-between; align-items: center; padding-bottom: 20px; position: relative; margin-top: 10px; }
+        .btn-back { text-decoration: none; color: var(--text); font-size: 13px; font-weight: 600; background: rgba(0,198,255,0.1); padding: 8px 15px; border-radius: 8px; border: 1px solid var(--accent); z-index: 10; transition: background 0.2s; cursor: pointer; }
+        .btn-back:hover { background: rgba(0,198,255,0.2); }
+        h2 { font-family: 'Bebas Neue', sans-serif; color: var(--accent); margin: 0; font-size: 24px; letter-spacing: 2px; position: absolute; width: 100%; text-align: center; left: 0; pointer-events: none; }
+
+        .controls { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; gap: 15px; background: var(--card); padding: 15px 20px; border-radius: 16px; border: 1px solid var(--border); }
+        .search-box { flex: 1; position: relative; }
+        .search-box input { width: 100%; background: var(--bg); border: 1px solid var(--border); border-radius: 10px; color: var(--text); padding: 10px 14px 10px 36px; font-size: 14px; font-family: inherit; outline: none; transition: border-color 0.2s; }
+        .search-box input:focus { border-color: var(--accent); }
+        .search-icon { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); font-size: 14px; color: var(--muted); }
+        .btn-refresh { background: rgba(0,198,255,0.1); border: 1px solid var(--accent); color: var(--accent); border-radius: 10px; padding: 10px 16px; font-size: 13px; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 8px; transition: all 0.2s; }
+        .btn-refresh:hover { background: rgba(0,198,255,0.2); }
+
+        .table-wrap { background: var(--card); border: 1px solid var(--border); border-radius: 16px; overflow: hidden; width: 100%; overflow-x: auto; }
+        table { width: 100%; border-collapse: collapse; text-align: left; }
+        thead { background: rgba(0,198,255,0.05); border-bottom: 1px solid var(--border); }
+        th { padding: 14px 16px; font-size: 12px; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: 1px; white-space: nowrap; }
+        td { padding: 14px 16px; font-size: 14px; border-bottom: 1px solid rgba(30,45,61,0.5); vertical-align: middle; }
+        tr:last-child td { border-bottom: none; }
+        tbody tr { transition: background 0.15s; }
+        tbody tr:hover { background: var(--card-hover); }
+
+        .badge-orden { background: rgba(0,198,255,0.1); color: var(--accent); padding: 4px 10px; border-radius: 6px; font-family: monospace; font-size: 13px; font-weight: 700; }
+        .monto { color: var(--gold); font-weight: 700; font-family: monospace; font-size: 15px; }
+        .monto.zero { color: var(--green); }
+        .plate { font-weight: 600; letter-spacing: 0.5px; }
+
+        .actions { display: flex; gap: 8px; }
+        .btn-action { text-decoration: none; font-size: 12px; font-weight: 700; border-radius: 8px; padding: 8px 14px; cursor: pointer; transition: all 0.2s; white-space: nowrap; font-family: inherit; }
+        .btn-abonar { background: rgba(0,198,255,0.1); color: var(--accent); border: 1px solid rgba(0,198,255,0.3); }
+        .btn-abonar:hover { background: rgba(0,198,255,0.2); border-color: var(--accent); }
+        .btn-finalizar { background: rgba(201,168,76,0.1); color: var(--gold); border: 1px solid rgba(201,168,76,0.3); }
+        .btn-finalizar:hover { background: rgba(201,168,76,0.2); border-color: var(--gold); }
+        
+        .status-paid { display: inline-flex; align-items: center; gap: 5px; color: var(--green); font-size: 12px; font-weight: 600; background: rgba(0,230,118,0.1); padding: 6px 12px; border-radius: 8px; border: 1px solid rgba(0,230,118,0.2); }
+
+        .loading { padding: 40px; text-align: center; color: var(--accent); font-weight: 600; display: flex; flex-direction: column; align-items: center; gap: 12px; }
+        .spinner { width: 24px; height: 24px; border: 3px solid rgba(0,198,255,0.2); border-top-color: var(--accent); border-radius: 50%; animation: spin 0.8s linear infinite; }
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        .empty-state { padding: 40px; text-align: center; color: var(--muted); display: none; }
+        
+        /* Responsive adjustments */
+        @media(max-width: 600px) {
+            .table-wrap { border-radius: 12px; }
+            th, td { padding: 12px; font-size: 13px; }
+            .controls { flex-direction: column; align-items: stretch; }
+            .actions { flex-direction: column; }
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="header-area">
+        <a href="index.html" class="btn-back">← VOLVER</a>
+        <h2>CUENTAS POR COBRAR</h2>
+    </div>
+
+    <div class="controls">
+        <div class="search-box">
+            <span class="search-icon">🔍</span>
+            <input type="text" id="searchInput" placeholder="Buscar por placa, orden o nombre..." onkeyup="filterTable()">
+        </div>
+        <button class="btn-refresh" onclick="loadData()">
+            <span>🔄</span> Actualizar
+        </button>
+    </div>
+
+    <div class="table-wrap">
+        <div id="loading" class="loading">
+            <div class="spinner"></div>
+            Cargando cuentas...
+        </div>
+        <div id="emptyState" class="empty-state">No se encontraron cuentas por cobrar.</div>
+        
+        <table id="cxcTable" style="display:none;">
+            <thead>
+                <tr>
+                    <th>Orden</th>
+                    <th>Fecha</th>
+                    <th>Placa</th>
+                    <th>Cliente</th>
+                    <th>Monto CXC</th>
+                    <th>Acción</th>
+                </tr>
+            </thead>
+            <tbody id="cxcBody">
+                <!-- Rows will be populated by JS -->
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<script>
+    const CSV_URL = "https://docs.google.com/spreadsheets/d/1w1FrHexVpTWLANQJVVyEQ_mQ-4iGAfzuQ2O6zdtRKow/export?format=csv";
+    let allData = [];
+
+    async function loadData() {
+        document.getElementById('loading').style.display = 'flex';
+        document.getElementById('cxcTable').style.display = 'none';
+        document.getElementById('emptyState').style.display = 'none';
+        document.getElementById('cxcBody').innerHTML = '';
+
+        try {
+            const res = await fetch(CSV_URL + "&t=" + new Date().getTime());
+            if (!res.ok) throw new Error("Network response was not ok");
+            const text = await res.text();
+            
+            // Parse CSV manually because JS is fun
+            const rows = text.trim().split("\n").slice(1); // Skip header (row 0)
+            allData = rows.map(line => {
+                // simple split considering possible commas inside quotes, but standard mostly
+                const cols = line.split(/,(?=(?:[^"]*"[^"]*")*[^"]*$)/).map(v => v.replace(/^"|"$/g, '').trim());
+                
+                // Col formatting based on provided spreadsheet screenshot:
+                // A[0]=#, B[1]=Fecha, C[2]=Hora, D[3]=Placa, E[4]=Nombre cliente, F[5]=Monto CXC
+                return {
+                    orden: cols[0] || "",
+                    fecha: cols[1] || "",
+                    hora: cols[2] || "",
+                    placa: (cols[3] || "").toUpperCase(),
+                    nombre: cols[4] || "",
+                    monto: parseInt(cols[5]) || 0,
+                    rawLinea: line.toLowerCase()
+                };
+            }).filter(item => item.orden !== "");
+
+            // Sort so newest or largest order is first
+            allData.sort((a,b) => parseInt(b.orden) - parseInt(a.orden));
+
+            renderTable(allData);
+
+        } catch (err) {
+            console.error(err);
+            document.getElementById('loading').innerHTML = '❌ Error al cargar los datos. Revisa la conexión o publica el Google Sheets.';
+        }
+    }
+
+    function renderTable(data) {
+        document.getElementById('loading').style.display = 'none';
+        
+        if (data.length === 0) {
+            document.getElementById('emptyState').style.display = 'block';
+            document.getElementById('cxcTable').style.display = 'none';
+            return;
+        }
+
+        const tbody = document.getElementById('cxcBody');
+        tbody.innerHTML = '';
+
+        data.forEach(row => {
+            const tr = document.createElement('tr');
+            
+            // Monto format
+            const isZero = row.monto === 0;
+            const montoClass = isZero ? 'monto zero' : 'monto';
+            const montoFormatted = "₡" + row.monto.toLocaleString('es-CR');
+
+            // Actions structure depending on "saldar.html" parameters (assuming we adapt it)
+            // Using `saldar.html?orden=X&action=Y`
+            const actionHtml = isZero 
+                ? `<div class="status-paid">✅ Pagado</div>`
+                : `<div class="actions">
+                     <a href="saldar.html?orden=${row.orden}&action=abonar" class="btn-action btn-abonar">📥 Abonar</a>
+                     <a href="saldar.html?orden=${row.orden}&action=finalizar" class="btn-action btn-finalizar">✅ Finalizar</a>
+                   </div>`;
+
+            tr.innerHTML = `
+                <td><span class="badge-orden">#${row.orden}</span></td>
+                <td><div style="font-size:13px">${row.fecha}</div><div style="font-size:11px;color:var(--muted)">${row.hora}</div></td>
+                <td><span class="plate">${row.placa}</span></td>
+                <td>${row.nombre}</td>
+                <td><span class="${montoClass}">${montoFormatted}</span></td>
+                <td>${actionHtml}</td>
+            `;
+            tbody.appendChild(tr);
+        });
+
+        document.getElementById('cxcTable').style.display = 'table';
+    }
+
+    function filterTable() {
+        const query = document.getElementById('searchInput').value.toLowerCase();
+        if (!query) {
+            renderTable(allData);
+            return;
+        }
+        
+        const filtered = allData.filter(row => 
+            row.placa.toLowerCase().includes(query) || 
+            row.orden.toString().includes(query) ||
+            row.nombre.toLowerCase().includes(query)
+        );
+        
+        renderTable(filtered);
+    }
+
+    // Load data on start
+    window.addEventListener('DOMContentLoaded', loadData);
+
+</script>
+</body>
+</html>
