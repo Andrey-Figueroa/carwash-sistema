@@ -41,18 +41,7 @@ body{background:var(--bg);font-family:"DM Sans",sans-serif;color:var(--text);min
 /* ── CARDS ── */
 .car-card{width:175px;background:rgba(0,0,0,0.45);border-radius:18px;border:1px solid rgba(255,255,255,0.06);padding:14px;transition:transform 0.2s,border-color 0.2s,box-shadow 0.2s;position:relative;overflow:hidden;animation:carIn .42s cubic-bezier(.34,1.56,.64,1) forwards;cursor:pointer}
 .car-card:hover{transform:translateY(-5px);border-color:var(--accent);box-shadow:0 8px 24px rgba(0,212,255,0.15)}
-.orden-badge{
-  position:absolute;top:9px;right:10px;
-  font-family:"DM Mono",monospace;
-  font-size:10px;font-weight:800;
-  color:var(--accent);
-  background:rgba(0,212,255,0.1);
-  border:1px solid rgba(0,212,255,0.25);
-  border-radius:5px;
-  padding:2px 6px;
-  letter-spacing:.5px;
-  line-height:1.4
-}
+.orden-badge{position:absolute;top:9px;right:10px;font-family:"DM Mono",monospace;font-size:10px;font-weight:800;color:var(--accent);background:rgba(0,212,255,0.1);border:1px solid rgba(0,212,255,0.25);border-radius:5px;padding:2px 6px;letter-spacing:.5px;line-height:1.4}
 
 @keyframes carIn{from{opacity:0;transform:scale(.82) translateY(12px)}to{opacity:1;transform:scale(1) translateY(0)}}
 @keyframes shimmer{0%{opacity:.2}100%{opacity:.8}}
@@ -66,250 +55,96 @@ body{background:var(--bg);font-family:"DM Sans",sans-serif;color:var(--text);min
 .paid-badge.pagado{background:rgba(0,230,118,0.15);color:var(--green);border:1px solid rgba(0,230,118,0.3)}
 .paid-badge.pendiente-pago{background:rgba(255,193,7,0.12);color:var(--yellow);border:1px solid rgba(255,193,7,0.25)}
 
-.zone-proceso-active::after{content:"";position:absolute;inset:0;background:linear-gradient(135deg,rgba(0,180,255,0.1),transparent 60%);animation:shimmer 2.5s ease-in-out infinite alternate;pointer-events:none}
-.zone-terminado-active{border-color:rgba(0,230,118,0.2) !important;box-shadow:0 0 15px rgba(0,230,118,0.1)}
-.zone-retirado-active{opacity:.55;filter:grayscale(55%)}
-
 .btn-wa{width:100%;margin-top:10px;padding:8px;background:rgba(0,230,118,0.1);border:1px solid rgba(0,230,118,0.3);color:var(--green);border-radius:9px;cursor:pointer;font-weight:bold;font-size:11px;transition:0.2s;position:relative;z-index:1}
 .btn-wa:hover{background:var(--green);color:#000}
 
-/* ── LOADING / TOAST ── */
-.loading-overlay{position:fixed;inset:0;background:var(--bg);display:flex;flex-direction:column;justify-content:center;align-items:center;z-index:1000;gap:15px;transition:opacity 0.4s}
-.spinner{width:40px;height:40px;border:3px solid var(--border);border-top-color:var(--accent);border-radius:50%;animation:spin 1s linear infinite}
-@keyframes spin{to{transform:rotate(360deg)}}
-.toast{position:fixed;bottom:25px;left:50%;transform:translateX(-50%);background:var(--card);border:1px solid var(--border);padding:12px 25px;border-radius:12px;opacity:0;transition:0.3s;z-index:3000;font-size:13px;white-space:nowrap}
-.toast.show{opacity:1}
-
-/* ── MODAL BASE ── */
-.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.82);backdrop-filter:blur(10px);z-index:2000;display:none;align-items:flex-start;justify-content:center;padding:20px;overflow-y:auto}
+/* ── MODALS BASE ── */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.85);backdrop-filter:blur(8px);z-index:2000;display:none;align-items:center;justify-content:center;padding:20px}
 .modal-overlay.show{display:flex}
-/* centrar verticalmente solo cuando hay espacio suficiente */
-.modal-overlay::before{content:"";flex:1;min-height:20px}
-.modal-overlay::after{content:"";flex:1;min-height:20px}
 .modal-box{background:var(--surface);border:1px solid var(--border);border-radius:24px;width:100%;max-width:460px;overflow:hidden;animation:modalIn .25s cubic-bezier(.34,1.2,.64,1)}
+
 @keyframes modalIn{from{opacity:0;transform:scale(.93) translateY(12px)}to{opacity:1;transform:scale(1) translateY(0)}}
 
-/* ── MODAL: ACCIONES DE VEHÍCULO ── */
-.modal-header{padding:22px 24px 18px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:14px}
-.modal-car-plate{font-family:"DM Mono",monospace;font-size:20px;font-weight:bold;background:rgba(0,212,255,0.12);border:1px solid rgba(0,212,255,0.35);border-radius:8px;padding:6px 14px;color:#fff;letter-spacing:2px}
-.modal-car-info{flex:1}
-.modal-car-name{font-size:15px;font-weight:600}
-.modal-car-service{font-size:11px;color:var(--muted);margin-top:2px}
-.modal-close{background:none;border:none;color:var(--muted);cursor:pointer;font-size:22px;line-height:1;transition:color .15s;margin-left:auto}
-.modal-close:hover{color:var(--text)}
-.modal-body{padding:20px 24px 24px;display:flex;flex-direction:column;gap:10px}
-
-.action-btn{display:flex;align-items:center;gap:14px;width:100%;padding:14px 18px;border-radius:14px;border:1px solid;cursor:pointer;font-family:inherit;font-size:14px;font-weight:600;transition:all .18s;text-align:left}
-.action-btn .btn-icon{font-size:22px;flex-shrink:0}
-.action-btn .btn-label{flex:1}
-.action-btn .btn-sub{font-size:10px;font-weight:400;opacity:0.65;display:block;margin-top:2px}
-.action-btn.terminado{background:rgba(0,230,118,0.07);border-color:rgba(0,230,118,0.3);color:var(--green)}
-.action-btn.terminado:hover{background:rgba(0,230,118,0.18);border-color:var(--green);transform:translateX(3px)}
-.action-btn.retirado{background:rgba(255,82,82,0.07);border-color:rgba(255,82,82,0.3);color:var(--red)}
-.action-btn.retirado:hover{background:rgba(255,82,82,0.18);border-color:var(--red);transform:translateX(3px)}
-.action-btn.cobro{background:rgba(255,193,7,0.07);border-color:rgba(255,193,7,0.3);color:var(--yellow)}
-.action-btn.cobro:hover{background:rgba(255,193,7,0.18);border-color:var(--yellow);transform:translateX(3px)}
-.action-btn.wa{background:rgba(0,230,118,0.07);border-color:rgba(0,230,118,0.3);color:#25d366}
-.action-btn.wa:hover{background:rgba(37,211,102,0.18);border-color:#25d366;transform:translateX(3px)}
-.action-btn:disabled{opacity:0.35;cursor:not-allowed;transform:none !important}
-.action-divider{height:1px;background:var(--border);margin:4px 0}
-
-/* ══════════════════════════════════════
-   MODAL: FINALIZAR COBRO — v3
-══════════════════════════════════════ */
-.cobro-box{
-  background:var(--surface);
-  border:1px solid var(--border);
-  border-radius:24px;
-  width:100%;
-  max-width:640px;
-  max-height:92vh;
-  display:flex;
-  flex-direction:column;
-  overflow:hidden;
-  animation:modalIn .25s cubic-bezier(.34,1.2,.64,1)
+/* ── MODAL: FINALIZAR COBRO — CORRECCIÓN SCROLL ── */
+.cobro-box {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 24px;
+  width: 100%;
+  max-width: 580px;
+  max-height: 90vh; /* Altura máxima para no salir de pantalla */
+  display: flex;
+  flex-direction: column; /* Clave para el layout fijo/scroll */
+  overflow: hidden;
+  box-shadow: 0 20px 50px rgba(0,0,0,0.5);
 }
 
-.cobro-header{
-  padding:22px 28px 20px;
-  border-bottom:1px solid var(--border);
-  background:linear-gradient(135deg,rgba(255,193,7,0.06),transparent);
-  display:flex;align-items:center;justify-content:space-between;gap:14px;
-  flex-shrink:0
+.cobro-header {
+  padding: 22px 28px;
+  border-bottom: 1px solid var(--border);
+  background: linear-gradient(135deg, rgba(255,193,7,0.06), transparent);
+  display: flex; align-items: center; justify-content: space-between;
+  flex-shrink: 0; /* No se encoge */
 }
+
+.cobro-body {
+  padding: 24px 28px;
+  flex: 1; /* Ocupa el resto del espacio */
+  overflow-y: auto; /* ACTIVA EL SCROLL AQUÍ */
+  min-height: 0;
+  display: flex; flex-direction: column; gap: 20px;
+  -webkit-overflow-scrolling: touch;
+}
+.cobro-body::-webkit-scrollbar { width: 6px; }
+.cobro-body::-webkit-scrollbar-thumb { background: var(--border); border-radius: 10px; }
+
+.cobro-footer {
+  padding: 20px 28px;
+  border-top: 1px solid var(--border);
+  background: rgba(0,0,0,0.2);
+  flex-shrink: 0; /* Siempre visible abajo */
+}
+
+/* ── ELEMENTOS INTERNOS ── */
 .cobro-title{font-family:"Bebas Neue",sans-serif;font-size:24px;letter-spacing:2px;color:var(--yellow)}
-.cobro-subtitle{font-size:11px;color:var(--muted);margin-top:2px}
+.orden-chip-val{font-family:"DM Mono",monospace;font-size:22px;font-weight:900;color:var(--accent);background:rgba(0,212,255,0.1);border:1px solid rgba(0,212,255,0.35);border-radius:8px;padding:5px 14px}
 
-.orden-chip{display:flex;flex-direction:column;align-items:flex-end;gap:3px}
-.orden-chip-label{font-size:9px;color:var(--muted);text-transform:uppercase;letter-spacing:1px}
-.orden-chip-val{
-  font-family:"DM Mono",monospace;font-size:22px;font-weight:900;
-  color:var(--accent);background:rgba(0,212,255,0.1);
-  border:1px solid rgba(0,212,255,0.35);border-radius:8px;
-  padding:5px 14px;letter-spacing:2px
-}
+.cobro-vehicle-bar{display:flex;align-items:center;gap:16px;padding:12px 0px;border-bottom:1px solid var(--border);margin-bottom:10px}
+.cobro-veh-plate{font-family:"DM Mono",monospace;font-size:15px;font-weight:700;background:rgba(0,212,255,0.08);border:1px solid rgba(0,212,255,0.2);border-radius:7px;padding:5px 12px}
 
-.cobro-vehicle-bar{
-  display:flex;align-items:center;gap:16px;
-  padding:14px 28px;
-  background:rgba(0,0,0,0.3);border-bottom:1px solid var(--border);
-  flex-shrink:0
-}
-.cobro-veh-plate{
-  font-family:"DM Mono",monospace;font-size:15px;font-weight:700;
-  background:rgba(0,212,255,0.08);border:1px solid rgba(0,212,255,0.2);
-  border-radius:7px;padding:5px 12px;color:#fff;letter-spacing:1.5px
-}
-.cobro-veh-name{font-size:14px;font-weight:600;flex:1}
-.cobro-veh-monto{font-family:"DM Mono",monospace;font-size:16px;font-weight:800;color:var(--green)}
+.metodos-btns{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+.met-btn{display:flex;flex-direction:column;align-items:center;gap:6px;padding:14px 5px;border:2px solid var(--border);border-radius:14px;background:rgba(0,0,0,0.3);cursor:pointer;transition:all .2s;color:var(--muted);text-align:center}
+.met-btn.active{border-color:var(--accent);background:rgba(0,212,255,0.1);color:var(--accent)}
+.met-btn-icon{font-size:22px}
+.met-btn-name{font-size:10px;font-weight:700}
 
-.cobro-body{
-  padding:24px 28px 28px;
-  display:flex;flex-direction:column;gap:20px;
-  flex:1;
-  min-height:0;
-  overflow-y:auto
-}
-.cobro-body::-webkit-scrollbar{width:4px}
-.cobro-body::-webkit-scrollbar-track{background:transparent}
-.cobro-body::-webkit-scrollbar-thumb{background:var(--border);border-radius:4px}
-
-.cobro-section{border:1px solid var(--border);border-radius:16px;overflow:hidden}
-.cobro-section-title{
-  padding:11px 18px;background:rgba(255,255,255,0.03);
-  border-bottom:1px solid var(--border);
-  font-size:10px;font-weight:700;color:var(--muted);
-  text-transform:uppercase;letter-spacing:1.5px;
-  display:flex;align-items:center;gap:6px
-}
-.cobro-section-body{padding:18px;display:flex;flex-direction:column;gap:14px}
-
-/* ── MÉTODOS: 4 botones grandes ── */
-.metodos-btns{
-  display:grid;
-  grid-template-columns:1fr 1fr 1fr 1fr;
-  gap:10px
-}
-.met-btn{
-  display:flex;flex-direction:column;align-items:center;justify-content:center;
-  gap:6px;padding:16px 10px;
-  border:2px solid var(--border);border-radius:14px;
-  background:rgba(0,0,0,0.3);
-  cursor:pointer;user-select:none;
-  transition:all .2s;color:var(--muted)
-}
-.met-btn:hover{border-color:var(--muted);color:var(--text);background:rgba(255,255,255,0.04)}
-.met-btn.active{
-  border-color:var(--accent);
-  background:rgba(0,212,255,0.1);
-  color:var(--accent);
-  box-shadow:0 0 18px rgba(0,212,255,0.15)
-}
-.met-btn-icon{font-size:24px;line-height:1}
-.met-btn-name{font-size:12px;font-weight:700;letter-spacing:.5px}
-.met-btn .met-check{
-  width:18px;height:18px;border-radius:50%;
-  border:2px solid currentColor;
-  display:flex;align-items:center;justify-content:center;
-  font-size:10px;transition:all .2s;margin-top:2px;opacity:.4
-}
-.met-btn.active .met-check{opacity:1;background:var(--accent);border-color:var(--accent);color:#000}
-
-/* ── ISLA DE MONTOS ── */
-.montos-isla{
-  display:none;flex-direction:column;gap:12px;
-  background:rgba(0,212,255,0.04);
-  border:1px solid rgba(0,212,255,0.2);
-  border-radius:16px;
-  padding:18px 20px;
-  animation:fadeSlide .22s ease
-}
+.montos-isla{display:none;flex-direction:column;gap:12px;background:rgba(0,212,255,0.04);border:1px solid rgba(0,212,255,0.2);border-radius:16px;padding:18px}
 .montos-isla.show{display:flex}
-@keyframes fadeSlide{from{opacity:0;transform:translateY(-8px)}to{opacity:1;transform:translateY(0)}}
+.monto-field-row{display:flex;align-items:center;gap:14px}
+.monto-field-label{font-size:12px;font-weight:600;color:var(--muted);min-width:120px}
+.monto-input-wrap{flex:1;display:flex;background:var(--bg);border:1px solid var(--border);border-radius:10px;overflow:hidden}
+.monto-input-wrap input{flex:1;background:none;border:none;color:var(--text);padding:10px 14px;font-family:"DM Mono",monospace;outline:none}
 
-.montos-isla-header{
-  display:flex;align-items:baseline;gap:8px;
-  padding-bottom:12px;
-  border-bottom:1px solid rgba(0,212,255,0.12)
-}
-.montos-isla-title{
-  font-size:13px;font-weight:700;color:var(--accent);
-  text-transform:uppercase;letter-spacing:1px
-}
-.montos-isla-hint{font-size:11px;color:var(--muted)}
+.total-row{display:flex;justify-content:space-between;align-items:center;padding:16px;background:rgba(255,193,7,0.1);border:1px solid var(--yellow);border-radius:12px;margin-top:10px}
+.total-val{font-family:"DM Mono",monospace;font-size:22px;font-weight:800;color:var(--yellow)}
 
-.monto-field-row{
-  display:flex;align-items:center;gap:14px
-}
-.monto-field-label{
-  font-size:12px;font-weight:600;color:var(--muted);
-  min-width:130px;display:flex;align-items:center;gap:7px
-}
-.monto-field-label .mf-icon{font-size:16px}
-.monto-input-wrap{
-  flex:1;display:flex;align-items:center;
-  background:var(--bg);border:1px solid var(--border);
-  border-radius:10px;overflow:hidden;transition:border-color .2s
-}
-.monto-input-wrap:focus-within{border-color:var(--accent)}
-.monto-input-wrap input{
-  flex:1;background:none;border:none;
-  color:var(--text);padding:11px 14px;
-  font-size:15px;font-family:"DM Mono",monospace;outline:none
-}
-.monto-input-wrap .currency{
-  padding:11px 14px;color:var(--muted);
-  font-family:"DM Mono",monospace;font-size:13px;
-  border-left:1px solid var(--border)
-}
-
-/* Total */
-.total-row{
-  display:flex;justify-content:space-between;align-items:center;
-  padding:16px 18px;
-  background:rgba(255,193,7,0.07);border:1px solid rgba(255,193,7,0.28);border-radius:12px
-}
-.total-lbl{color:var(--yellow);font-weight:600;display:flex;align-items:center;gap:8px;font-size:14px}
-.total-val{font-family:"DM Mono",monospace;font-size:24px;font-weight:800;color:var(--yellow)}
-
-/* Dif positiva/negativa */
-.diff-row{
-  display:flex;justify-content:flex-end;
-  font-size:11px;font-family:"DM Mono",monospace;
-  gap:6px;align-items:center
-}
-.diff-ok{color:var(--green)}
-.diff-warn{color:var(--red)}
-
-/* Responsable chips */
 .responsable-chips{display:flex;flex-wrap:wrap;gap:8px}
-.resp-chip{
-  padding:8px 16px;
-  border:1px solid var(--border);
-  border-radius:50px;
-  font-size:13px;font-weight:500;
-  cursor:pointer;transition:all .18s;
-  background:var(--bg);color:var(--muted)
-}
-.resp-chip:hover{border-color:var(--muted);color:var(--text)}
+.resp-chip{padding:8px 16px;border:1px solid var(--border);border-radius:50px;font-size:13px;cursor:pointer;background:var(--bg);color:var(--muted)}
 .resp-chip.selected{border-color:var(--accent);background:rgba(0,212,255,0.12);color:var(--accent)}
 
-.form-label{font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:4px;display:block}
+.btn-cobrar{width:100%;padding:16px;background:linear-gradient(135deg,#ffc107,#e6a800);color:#000;border:none;border-radius:14px;font-size:16px;font-weight:800;cursor:pointer;transition:transform 0.1s}
+.btn-cobrar:active{transform:scale(0.98)}
 
-.btn-cobrar{
-  width:100%;padding:15px;
-  background:linear-gradient(135deg,#ffc107,#e6a800);
-  color:#000;border:none;border-radius:12px;
-  font-size:15px;font-weight:800;
-  cursor:pointer;font-family:inherit;
-  transition:opacity .2s;letter-spacing:.5px
+.loading-overlay{position:fixed;inset:0;background:var(--bg);display:flex;flex-direction:column;justify-content:center;align-items:center;z-index:3000;gap:15px;transition:opacity 0.4s}
+.spinner{width:40px;height:40px;border:3px solid var(--border);border-top-color:var(--accent);border-radius:50%;animation:spin 1s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.toast{position:fixed;bottom:25px;left:50%;transform:translateX(-50%);background:var(--card);border:1px solid var(--border);padding:12px 25px;border-radius:12px;opacity:0;transition:0.3s;z-index:4000}
+.toast.show{opacity:1}
+
+@media(max-width:600px){
+  .metodos-btns{grid-template-columns:1fr 1fr}
+  .cobro-box{max-height:100vh;border-radius:0}
 }
-.btn-cobrar:hover{opacity:.88}
-.btn-cobrar:disabled{opacity:.4;cursor:not-allowed}
-
-.inline-spin{display:inline-block;width:14px;height:14px;border:2px solid rgba(0,0,0,0.3);border-top-color:#000;border-radius:50%;animation:spin .7s linear infinite;vertical-align:middle;margin-right:6px}
-
-@media(max-width:860px){.board{grid-template-columns:1fr}.cobro-body{max-height:60vh}.metodos-grid{grid-template-columns:1fr}}
 </style>
 </head>
 <body>
@@ -340,562 +175,269 @@ body{background:var(--bg);font-family:"DM Sans",sans-serif;color:var(--text);min
   <div class="zone"><span class="zone-title" style="color:var(--muted)">🚗 ENTREGADOS</span><div class="cars-grid" id="grid-retirado"></div></div>
 </div>
 
-<div id="loadingOverlay" class="loading-overlay">
-  <div class="spinner"></div>
-  <div style="font-family:'DM Mono'">CONECTANDO CON LA BASE DE DATOS...</div>
-</div>
-<div id="toast" class="toast"></div>
-
-<!-- ══════════════════════════════════════
-     MODAL: ACCIONES DEL VEHÍCULO
-══════════════════════════════════════ -->
-<div class="modal-overlay" id="actionModal">
-  <div class="modal-box">
-    <div class="modal-header">
-      <div style="font-size:28px" id="mCarEmoji">🚗</div>
-      <div class="modal-car-info">
-        <div class="modal-car-plate" id="mPlate">---</div>
-      </div>
-      <div style="flex:1;padding-left:10px">
-        <div class="modal-car-name" id="mName">—</div>
-        <div class="modal-car-service" id="mService">—</div>
-      </div>
-      <button class="modal-close" onclick="closeActionModal()">✕</button>
-    </div>
-    <div class="modal-body" id="modalActions"></div>
-  </div>
-</div>
-
-<!-- ══════════════════════════════════════
-     MODAL: FINALIZAR COBRO
-══════════════════════════════════════ -->
 <div class="modal-overlay" id="cobroModal">
   <div class="cobro-box">
-
-    <!-- HEADER: Título + Número de Orden prominente -->
+    
     <div class="cobro-header">
-      <div class="cobro-header-left">
-        <div>
-          <div class="cobro-title">💰 Finalizar Cobro</div>
-          <div class="cobro-subtitle">Registra el pago del servicio</div>
-        </div>
+      <div>
+        <div class="cobro-title">💰 Finalizar Cobro</div>
+        <div style="font-size:11px;color:var(--muted)">Registra el pago del servicio</div>
       </div>
-      <div class="orden-chip">
-        <span class="orden-chip-label">Orden #</span>
+      <div style="text-align:right">
+        <div style="font-size:9px;color:var(--muted);text-transform:uppercase">Orden #</div>
         <span class="orden-chip-val" id="cOrden">—</span>
       </div>
-      <button class="modal-close" onclick="closeCobroModal()" style="margin-left:8px">✕</button>
+      <button onclick="closeCobroModal()" style="background:none;border:none;color:var(--muted);font-size:20px;margin-left:15px;cursor:pointer">✕</button>
     </div>
 
-    <!-- BARRA DE VEHÍCULO: Placa + Cliente + Monto -->
-    <div class="cobro-vehicle-bar">
-      <span class="cobro-veh-plate" id="cPlate">---</span>
-      <span class="cobro-veh-name" id="cClienteName">—</span>
-      <span class="cobro-veh-monto" id="cMonto">₡0</span>
-    </div>
-
-    <!-- BODY SCROLLABLE -->
     <div class="cobro-body">
+      <div class="cobro-vehicle-bar">
+        <span class="cobro-veh-plate" id="cPlate">---</span>
+        <span style="font-size:14px;font-weight:600;flex:1" id="cClienteName">—</span>
+        <span style="color:var(--green);font-family:'DM Mono';font-weight:800" id="cMonto">₡0</span>
+      </div>
 
-      <!-- SECCIÓN: MÉTODOS DE PAGO -->
-      <div class="cobro-section">
-        <div class="cobro-section-title">💳 Selecciona los métodos de pago</div>
-        <div class="cobro-section-body">
-
-          <!-- PASO 1: 4 botones toggle -->
-          <div class="metodos-btns">
-            <div class="met-btn" id="btnEfectivo" onclick="toggleBloque('Efectivo')">
-              <span class="met-btn-icon">💵</span>
-              <span class="met-btn-name">EFECTIVO</span>
-              <span class="met-check">✓</span>
-            </div>
-            <div class="met-btn" id="btnSinpe" onclick="toggleBloque('Sinpe')">
-              <span class="met-btn-icon">📱</span>
-              <span class="met-btn-name">SINPE</span>
-              <span class="met-check">✓</span>
-            </div>
-            <div class="met-btn" id="btnTarjeta" onclick="toggleBloque('Tarjeta')">
-              <span class="met-btn-icon">💳</span>
-              <span class="met-btn-name">TARJETA</span>
-              <span class="met-check">✓</span>
-            </div>
-            <div class="met-btn" id="btnCxC" onclick="toggleBloque('CxC')">
-              <span class="met-btn-icon">📋</span>
-              <span class="met-btn-name">CxC</span>
-              <span class="met-check">✓</span>
-            </div>
-          </div>
-
+      <div style="font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:5px">💳 Métodos de Pago</div>
+      <div class="metodos-btns">
+        <div class="met-btn" id="btnEfectivo" onclick="toggleBloque('Efectivo')">
+          <span class="met-btn-icon">💵</span><span class="met-btn-name">EFECTIVO</span>
+        </div>
+        <div class="met-btn" id="btnSinpe" onclick="toggleBloque('Sinpe')">
+          <span class="met-btn-icon">📱</span><span class="met-btn-name">SINPE</span>
+        </div>
+        <div class="met-btn" id="btnTarjeta" onclick="toggleBloque('Tarjeta')">
+          <span class="met-btn-icon">💳</span><span class="met-btn-name">TARJETA</span>
+        </div>
+        <div class="met-btn" id="btnCxC" onclick="toggleBloque('CxC')">
+          <span class="met-btn-icon">📋</span><span class="met-btn-name">CxC</span>
         </div>
       </div>
 
-      <!-- ISLA DE MONTOS — isla separada, aparece al seleccionar -->
       <div class="montos-isla" id="montosIsla">
-        <div class="montos-isla-header">
-          <span class="montos-isla-title">💰 Ingresa los montos</span>
-          <span class="montos-isla-hint">por método seleccionado</span>
-        </div>
-
         <div id="fieldRowEfectivo" style="display:none" class="monto-field-row">
-          <span class="monto-field-label"><span class="mf-icon">💵</span>Efectivo</span>
-          <div class="monto-input-wrap">
-            <input type="number" id="montoEfectivo" placeholder="0" min="0" oninput="calcTotal()">
-            <span class="currency">₡</span>
-          </div>
+          <span class="monto-field-label">💵 Efectivo</span>
+          <div class="monto-input-wrap"><input type="number" id="montoEfectivo" placeholder="0" oninput="calcTotal()"></div>
         </div>
         <div id="fieldRowSinpe" style="display:none" class="monto-field-row">
-          <span class="monto-field-label"><span class="mf-icon">📱</span>SINPE</span>
-          <div class="monto-input-wrap">
-            <input type="number" id="montoSinpe" placeholder="0" min="0" oninput="calcTotal()">
-            <span class="currency">₡</span>
-          </div>
+          <span class="monto-field-label">📱 SINPE</span>
+          <div class="monto-input-wrap"><input type="number" id="montoSinpe" placeholder="0" oninput="calcTotal()"></div>
         </div>
         <div id="fieldRowTarjeta" style="display:none" class="monto-field-row">
-          <span class="monto-field-label"><span class="mf-icon">💳</span>Tarjeta</span>
-          <div class="monto-input-wrap">
-            <input type="number" id="montoTarjeta" placeholder="0" min="0" oninput="calcTotal()">
-            <span class="currency">₡</span>
-          </div>
+          <span class="monto-field-label">💳 Tarjeta</span>
+          <div class="monto-input-wrap"><input type="number" id="montoTarjeta" placeholder="0" oninput="calcTotal()"></div>
         </div>
         <div id="fieldRowCxC" style="display:none" class="monto-field-row">
-          <span class="monto-field-label"><span class="mf-icon">📋</span>Cta. por Cobrar</span>
-          <div class="monto-input-wrap">
-            <input type="number" id="montoCxC" placeholder="0" min="0" oninput="calcTotal()">
-            <span class="currency">₡</span>
-          </div>
+          <span class="monto-field-label">📋 CxC</span>
+          <div class="monto-input-wrap"><input type="number" id="montoCxC" placeholder="0" oninput="calcTotal()"></div>
         </div>
 
         <div class="total-row">
-          <span class="total-lbl">💰 Total ingresado</span>
+          <span style="color:var(--yellow);font-weight:600;font-size:14px">Total ingresado</span>
           <span class="total-val" id="totalIngresado">₡0</span>
         </div>
-        <div class="diff-row" id="diffRow"></div>
+        <div id="diffRow" style="text-align:right;font-size:11px;font-family:'DM Mono'"></div>
       </div>
 
-      <!-- SECCIÓN: RESPONSABLE -->
-      <div class="cobro-section">
-        <div class="cobro-section-title">👤 Responsable del Cobro</div>
-        <div class="cobro-section-body">
-          <label class="form-label">¿Quién recibe el pago?</label>
-          <div class="responsable-chips" id="respChips">
-            <div class="resp-chip" onclick="selectResp(this,'Eder')">Eder</div>
-            <div class="resp-chip" onclick="selectResp(this,'Juan')">Juan</div>
-            <div class="resp-chip" onclick="selectResp(this,'Massiel')">Massiel</div>
-            <div class="resp-chip" onclick="selectResp(this,'Jesús')">Jesús</div>
-            <div class="resp-chip" onclick="selectResp(this,'Andrey')">Andrey</div>
-            <div class="resp-chip" onclick="selectResp(this,'Ronald')">Ronald</div>
-            <div class="resp-chip" onclick="selectResp(this,'Angie')">Angie</div>
-          </div>
-          <input type="hidden" id="cFacturador" value="">
-        </div>
+      <div style="font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:1px">👤 Responsable</div>
+      <div class="responsable-chips" id="respChips">
+        <div class="resp-chip" onclick="selectResp(this,'Eder')">Eder</div>
+        <div class="resp-chip" onclick="selectResp(this,'Massiel')">Massiel</div>
+        <div class="resp-chip" onclick="selectResp(this,'Andrey')">Andrey</div>
+        <div class="resp-chip" onclick="selectResp(this,'Angie')">Angie</div>
       </div>
+      <input type="hidden" id="cFacturador" value="">
+    </div>
 
+    <div class="cobro-footer">
       <button class="btn-cobrar" id="btnCobrar" onclick="enviarCobro()">
         💰 Confirmar Cobro
       </button>
+    </div>
 
-    </div><!-- /cobro-body -->
   </div>
 </div>
 
+<div id="loadingOverlay" class="loading-overlay">
+  <div class="spinner"></div>
+  <div style="font-family:'DM Mono'">CONECTANDO...</div>
+</div>
+<div id="toast" class="toast"></div>
+
 <script>
-// ════════════════════════════════════════
-// CONFIGURACIÓN
-// ════════════════════════════════════════
 const CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRZKI99U4UgQBDH7Can0vVO9TO0hhi6TkTYx4jNdTDxYDsM1dQrEG5UaIoftDmOdzkXAr8LOscVFxv-/pub?gid=0&single=true&output=csv";
+const WEBHOOK_COBRO = "https://neuraloom.app.n8n.cloud/webhook-test/finalizar-cobro";
 
-const WEBHOOKS = {
-  cambiarEstado:  "https://neuraloom.app.n8n.cloud/webhook/cambiar-estado",
-  finalizarCobro: "https://neuraloom.app.n8n.cloud/webhook-test/finalizar-cobro"
-};
+let carsCache = [];
+let selectedCar = null;
+let metodosSeleccionados = new Set();
 
-const COL = {
-  orden:    0,   // A — #
-  hora:     1,   // B — Hora entrada
-  placa:    2,   // C — Placa
-  cliente:  3,   // D — Nombre cliente
-  celular:  4,   // E — Celular
-  servicio: 7,   // H — Servicio
-  estado:   8,   // I — Estado
-  monto:    12   // M — Monto total
-};
-
-// ── Estado global ──
-let selectedCar  = null;  // vehículo seleccionado actualmente (persiste hasta cerrar cobro)
-let carsCache    = [];
-
-// ════════════════════════════════════════
-// CARGA Y PARSEO DE DATOS
-// ════════════════════════════════════════
 async function loadData() {
   try {
-    const res  = await fetch(CSV_URL, { cache: "no-store" });
+    const res = await fetch(CSV_URL, { cache: "no-store" });
     const text = await res.text();
     render(parseCSV(text));
-    document.getElementById("lastUpdate").textContent =
-      "En vivo: " + new Date().toLocaleTimeString("es-CR");
-    const ol = document.getElementById("loadingOverlay");
-    ol.style.opacity = "0";
-    setTimeout(() => ol.style.display = "none", 400);
-  } catch(e) {
-    showToast("⚠️ Error de conexión");
-  }
+    document.getElementById("lastUpdate").textContent = "En vivo: " + new Date().toLocaleTimeString();
+    document.getElementById("loadingOverlay").style.display = "none";
+  } catch(e) { showToast("⚠️ Error de carga"); }
 }
 
 function parseCSV(text) {
   const lines = text.trim().split(/\r?\n/);
   return lines.slice(1).map(line => {
-    const cols  = line.split(/,(?=(?:[^"]*"[^"]*")*[^"]*$)/);
+    const cols = line.split(/,(?=(?:[^"]*"[^"]*")*[^"]*$)/);
     const clean = v => (v || "").replace(/^["']|["']$/g, "").trim();
     return {
-      orden:    clean(cols[COL.orden]),
-      hora:     clean(cols[COL.hora]),
-      placa:    clean(cols[COL.placa]),
-      cliente:  clean(cols[COL.cliente]),
-      celular:  clean(cols[COL.celular]).replace(/\D/g, ""),
-      servicio: clean(cols[COL.servicio]),
-      monto:    clean(cols[COL.monto]),
-      estado:   clean(cols[COL.estado]).toLowerCase()
+      orden: clean(cols[0]),
+      hora: clean(cols[1]),
+      placa: clean(cols[2]),
+      cliente: clean(cols[3]),
+      celular: clean(cols[4]),
+      servicio: clean(cols[7]),
+      estado: clean(cols[8]).toLowerCase(),
+      monto: clean(cols[12]).replace(/\D/g, "") || "0"
     };
   }).filter(r => r.placa.length >= 3);
 }
 
-// ════════════════════════════════════════
-// RENDER
-// ════════════════════════════════════════
 function render(cars) {
-  carsCache = [];
+  carsCache = cars;
   const groups = { proceso: [], terminado: [], retirado: [] };
-
+  
   cars.forEach(car => {
-    const e = car.estado;
-    let st = "proceso";
-    if (e.includes("listo") || e.includes("terminado") || e.includes("finalizado")) {
-      st = "terminado";
-    } else if (e.includes("retirado") || e.includes("entregado") || e.includes("entrega")) {
-      st = "retirado";
-    }
-    groups[st].push({ ...car, zone: st });
+    let z = "proceso";
+    if (car.estado.includes("listo") || car.estado.includes("terminado")) z = "terminado";
+    else if (car.estado.includes("retirado") || car.estado.includes("entregado")) z = "retirado";
+    groups[z].push(car);
   });
-
-  const emojis   = { proceso:"🚿", terminado:"✨", retirado:"💨" };
-  const carTypes = ["🚗","🚙","🛻","🚐"];
-  const paidKw   = ["pagado","cobrado","pago"];
 
   ["proceso","terminado","retirado"].forEach(z => {
-    const grid    = document.getElementById("grid-" + z);
-    const countEl = document.getElementById("cnt-" + z);
-    if (countEl) countEl.textContent = groups[z].length;
-    if (!grid) return;
-
-    if (!groups[z].length) {
-      grid.innerHTML = `<div style="font-size:12px;color:var(--muted);width:100%;text-align:center;margin-top:20px;">Sin vehículos</div>`;
-      return;
-    }
-
-    grid.innerHTML = groups[z].map((car, i) => {
-      const carEmoji = carTypes[i % carTypes.length];
-      const idx      = carsCache.length;
-      carsCache.push({ ...car, zone: z, emoji: carEmoji });
-      const isPaid   = paidKw.some(p => car.estado.includes(p));
-      const badge    = z !== "proceso"
-        ? `<div class="paid-badge ${isPaid ? "pagado":"pendiente-pago"}">${isPaid ? "✅ Pagado":"⏳ Por cobrar"}</div>`
-        : "";
-      const waBtn = z === "terminado"
-        ? `<button class="btn-wa" onclick="event.stopPropagation();enviarWAIdx(${idx})">📲 AVISAR POR WA</button>`
-        : "";
-      return `
-        <div class="car-card zone-${z}-active" onclick="openActionModalIdx(${idx})">
-          ${car.orden ? `<span class="orden-badge">#${car.orden}</span>` : ""}
-          <div class="car-emoji">${carEmoji}${emojis[z]}</div>
-          <div class="car-plate">${car.placa}</div>
-          <div class="car-name">${car.cliente || "Sin nombre"}</div>
-          <div class="car-service">${car.servicio || "General"}</div>
-          <div style="font-size:9px;color:var(--muted);margin-top:5px;">Entrada: ${car.hora}</div>
-          ${badge}${waBtn}
-        </div>`;
-    }).join("");
+    const grid = document.getElementById("grid-" + z);
+    document.getElementById("cnt-" + z).textContent = groups[z].length;
+    grid.innerHTML = groups[z].map(car => `
+      <div class="car-card" onclick="abrirCobroDirecto('${car.placa}')">
+        <span class="orden-badge">#${car.orden}</span>
+        <div class="car-emoji">🚗</div>
+        <div class="car-plate">${car.placa}</div>
+        <div class="car-name">${car.cliente}</div>
+        <div class="car-service">${car.servicio}</div>
+      </div>
+    `).join("");
   });
 }
 
-// ════════════════════════════════════════
-// MODAL DE ACCIONES
-// ════════════════════════════════════════
-function openActionModalIdx(idx) {
-  const entry = carsCache[idx];
-  if (!entry) return;
-  openActionModal(entry, entry.zone, entry.emoji);
-}
-
-function openActionModal(car, zone, emoji) {
-  selectedCar = { ...car, zone };
-
-  document.getElementById("mCarEmoji").textContent = emoji + (zone==="proceso"?"🚿":zone==="terminado"?"✨":"💨");
-  document.getElementById("mPlate").textContent    = car.placa;
-  document.getElementById("mName").textContent     = car.cliente || "Sin nombre";
-  document.getElementById("mService").textContent  = car.servicio || "General";
-
-  let html = "";
-  if (zone === "proceso") {
-    html += actionBtn("terminado","✅","Marcar como Terminado","El vehículo está listo para ser retirado",`moverEstado('${car.orden}','${car.placa}','terminado')`);
-    html += actionBtn("retirado","🚗","Marcar como Entregado","El cliente ya retiró el vehículo",`moverEstado('${car.orden}','${car.placa}','retirado')`);
-    html += `<div class="action-divider"></div>`;
-    html += actionBtn("cobro","💰","Finalizar Cobro","Registrar el pago de este servicio","abrirCobro()");
-  }
-  if (zone === "terminado") {
-    html += actionBtn("retirado","🚗","Marcar como Entregado","El cliente ya retiró el vehículo",`moverEstado('${car.orden}','${car.placa}','retirado')`);
-    html += `<div class="action-divider"></div>`;
-    html += actionBtn("cobro","💰","Finalizar Cobro","Registrar el pago de este servicio","abrirCobro()");
-    html += `<div class="action-divider"></div>`;
-    html += actionBtn("wa","📲","Avisar por WhatsApp","Enviar mensaje al cliente que su carro está listo",`enviarWA('${car.celular}','${car.cliente}','${car.placa}');closeActionModal()`);
-  }
-  if (zone === "retirado") {
-    html += actionBtn("cobro","💰","Finalizar Cobro","Registrar el pago si aún no se ha cobrado","abrirCobro()");
-    html += `<div class="action-divider"></div>`;
-    html += `<div style="text-align:center;font-size:12px;color:var(--muted);padding:10px 0">Este vehículo ya fue entregado ✔️</div>`;
-  }
-
-  document.getElementById("modalActions").innerHTML = html;
-  document.getElementById("actionModal").classList.add("show");
-}
-
-function actionBtn(type, icon, label, sub, oc) {
-  return `<button class="action-btn ${type}" onclick="${oc}">
-    <span class="btn-icon">${icon}</span>
-    <span class="btn-label">${label}<span class="btn-sub">${sub}</span></span>
-    <span style="font-size:16px;opacity:0.4">›</span>
-  </button>`;
-}
-
-function closeActionModal() {
-  document.getElementById("actionModal").classList.remove("show");
-  // NO ponemos selectedCar = null aquí para que abrirCobro() lo pueda usar
-}
-
-// ════════════════════════════════════════
-// CAMBIAR ESTADO
-// ════════════════════════════════════════
-async function moverEstado(orden, placa, nuevoEstado) {
-  closeActionModal();
-  selectedCar = null;  // sí lo limpiamos cuando NO vamos a cobrar
-  const label = nuevoEstado === "terminado" ? "terminado" : "entregado";
-  showToast(`⏳ Marcando como ${label}...`);
-  try {
-    const res = await fetch(WEBHOOKS.cambiarEstado, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ numeroOrden: orden, placa, nuevoEstado, timestamp: new Date().toISOString() })
-    });
-    showToast(res.ok ? `✅ Estado actualizado a "${label}"` : "⚠️ Error al actualizar");
-    if (res.ok) setTimeout(loadData, 1500);
-  } catch(e) { showToast("⚠️ Sin conexión con n8n"); }
-}
-
-// ════════════════════════════════════════
-// MODAL DE COBRO
-// ════════════════════════════════════════
-function abrirCobro() {
+function abrirCobroDirecto(placa) {
+  selectedCar = carsCache.find(c => c.placa === placa);
   if (!selectedCar) return;
-
-  // Cerrar el action modal sin limpiar selectedCar
-  document.getElementById("actionModal").classList.remove("show");
-
-  // Rellenar header — Orden prominente
-  document.getElementById("cOrden").textContent      = selectedCar.orden || "—";
-  document.getElementById("cPlate").textContent      = selectedCar.placa || "—";
-  document.getElementById("cClienteName").textContent= selectedCar.cliente || "—";
-  // Limpiar el monto: quitar ₡, comas y espacios antes de convertir a número
-  const montoLimpio = parseFloat((selectedCar.monto || "0").replace(/[₡,\s]/g, "")) || 0;
-  document.getElementById("cMonto").textContent = "₡" + montoLimpio.toLocaleString("es-CR");
-
-  // Reset métodos — botones y campos
-  ["Efectivo","Sinpe","Tarjeta","CxC"].forEach(m => {
-    document.getElementById("btn"      + m).classList.remove("active");
-    document.getElementById("fieldRow" + m).style.display = "none";
-    document.getElementById("monto"    + m).value = "";
-  });
-  document.getElementById("montosIsla").classList.remove("show");
-
-  // Reset responsable
-  document.querySelectorAll(".resp-chip").forEach(c => c.classList.remove("selected"));
-  document.getElementById("cFacturador").value = "";
-
-  // Reset totales
-  document.getElementById("totalIngresado").textContent = "₡0";
-  document.getElementById("diffRow").textContent = "";
-
-  // Reset botón
-  const btn = document.getElementById("btnCobrar");
-  btn.disabled  = false;
-  btn.innerHTML = "💰 Confirmar Cobro";
-
+  
+  document.getElementById("cOrden").textContent = selectedCar.orden;
+  document.getElementById("cPlate").textContent = selectedCar.placa;
+  document.getElementById("cClienteName").textContent = selectedCar.cliente;
+  document.getElementById("cMonto").textContent = "₡" + parseInt(selectedCar.monto).toLocaleString();
+  
   document.getElementById("cobroModal").classList.add("show");
 }
 
-// ── Toggle de cada botón de método ──
 function toggleBloque(metodo) {
-  const btn      = document.getElementById("btn"      + metodo);
-  const fieldRow = document.getElementById("fieldRow" + metodo);
-  const input    = document.getElementById("monto"    + metodo);
-  const isla     = document.getElementById("montosIsla");
-
-  const isActive = btn.classList.toggle("active");
-
-  if (isActive) {
-    fieldRow.style.display = "flex";
-    isla.classList.add("show");
-    input.value = "";
-    input.focus();
+  const btn = document.getElementById("btn" + metodo);
+  const row = document.getElementById("fieldRow" + metodo);
+  
+  if (metodosSeleccionados.has(metodo)) {
+    metodosSeleccionados.delete(metodo);
+    btn.classList.remove("active");
+    row.style.display = "none";
+    document.getElementById("monto" + metodo).value = "";
   } else {
-    fieldRow.style.display = "none";
-    input.value = "";
+    metodosSeleccionados.add(metodo);
+    btn.classList.add("active");
+    row.style.display = "flex";
   }
-
-  // Ocultar isla si no hay ningún método activo
-  const anyActive = ["Efectivo","Sinpe","Tarjeta","CxC"]
-    .some(m => document.getElementById("btn" + m).classList.contains("active"));
-  if (!anyActive) isla.classList.remove("show");
-
+  
+  document.getElementById("montosIsla").classList.toggle("show", metodosSeleccionados.size > 0);
   calcTotal();
 }
 
-function selectResp(el, nombre) {
-  document.querySelectorAll(".resp-chip").forEach(c => c.classList.remove("selected"));
-  el.classList.add("selected");
-  document.getElementById("cFacturador").value = nombre;
+function calcTotal() {
+  let total = 0;
+  ["Efectivo","Sinpe","Tarjeta","CxC"].forEach(m => {
+    total += parseInt(document.getElementById("monto" + m).value || 0);
+  });
+  
+  const totalEl = document.getElementById("totalIngresado");
+  const diffEl = document.getElementById("diffRow");
+  const montoEsperado = parseInt(selectedCar.monto);
+  
+  totalEl.textContent = "₡" + total.toLocaleString();
+  
+  if (total < montoEsperado) {
+    diffEl.innerHTML = `<span style="color:var(--red)">Faltan ₡${(montoEsperado - total).toLocaleString()}</span>`;
+  } else if (total > montoEsperado) {
+    diffEl.innerHTML = `<span style="color:var(--green)">Vuelto: ₡${(total - montoEsperado).toLocaleString()}</span>`;
+  } else {
+    diffEl.innerHTML = `<span style="color:var(--green)">✓ Monto exacto</span>`;
+  }
 }
 
-function calcTotal() {
-  const ids = ["montoEfectivo","montoSinpe","montoTarjeta","montoCxC"];
-  const total = ids.reduce((sum, id) => {
-    const el = document.getElementById(id);
-    return sum + (el.disabled ? 0 : parseFloat(el.value) || 0);
-  }, 0);
-
-  document.getElementById("totalIngresado").textContent = "₡" + total.toLocaleString("es-CR");
-
-  // Diferencia vs monto esperado
-  const expected = parseFloat((selectedCar?.monto || "0").replace(/[₡,\s]/g, "")) || 0;
-  if (expected > 0) {
-    const diff    = total - expected;
-    const diffEl  = document.getElementById("diffRow");
-    if (diff === 0) {
-      diffEl.innerHTML = `<span class="diff-ok">✔ Monto exacto</span>`;
-    } else if (diff > 0) {
-      diffEl.innerHTML = `<span class="diff-ok">+₡${diff.toLocaleString("es-CR")} vuelto</span>`;
-    } else {
-      diffEl.innerHTML = `<span class="diff-warn">Faltan ₡${Math.abs(diff).toLocaleString("es-CR")}</span>`;
-    }
-  }
+function selectResp(el, nombre) {
+  document.querySelectorAll('.resp-chip').forEach(c => c.classList.remove('selected'));
+  el.classList.add('selected');
+  document.getElementById("cFacturador").value = nombre;
 }
 
 function closeCobroModal() {
   document.getElementById("cobroModal").classList.remove("show");
-  selectedCar = null;
+  metodosSeleccionados.clear();
+  document.querySelectorAll('.met-btn').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('.monto-field-row').forEach(r => r.style.display = 'none');
+  document.getElementById("montosIsla").classList.remove("show");
 }
 
 async function enviarCobro() {
   const facturador = document.getElementById("cFacturador").value;
-
-  const metodos = [];
-  if (document.getElementById("btnEfectivo").classList.contains("active")) metodos.push("Efectivo");
-  if (document.getElementById("btnSinpe").classList.contains("active"))    metodos.push("Sinpe");
-  if (document.getElementById("btnTarjeta").classList.contains("active"))  metodos.push("Tarjeta");
-  if (document.getElementById("btnCxC").classList.contains("active"))      metodos.push("CxC");
-
-  if (!metodos.length)    return showToast("⚠️ Selecciona al menos un método de pago");
-  if (!facturador)        return showToast("⚠️ Selecciona quién recibe el pago");
-
-  const montoEfectivo = parseFloat(document.getElementById("montoEfectivo").value) || 0;
-  const montoSinpe    = parseFloat(document.getElementById("montoSinpe").value)     || 0;
-  const montoTarjeta  = parseFloat(document.getElementById("montoTarjeta").value)   || 0;
-  const montoCxC      = parseFloat(document.getElementById("montoCxC").value)       || 0;
-  const totalRecibido = montoEfectivo + montoSinpe + montoTarjeta + montoCxC;
+  if (!facturador) return showToast("⚠️ Selecciona un responsable");
 
   const btn = document.getElementById("btnCobrar");
-  btn.disabled  = true;
-  btn.innerHTML = `<span class="inline-spin"></span> Procesando...`;
+  btn.disabled = true;
+  btn.textContent = "⌛ Procesando...";
 
   const payload = {
-    numeroOrden:    selectedCar?.orden    || "—",
-    placa:          selectedCar?.placa    || "—",
-    cliente:        selectedCar?.cliente  || "—",
-    montoEsperado:  parseFloat((selectedCar?.monto || "0").replace(/[₡,\s]/g, "")) || 0,
-    metodoPago:     metodos.join(", "),
-    montoEfectivo,
-    montoSinpe,
-    montoTarjeta,
-    montoCxC,
-    totalRecibido,
-    facturador,
-    timestamp:      new Date().toISOString()
+    orden: selectedCar.orden,
+    placa: selectedCar.placa,
+    cliente: selectedCar.cliente,
+    totalServicio: selectedCar.monto,
+    responsable: facturador,
+    pagos: {
+      efectivo: document.getElementById("montoEfectivo").value || 0,
+      sinpe: document.getElementById("montoSinpe").value || 0,
+      tarjeta: document.getElementById("montoTarjeta").value || 0,
+      cxc: document.getElementById("montoCxC").value || 0
+    }
   };
 
-  console.log("📤 Payload cobro:", payload); // debug
-
   try {
-    const res = await fetch(WEBHOOKS.finalizarCobro, {
+    const res = await fetch(WEBHOOK_COBRO, {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
       body: JSON.stringify(payload)
     });
-
     if (res.ok) {
+      showToast("✅ Cobro registrado con éxito");
       closeCobroModal();
-      showToast("✅ Cobro registrado correctamente");
-      setTimeout(loadData, 1500);
-    } else {
-      showToast("⚠️ Error al registrar el cobro (status " + res.status + ")");
-      btn.disabled  = false;
-      btn.innerHTML = "💰 Confirmar Cobro";
+      setTimeout(loadData, 1000);
     }
-  } catch(e) {
-    showToast("⚠️ Sin conexión con n8n");
-    btn.disabled  = false;
-    btn.innerHTML = "💰 Confirmar Cobro";
-  }
+  } catch(e) { showToast("⚠️ Error al conectar con el servidor"); }
+  
+  btn.disabled = false;
+  btn.textContent = "💰 Confirmar Cobro";
 }
 
-// ════════════════════════════════════════
-// WHATSAPP
-// ════════════════════════════════════════
-function enviarWA(num, cliente, placa) {
-  if (!num || num.length < 7) return showToast("⚠️ Cliente sin teléfono registrado");
-  const msg = encodeURIComponent(
-    `¡Hola ${cliente}! ✨ Tu vehículo con placa *${placa}* ya está listo para ser retirado en Sus Amigos Detailers Center. ¡Gracias por preferirnos! 🚗💦`
-  );
-  window.open(`https://wa.me/${num}?text=${msg}`, "_blank");
-}
-
-function enviarWAIdx(idx) {
-  const entry = carsCache[idx];
-  if (!entry) return;
-  enviarWA(entry.celular, entry.cliente, entry.placa);
-}
-
-// ════════════════════════════════════════
-// UTILS
-// ════════════════════════════════════════
 function showToast(m) {
   const t = document.getElementById("toast");
   t.textContent = m;
   t.classList.add("show");
-  setTimeout(() => t.classList.remove("show"), 3500);
+  setTimeout(() => t.classList.remove("show"), 3000);
 }
 
-// Cerrar modales al clickear fuera
-document.getElementById("actionModal").addEventListener("click", e => {
-  if (e.target === document.getElementById("actionModal")) { closeActionModal(); selectedCar = null; }
-});
-document.getElementById("cobroModal").addEventListener("click", e => {
-  if (e.target === document.getElementById("cobroModal")) closeCobroModal();
-});
-
-// ════════════════════════════════════════
-// INIT
-// ════════════════════════════════════════
-setInterval(loadData, 30000);
 loadData();
+setInterval(loadData, 30000);
 </script>
 </body>
 </html>
