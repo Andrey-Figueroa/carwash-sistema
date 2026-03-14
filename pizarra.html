@@ -55,7 +55,8 @@ body{background:var(--bg);font-family:"DM Sans",sans-serif;color:var(--text);min
 /* ── CARDS ── */
 .car-card{width:165px;background:var(--card);border-radius:16px;border:1px solid var(--border);padding:12px;position:relative;cursor:pointer;transition:0.2s}
 .car-card:hover{border-color:var(--accent);transform:translateY(-3px)}
-.car-card.disabled{opacity:0.3;cursor:not-allowed;filter:grayscale(1)}
+.car-card.disabled{opacity:0.3;filter:grayscale(1)}
+.car-card.disabled:hover{transform:none; border-color:var(--border)}
 .orden-badge{position:absolute;top:8px;right:8px;font-family:"DM Mono";font-size:9px;color:var(--accent);background:rgba(0,212,255,0.1);padding:2px 5px;border-radius:4px}
 .car-plate{font-family:"DM Mono";font-size:13px;font-weight:bold;color:#fff;background:rgba(255,255,255,0.05);text-align:center;padding:4px;border-radius:6px;margin:8px 0}
 .car-name{font-size:12px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
@@ -218,21 +219,26 @@ function draw() {
   });
   ["proceso","terminado","retirado"].forEach(k => {
     document.getElementById("c-"+k).textContent = g[k].length;
-    document.getElementById("g-"+k).innerHTML = g[k].map(x => `
-      <div class="car-card ${k==='retirado'?'disabled':''}" onclick="clickCar('${x.plate}','${k}')">
+    document.getElementById("g-"+k).innerHTML = g[k].map(x => {
+      // Si está retirado pero aún tiene saldo > 0 se le permite click (sin fully disabled pointer)
+      let isDisabled = (k === 'retirado' && parseInt(x.cash) === 0) ? 'disabled' : '';
+      return `
+      <div class="car-card ${isDisabled}" onclick="clickCar('${x.plate}','${k}')">
         <span class="orden-badge">#${x.id}</span>
         <div style="font-size:24px; text-align:center">🚗</div>
         <div class="car-plate">${x.plate}</div>
         <div class="car-name">${x.name}</div>
         <div class="car-service">${x.serv}</div>
       </div>
-    `).join("");
+    `}).join("");
   });
 }
 
 function clickCar(p, z) {
-  if(z === 'retirado') return;
   cur = db.find(x => x.plate === p);
+  
+  if (z === 'retirado' && parseInt(cur.cash) === 0) return; // Si ya se cobró, no hacer nada
+
   document.getElementById("aPlate").textContent = cur.plate;
   document.getElementById("aClient").textContent = cur.name;
   
@@ -241,10 +247,13 @@ function clickCar(p, z) {
     h += `<button class="action-btn" onclick="setSt('Terminado')">✅ MARCAR COMO LISTO</button>`;
     h += `<button class="action-btn" onclick="setSt('Retirado')">🚗 MARCAR COMO ENTREGADO</button>`;
     h += `<button class="action-btn btn-cobrar" onclick="goCobro()">💰 FINALIZAR COBRO</button>`;
-  } else {
+  } else if (z === 'terminado') {
     h += `<button class="action-btn" onclick="setSt('Retirado')">🚗 MARCAR COMO ENTREGADO</button>`;
     h += `<button class="action-btn btn-cobrar" onclick="goCobro()">💰 FINALIZAR COBRO</button>`;
     h += `<button class="action-btn btn-wa" onclick="wa()">📱 ENVIAR WHATSAPP</button>`;
+  } else if (z === 'retirado') {
+    h += `<div style="padding:15px; color:var(--muted); font-size:12px; text-align:center;">Este vehículo ya fue entregado.</div>`;
+    h += `<button class="action-btn btn-cobrar" onclick="goCobro()">💰 FINALIZAR COBRO</button>`;
   }
   
   document.getElementById("aButtons").innerHTML = h;
