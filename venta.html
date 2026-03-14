@@ -1,12 +1,21 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>CarWash — Venta de Productos</title>
-    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600&display=swap"
+        rel="stylesheet">
     <style>
-        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+        *,
+        *::before,
+        *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
         :root {
             --bg: #0a0e14;
             --card: #111720;
@@ -15,72 +24,371 @@
             --text: #e8f1ff;
             --muted: #5a7a99;
         }
-        html, body { background: var(--bg); font-family: 'DM Sans', sans-serif; color: var(--text); min-height: 100vh; }
-        .container { display: flex; flex-direction: column; min-height: 100vh; padding: 16px; max-width: 560px; margin: 0 auto; padding-bottom: 40px; }
 
-        .header-area { display: flex; align-items: center; padding-bottom: 20px; position: relative; }
-        .btn-back { text-decoration: none; color: var(--text); font-size: 13px; font-weight: 600; background: rgba(0,198,255,0.1); padding: 8px 15px; border-radius: 8px; border: 1px solid var(--accent); z-index: 10; transition: background 0.2s; }
-        .btn-back:hover { background: rgba(0,198,255,0.2); }
-        h2 { font-family: 'Bebas Neue', sans-serif; color: var(--accent); font-size: 22px; letter-spacing: 2px; position: absolute; width: 100%; text-align: center; left: 0; pointer-events: none; }
+        html,
+        body {
+            background: var(--bg);
+            font-family: 'DM Sans', sans-serif;
+            color: var(--text);
+            min-height: 100vh;
+        }
 
-        .form-card { background: var(--card); border: 1px solid var(--border); border-radius: 20px; padding: 26px 22px; display: flex; flex-direction: column; gap: 22px; }
-        .form-title { font-family: 'Bebas Neue', sans-serif; font-size: 20px; letter-spacing: 1.5px; padding-bottom: 4px; border-bottom: 1px solid var(--border); }
-        .section-label { font-size: 11px; font-weight: 700; color: var(--accent); text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: -8px; }
-        .form-group { display: flex; flex-direction: column; gap: 8px; }
-        .form-label { font-size: 13px; font-weight: 600; color: var(--text); display: flex; align-items: center; gap: 5px; }
-        .req { color: var(--accent); font-size: 16px; line-height: 1; }
+        .container {
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            padding: 16px;
+            max-width: 560px;
+            margin: 0 auto;
+            padding-bottom: 40px;
+        }
 
-        .form-input { background: var(--bg); border: 1px solid var(--border); border-radius: 10px; color: var(--text); padding: 12px 14px; font-size: 15px; font-family: inherit; outline: none; transition: border-color 0.2s, box-shadow 0.2s; width: 100%; }
-        .form-input:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(0,198,255,0.1); }
-        .form-input::placeholder { color: var(--muted); }
+        .header-area {
+            display: flex;
+            align-items: center;
+            padding-bottom: 20px;
+            position: relative;
+        }
+
+        .btn-back {
+            text-decoration: none;
+            color: var(--text);
+            font-size: 13px;
+            font-weight: 600;
+            background: rgba(0, 198, 255, 0.1);
+            padding: 8px 15px;
+            border-radius: 8px;
+            border: 1px solid var(--accent);
+            z-index: 10;
+            transition: background 0.2s;
+        }
+
+        .btn-back:hover {
+            background: rgba(0, 198, 255, 0.2);
+        }
+
+        h2 {
+            font-family: 'Bebas Neue', sans-serif;
+            color: var(--accent);
+            font-size: 22px;
+            letter-spacing: 2px;
+            position: absolute;
+            width: 100%;
+            text-align: center;
+            left: 0;
+            pointer-events: none;
+        }
+
+        .form-card {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 26px 22px;
+            display: flex;
+            flex-direction: column;
+            gap: 22px;
+        }
+
+        .form-title {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 20px;
+            letter-spacing: 1.5px;
+            padding-bottom: 4px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .section-label {
+            font-size: 11px;
+            font-weight: 700;
+            color: var(--accent);
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            margin-bottom: -8px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .form-label {
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text);
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .req {
+            color: var(--accent);
+            font-size: 16px;
+            line-height: 1;
+        }
+
+        .form-input {
+            background: var(--bg);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            color: var(--text);
+            padding: 12px 14px;
+            font-size: 15px;
+            font-family: inherit;
+            outline: none;
+            transition: border-color 0.2s, box-shadow 0.2s;
+            width: 100%;
+        }
+
+        .form-input:focus {
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px rgba(0, 198, 255, 0.1);
+        }
+
+        .form-input::placeholder {
+            color: var(--muted);
+        }
+
         .form-input[type="number"]::-webkit-outer-spin-button,
-        .form-input[type="number"]::-webkit-inner-spin-button { -webkit-appearance: none; }
+        .form-input[type="number"]::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+        }
 
-        .input-wrap { position: relative; }
-        .input-wrap .symbol { position: absolute; right: 14px; top: 50%; transform: translateY(-50%); color: var(--muted); font-size: 15px; pointer-events: none; }
-        .input-wrap .form-input { padding-right: 36px; }
+        .input-wrap {
+            position: relative;
+        }
+
+        .input-wrap .symbol {
+            position: absolute;
+            right: 14px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--muted);
+            font-size: 15px;
+            pointer-events: none;
+        }
+
+        .input-wrap .form-input {
+            padding-right: 36px;
+        }
 
         /* CHIPS (checkbox) */
-        .chips-list { display: flex; flex-direction: column; gap: 9px; }
-        .chip-label { cursor: pointer; }
-        .chip-label input { display: none; }
-        .chip { display: flex; align-items: center; gap: 10px; padding: 12px 16px; border-radius: 10px; border: 1px solid var(--border); background: var(--bg); color: var(--muted); font-size: 14px; font-weight: 500; transition: all 0.18s ease; user-select: none; }
-        .chip:hover { border-color: rgba(0,198,255,0.4); color: var(--text); }
-        .chip-label input:checked + .chip { background: rgba(0,198,255,0.12); border-color: var(--accent); color: var(--accent); font-weight: 600; }
+        .chips-list {
+            display: flex;
+            flex-direction: column;
+            gap: 9px;
+        }
 
-        .chip-box { width: 18px; height: 18px; border-radius: 5px; border: 2px solid var(--border); flex-shrink: 0; display: flex; align-items: center; justify-content: center; transition: all 0.18s; font-size: 11px; font-weight: 700; color: #000; }
-        .chip-label input:checked + .chip .chip-box { border-color: var(--accent); background: var(--accent); }
-        .chip-label input:checked + .chip .chip-box::after { content: "✓"; }
+        .chip-label {
+            cursor: pointer;
+        }
+
+        .chip-label input {
+            display: none;
+        }
+
+        .chip {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 12px 16px;
+            border-radius: 10px;
+            border: 1px solid var(--border);
+            background: var(--bg);
+            color: var(--muted);
+            font-size: 14px;
+            font-weight: 500;
+            transition: all 0.18s ease;
+            user-select: none;
+        }
+
+        .chip:hover {
+            border-color: rgba(0, 198, 255, 0.4);
+            color: var(--text);
+        }
+
+        .chip-label input:checked+.chip {
+            background: rgba(0, 198, 255, 0.12);
+            border-color: var(--accent);
+            color: var(--accent);
+            font-weight: 600;
+        }
+
+        .chip-box {
+            width: 18px;
+            height: 18px;
+            border-radius: 5px;
+            border: 2px solid var(--border);
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.18s;
+            font-size: 11px;
+            font-weight: 700;
+            color: #000;
+        }
+
+        .chip-label input:checked+.chip .chip-box {
+            border-color: var(--accent);
+            background: var(--accent);
+        }
+
+        .chip-label input:checked+.chip .chip-box::after {
+            content: "✓";
+        }
 
         /* CAMPOS CONDICIONALES */
-        .monto-field { display: none; flex-direction: column; gap: 8px; animation: fadeIn 0.2s ease; }
-        .monto-field.visible { display: flex; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(-6px); } to { opacity: 1; transform: translateY(0); } }
+        .monto-field {
+            display: none;
+            flex-direction: column;
+            gap: 8px;
+            animation: fadeIn 0.2s ease;
+        }
+
+        .monto-field.visible {
+            display: flex;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(-6px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
 
         /* TOTAL */
-        .total-row { display: flex; justify-content: space-between; align-items: center; background: rgba(0,198,255,0.07); border: 1px solid rgba(0,198,255,0.2); border-radius: 10px; padding: 12px 16px; font-size: 15px; font-weight: 600; }
-        .total-row span:last-child { color: var(--accent); font-size: 18px; }
+        .total-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(0, 198, 255, 0.07);
+            border: 1px solid rgba(0, 198, 255, 0.2);
+            border-radius: 10px;
+            padding: 12px 16px;
+            font-size: 15px;
+            font-weight: 600;
+        }
 
-        .divider { height: 1px; background: var(--border); }
+        .total-row span:last-child {
+            color: var(--accent);
+            font-size: 18px;
+        }
 
-        .error-banner { display: none; background: rgba(255,80,80,0.1); border: 1px solid rgba(255,80,80,0.3); border-radius: 10px; color: #ff7b7b; padding: 12px 16px; font-size: 13px; text-align: center; }
+        .divider {
+            height: 1px;
+            background: var(--border);
+        }
 
-        .btn-submit { background: var(--accent); color: #000; border: none; border-radius: 12px; padding: 15px; font-size: 16px; font-weight: 700; cursor: pointer; font-family: inherit; transition: background 0.2s, transform 0.1s; display: flex; align-items: center; justify-content: center; gap: 8px; width: 100%; }
-        .btn-submit:hover { background: #00aadd; }
-        .btn-submit:active { transform: scale(0.98); }
-        .btn-submit:disabled { opacity: 0.6; cursor: not-allowed; }
+        .error-banner {
+            display: none;
+            background: rgba(255, 80, 80, 0.1);
+            border: 1px solid rgba(255, 80, 80, 0.3);
+            border-radius: 10px;
+            color: #ff7b7b;
+            padding: 12px 16px;
+            font-size: 13px;
+            text-align: center;
+        }
 
-        .spinner { display: inline-block; width: 18px; height: 18px; border: 2px solid rgba(0,0,0,0.3); border-top-color: #000; border-radius: 50%; animation: spin 0.6s linear infinite; }
-        @keyframes spin { to { transform: rotate(360deg); } }
+        .btn-submit {
+            background: var(--accent);
+            color: #000;
+            border: none;
+            border-radius: 12px;
+            padding: 15px;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            font-family: inherit;
+            transition: background 0.2s, transform 0.1s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            width: 100%;
+        }
 
-        .success-screen { display: none; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 60px 20px; gap: 14px; }
-        .success-screen .icon { font-size: 64px; }
-        .success-screen h3 { font-family: 'Bebas Neue', sans-serif; font-size: 30px; letter-spacing: 2px; }
-        .success-screen p { color: var(--muted); font-size: 14px; line-height: 1.7; }
-        .btn-nuevo { margin-top: 10px; background: rgba(0,198,255,0.1); border: 1px solid var(--accent); color: var(--accent); border-radius: 12px; padding: 12px 28px; font-size: 15px; font-weight: 600; cursor: pointer; font-family: inherit; transition: background 0.2s; }
-        .btn-nuevo:hover { background: rgba(0,198,255,0.2); }
+        .btn-submit:hover {
+            background: #00aadd;
+        }
+
+        .btn-submit:active {
+            transform: scale(0.98);
+        }
+
+        .btn-submit:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .spinner {
+            display: inline-block;
+            width: 18px;
+            height: 18px;
+            border: 2px solid rgba(0, 0, 0, 0.3);
+            border-top-color: #000;
+            border-radius: 50%;
+            animation: spin 0.6s linear infinite;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        .success-screen {
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 60px 20px;
+            gap: 14px;
+        }
+
+        .success-screen .icon {
+            font-size: 64px;
+        }
+
+        .success-screen h3 {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 30px;
+            letter-spacing: 2px;
+        }
+
+        .success-screen p {
+            color: var(--muted);
+            font-size: 14px;
+            line-height: 1.7;
+        }
+
+        .btn-nuevo {
+            margin-top: 10px;
+            background: rgba(0, 198, 255, 0.1);
+            border: 1px solid var(--accent);
+            color: var(--accent);
+            border-radius: 12px;
+            padding: 12px 28px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            font-family: inherit;
+            transition: background 0.2s;
+        }
+
+        .btn-nuevo:hover {
+            background: rgba(0, 198, 255, 0.2);
+        }
     </style>
 </head>
+
 <body>
     <div class="container">
 
@@ -107,20 +415,29 @@
                 <label class="form-label">Selecciona uno o varios <span class="req">*</span></label>
                 <div class="chips-list">
                     <label class="chip-label">
-                        <input type="checkbox" name="metodo" value="Tarjeta crédito / débito" onchange="toggleMonto(this)">
-                        <div class="chip"><div class="chip-box"></div> 💳 Tarjeta crédito / débito</div>
+                        <input type="checkbox" name="metodo" value="Tarjeta crédito / débito"
+                            onchange="toggleMonto(this)">
+                        <div class="chip">
+                            <div class="chip-box"></div> 💳 Tarjeta crédito / débito
+                        </div>
                     </label>
                     <label class="chip-label">
                         <input type="checkbox" name="metodo" value="Efectivo" onchange="toggleMonto(this)">
-                        <div class="chip"><div class="chip-box"></div> 💵 Efectivo</div>
+                        <div class="chip">
+                            <div class="chip-box"></div> 💵 Efectivo
+                        </div>
                     </label>
                     <label class="chip-label">
                         <input type="checkbox" name="metodo" value="SINPE Móvil" onchange="toggleMonto(this)">
-                        <div class="chip"><div class="chip-box"></div> 📱 SINPE Móvil</div>
+                        <div class="chip">
+                            <div class="chip-box"></div> 📱 SINPE Móvil
+                        </div>
                     </label>
                     <label class="chip-label">
                         <input type="checkbox" name="metodo" value="Cuenta por cobrar" onchange="toggleMonto(this)">
-                        <div class="chip"><div class="chip-box"></div> 📄 Cuenta por cobrar</div>
+                        <div class="chip">
+                            <div class="chip-box"></div> 📄 Cuenta por cobrar
+                        </div>
                     </label>
                 </div>
             </div>
@@ -129,7 +446,8 @@
             <div class="monto-field" id="campo-Efectivo">
                 <label class="form-label">Monto en efectivo <span class="req">*</span></label>
                 <div class="input-wrap">
-                    <input class="form-input" type="number" id="monto-Efectivo" placeholder="0" min="0" oninput="actualizarTotal()">
+                    <input class="form-input" type="number" id="monto-Efectivo" placeholder="0" min="0"
+                        oninput="actualizarTotal()">
                     <span class="symbol">₡</span>
                 </div>
             </div>
@@ -137,7 +455,8 @@
             <div class="monto-field" id="campo-Tarjeta crédito / débito">
                 <label class="form-label">Monto en tarjeta <span class="req">*</span></label>
                 <div class="input-wrap">
-                    <input class="form-input" type="number" id="monto-Tarjeta crédito / débito" placeholder="0" min="0" oninput="actualizarTotal()">
+                    <input class="form-input" type="number" id="monto-Tarjeta crédito / débito" placeholder="0" min="0"
+                        oninput="actualizarTotal()">
                     <span class="symbol">₡</span>
                 </div>
             </div>
@@ -145,7 +464,8 @@
             <div class="monto-field" id="campo-SINPE Móvil">
                 <label class="form-label">Monto en SINPE <span class="req">*</span></label>
                 <div class="input-wrap">
-                    <input class="form-input" type="number" id="monto-SINPE Móvil" placeholder="0" min="0" oninput="actualizarTotal()">
+                    <input class="form-input" type="number" id="monto-SINPE Móvil" placeholder="0" min="0"
+                        oninput="actualizarTotal()">
                     <span class="symbol">₡</span>
                 </div>
             </div>
@@ -153,7 +473,8 @@
             <div class="monto-field" id="campo-Cuenta por cobrar">
                 <label class="form-label">Monto en cuenta por cobrar <span class="req">*</span></label>
                 <div class="input-wrap">
-                    <input class="form-input" type="number" id="monto-Cuenta por cobrar" placeholder="0" min="0" oninput="actualizarTotal()">
+                    <input class="form-input" type="number" id="monto-Cuenta por cobrar" placeholder="0" min="0"
+                        oninput="actualizarTotal()">
                     <span class="symbol">₡</span>
                 </div>
             </div>
@@ -186,8 +507,8 @@
     </div>
 
     <script>
-        // ⚠️ REEMPLAZA con tu webhook de n8n
-        const N8N_WEBHOOK_URL = "https://n8n-production-6cc7.up.railway.app/webhook/venta-producto";
+        // Webhook oficial de n8n cloud
+        const N8N_WEBHOOK_URL = "https://neuraloom.app.n8n.cloud/webhook-test/venta-producto";
 
         const metodos = ["Efectivo", "Tarjeta crédito / débito", "SINPE Móvil", "Cuenta por cobrar"];
 
@@ -218,10 +539,10 @@
         }
 
         async function enviarVenta() {
-            const producto      = document.getElementById("producto").value.trim();
+            const producto = document.getElementById("producto").value.trim();
             const seleccionados = Array.from(document.querySelectorAll('input[name="metodo"]:checked'));
-            const errorBanner   = document.getElementById("errorBanner");
-            const errorMsg      = document.getElementById("errorMsg");
+            const errorBanner = document.getElementById("errorBanner");
+            const errorMsg = document.getElementById("errorMsg");
 
             if (!producto) {
                 errorMsg.textContent = "Por favor ingresa el nombre del producto.";
@@ -246,10 +567,10 @@
             btn.innerHTML = '<span class="spinner"></span> Enviando...';
 
             const monto_efectivo = parseFloat(document.getElementById("monto-Efectivo")?.value) || 0;
-            const monto_tarjeta  = parseFloat(document.getElementById("monto-Tarjeta crédito / débito")?.value) || 0;
-            const monto_sinpe    = parseFloat(document.getElementById("monto-SINPE Móvil")?.value) || 0;
-            const monto_cxc      = parseFloat(document.getElementById("monto-Cuenta por cobrar")?.value) || 0;
-            const total          = monto_efectivo + monto_tarjeta + monto_sinpe + monto_cxc;
+            const monto_tarjeta = parseFloat(document.getElementById("monto-Tarjeta crédito / débito")?.value) || 0;
+            const monto_sinpe = parseFloat(document.getElementById("monto-SINPE Móvil")?.value) || 0;
+            const monto_cxc = parseFloat(document.getElementById("monto-Cuenta por cobrar")?.value) || 0;
+            const total = monto_efectivo + monto_tarjeta + monto_sinpe + monto_cxc;
             const metodos_usados = seleccionados.map(ch => ch.value).join(", ");
 
             const fecha = new Date().toLocaleString("es-CR", {
@@ -261,12 +582,12 @@
             const payload = {
                 fecha,
                 producto,
-                metodo_pago:             metodos_usados,
+                metodo_pago: metodos_usados,
                 total,
-                monto_efectivo:          monto_efectivo || "",
-                monto_tarjeta:           monto_tarjeta  || "",
-                monto_sinpe:             monto_sinpe    || "",
-                monto_cuenta_por_cobrar: monto_cxc      || ""
+                monto_efectivo: monto_efectivo || "",
+                monto_tarjeta: monto_tarjeta || "",
+                monto_sinpe: monto_sinpe || "",
+                monto_cuenta_por_cobrar: monto_cxc || ""
             };
 
             try {
@@ -309,4 +630,5 @@
         }
     </script>
 </body>
+
 </html>
