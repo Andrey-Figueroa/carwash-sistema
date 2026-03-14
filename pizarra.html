@@ -28,42 +28,63 @@ body{background:var(--bg);font-family:"DM Sans",sans-serif;color:var(--text);min
 .stat-val{font-size:24px;font-weight:700;font-family:"DM Mono",monospace}
 .stat-lbl{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:1px}
 
-/* ── BOARD ── */
+/* ── BOARD & GRID CORREGIDO ── */
 .board{display:grid;grid-template-columns:1fr 1fr 1fr;flex:1;min-height:calc(100vh - 130px)}
-.zone{position:relative;border:1px solid var(--border);padding:22px;overflow:hidden}
+.zone{position:relative;border-right:1px solid var(--border);padding:22px;overflow-y:auto}
 .zone-title{font-family:"Bebas Neue",sans-serif;font-size:20px;letter-spacing:2px;color:var(--accent);margin-bottom:20px;display:block}
-.cars-grid{display:flex;flex-wrap:wrap;gap:14px;align-content:flex-start}
+.cars-grid{display:grid;grid-template-columns:repeat(auto-fill, minmax(140px, 1fr));gap:12px;align-content:flex-start}
 
-/* ── CARDS ── */
-.car-card{width:175px;background:rgba(0,0,0,0.45);border-radius:18px;border:1px solid rgba(255,255,255,0.06);padding:14px;transition:transform 0.2s,border-color 0.2s,box-shadow 0.2s;position:relative;overflow:hidden;cursor:pointer}
-.car-card:hover{transform:translateY(-5px);border-color:var(--accent);box-shadow:0 8px 24px rgba(0,212,255,0.15)}
-.car-plate{font-family:"DM Mono",monospace;font-size:13px;font-weight:bold;background:rgba(0,212,255,0.1);border:1px solid rgba(0,212,255,0.3);border-radius:6px;padding:4px;text-align:center;color:#fff}
+/* ── CAR CARD (Presentación Original) ── */
+.car-card {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  padding: 14px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  transition: transform 0.2s, border-color 0.2s, box-shadow 0.2s;
+  width: 100%; /* El ancho lo controla el grid */
+}
+.car-card:hover { transform: translateY(-4px); border-color: var(--accent); box-shadow: 0 8px 20px rgba(0,212,255,0.15); }
+.car-plate {
+  background: rgba(0,0,0,0.5);
+  border: 1px solid rgba(0,212,255,0.4);
+  color: #fff;
+  font-family: "DM Mono", monospace;
+  font-weight: 700;
+  font-size: 13px;
+  padding: 6px 12px;
+  border-radius: 10px;
+  width: 100%;
+  text-align: center;
+}
+.car-client { font-size: 12px; color: var(--text); font-weight: 500; text-align: center; }
 
-/* ── MODAL COBRO ── */
+/* ── MODAL ── */
 .modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.85);backdrop-filter:blur(8px);z-index:2000;display:none;align-items:center;justify-content:center;padding:20px}
 .modal-overlay.show{display:flex}
-.cobro-box {
-  background: var(--surface); border: 1px solid var(--border); border-radius: 24px;
-  width: 100%; max-width: 580px; max-height: 90vh; display: flex; flex-direction: column; overflow: hidden;
-}
-.cobro-header { padding: 22px 28px; border-bottom: 1px solid var(--border); flex-shrink: 0; display: flex; align-items: center; justify-content: space-between; }
-.cobro-body { padding: 24px 28px; flex: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 20px; }
-.cobro-footer { padding: 20px 28px; border-top: 1px solid var(--border); flex-shrink: 0; }
+.cobro-box { background: var(--surface); border: 1px solid var(--border); border-radius: 24px; width: 100%; max-width: 500px; display: flex; flex-direction: column; overflow: hidden; }
+.cobro-header { padding: 20px 24px; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; }
+.cobro-body { padding: 24px; display: flex; flex-direction: column; gap: 20px; }
+.cobro-footer { padding: 20px; border-top: 1px solid var(--border); }
 
-.metodos-btns{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
-.met-btn{display:flex;flex-direction:column;align-items:center;gap:6px;padding:12px 5px;border:2px solid var(--border);border-radius:14px;background:rgba(0,0,0,0.3);cursor:pointer;transition:all .2s;color:var(--muted);text-align:center}
+.metodos-btns{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.met-btn{display:flex;flex-direction:column;align-items:center;gap:4px;padding:10px 5px;border:2px solid var(--border);border-radius:12px;background:rgba(0,0,0,0.2);cursor:pointer;transition:all .2s;color:var(--muted)}
 .met-btn.active{border-color:var(--accent);background:rgba(0,212,255,0.1);color:var(--accent)}
-.met-btn-name{font-size:10px;font-weight:700}
+.met-btn-name{font-size:9px;font-weight:700}
 
-.montos-isla{display:none;flex-direction:column;gap:12px;background:rgba(0,212,255,0.04);border:1px solid rgba(0,212,255,0.2);border-radius:16px;padding:18px}
+.montos-isla{display:none;flex-direction:column;gap:10px;background:rgba(0,212,255,0.03);border:1px solid rgba(0,212,255,0.2);border-radius:14px;padding:15px}
 .montos-isla.show{display:flex}
-.monto-field-row{display:flex;align-items:center;gap:14px}
-.monto-input-wrap input{flex:1;background:var(--bg);border:1px solid var(--border);color:var(--text);padding:10px;border-radius:8px;outline:none;font-family:"DM Mono"}
+.monto-field-row{display:flex;align-items:center;gap:10px}
+.monto-input-wrap input{flex:1;background:var(--bg);border:1px solid var(--border);color:var(--text);padding:8px;border-radius:8px;outline:none;font-family:"DM Mono"}
 
-.resp-chip{padding:8px 16px;border:1px solid var(--border);border-radius:50px;font-size:13px;cursor:pointer;background:var(--bg);color:var(--muted);display:inline-block;margin:4px}
-.resp-chip.selected{border-color:var(--accent);background:rgba(0,212,255,0.12);color:var(--accent)}
+.resp-chip{padding:6px 12px;border:1px solid var(--border);border-radius:50px;font-size:12px;cursor:pointer;background:var(--bg);color:var(--muted);display:inline-block;margin:3px}
+.resp-chip.selected{border-color:var(--accent);background:rgba(0,212,255,0.1);color:var(--accent)}
 
-.btn-cobrar{width:100%;padding:16px;background:linear-gradient(135deg,#ffc107,#e6a800);color:#000;border:none;border-radius:14px;font-size:16px;font-weight:800;cursor:pointer}
+.btn-cobrar{width:100%;padding:14px;background:linear-gradient(135deg,#ffc107,#e6a800);color:#000;border:none;border-radius:12px;font-size:15px;font-weight:800;cursor:pointer}
 </style>
 </head>
 <body>
@@ -74,7 +95,7 @@ body{background:var(--bg);font-family:"DM Sans",sans-serif;color:var(--text);min
     <div class="logo-chip">CW</div>
     <div class="page-title">GESTIÓN DE LAVADO</div>
   </div>
-  <div id="lastUpdate" style="font-size:12px; color:var(--muted)">Sincronizando...</div>
+  <div id="lastUpdate" style="font-size:11px; color:var(--muted)">Sincronizado</div>
 </div>
 
 <div class="stats-bar">
@@ -92,14 +113,13 @@ body{background:var(--bg);font-family:"DM Sans",sans-serif;color:var(--text);min
 <div class="modal-overlay" id="cobroModal">
   <div class="cobro-box">
     <div class="cobro-header">
-      <div class="page-title" style="font-size:20px">💰 Finalizar Cobro</div>
-      <button onclick="closeCobroModal()" style="background:none;border:none;color:var(--muted);font-size:20px;cursor:pointer">✕</button>
+      <div style="font-family:'Bebas Neue';font-size:20px;letter-spacing:1px">💰 FINALIZAR COBRO</div>
+      <button onclick="closeCobroModal()" style="background:none;border:none;color:var(--muted);font-size:22px;cursor:pointer">×</button>
     </div>
-
     <div class="cobro-body">
-      <div style="display:flex; justify-content:space-between; align-items:center; background:rgba(0,0,0,0.2); padding:15px; border-radius:12px">
-        <span id="cPlate" style="font-family:'DM Mono'; font-weight:bold; color:var(--accent)">---</span>
-        <span id="cMonto" style="font-family:'DM Mono'; font-weight:800; color:var(--green)">₡0</span>
+      <div style="display:flex; justify-content:space-between; align-items:center; background:rgba(0,212,255,0.05); padding:12px 18px; border-radius:12px; border:1px solid rgba(0,212,255,0.1)">
+        <span id="cPlate" style="font-family:'DM Mono'; font-weight:700; color:var(--accent); font-size:18px">---</span>
+        <span id="cMonto" style="font-family:'DM Mono'; font-weight:800; color:var(--green); font-size:18px">₡0</span>
       </div>
 
       <div class="metodos-btns">
@@ -111,15 +131,15 @@ body{background:var(--bg);font-family:"DM Sans",sans-serif;color:var(--text);min
       </div>
 
       <div class="montos-isla" id="montosIsla">
-        <div id="rowEfectivo" style="display:none" class="monto-field-row"><span>💵</span><div class="monto-input-wrap"><input type="number" id="mEfectivo" placeholder="Monto Efectivo" oninput="calcTotal()"></div></div>
-        <div id="rowSinpe" style="display:none" class="monto-field-row"><span>📱</span><div class="monto-input-wrap"><input type="number" id="mSinpe" placeholder="Monto SINPE" oninput="calcTotal()"></div></div>
-        <div id="rowTarjeta" style="display:none" class="monto-field-row"><span>💳</span><div class="monto-input-wrap"><input type="number" id="mTarjeta" placeholder="Monto Tarjeta" oninput="calcTotal()"></div></div>
-        <div id="rowRegalo" style="display:none" class="monto-field-row"><span>🎁</span><div class="monto-input-wrap"><input type="number" id="mRegalo" placeholder="Monto Regalo" oninput="calcTotal()"></div></div>
-        <div id="rowCxC" style="display:none; color:var(--yellow); font-size:12px; text-align:center">⚠️ Registrando como cuenta por cobrar (Deuda total)</div>
+        <div id="rowEfectivo" style="display:none" class="monto-field-row"><span>💵</span><div class="monto-input-wrap"><input type="number" id="mEfectivo" placeholder="Monto"></div></div>
+        <div id="rowSinpe" style="display:none" class="monto-field-row"><span>📱</span><div class="monto-input-wrap"><input type="number" id="mSinpe" placeholder="Monto"></div></div>
+        <div id="rowTarjeta" style="display:none" class="monto-field-row"><span>💳</span><div class="monto-input-wrap"><input type="number" id="mTarjeta" placeholder="Monto"></div></div>
+        <div id="rowRegalo" style="display:none" class="monto-field-row"><span>🎁</span><div class="monto-input-wrap"><input type="number" id="mRegalo" placeholder="Monto"></div></div>
+        <div id="rowCxC" style="display:none; color:var(--yellow); font-size:11px; text-align:center; padding-top:5px">⚠️ Se registrará como deuda total</div>
       </div>
 
       <div>
-        <div style="font-size:10px;color:var(--muted);margin-bottom:8px">RESPONSABLE</div>
+        <div style="font-size:10px;color:var(--muted);margin-bottom:8px;letter-spacing:1px">RESPONSABLE</div>
         <div id="respChips">
           <div class="resp-chip" onclick="selectResp(this,'Eder')">Eder</div>
           <div class="resp-chip" onclick="selectResp(this,'Massiel')">Massiel</div>
@@ -128,7 +148,6 @@ body{background:var(--bg);font-family:"DM Sans",sans-serif;color:var(--text);min
         </div>
       </div>
     </div>
-
     <div class="cobro-footer">
       <button class="btn-cobrar" id="btnConfirmar" onclick="enviarCobro()">CONFIRMAR COBRO</button>
     </div>
@@ -145,31 +164,40 @@ let metodos = new Set();
 let responsable = "";
 
 async function loadData() {
-  const res = await fetch(CSV_URL);
-  const text = await res.text();
-  const rows = text.split('\n').slice(1);
-  carsCache = rows.map(r => {
-    const c = r.split(',');
-    return { orden: c[0], placa: c[2], cliente: c[3], servicio: c[7], estado: (c[8]||"").toLowerCase(), monto: (c[12]||"0").replace(/\D/g,"") };
-  }).filter(c => c.placa);
-  render();
+  try {
+    const res = await fetch(CSV_URL);
+    const text = await res.text();
+    const rows = text.split('\n').slice(1);
+    carsCache = rows.map(r => {
+      const c = r.split(',');
+      return { orden: c[0], placa: c[2], cliente: c[3], estado: (c[8]||"").toLowerCase(), monto: (c[12]||"0").replace(/\D/g,"") };
+    }).filter(c => c.placa);
+    render();
+  } catch(e) { console.error("Error cargando CSV", e); }
 }
 
 function render() {
-  const grids = { proceso: document.getElementById('grid-proceso'), terminado: document.getElementById('grid-terminado'), retirado: document.getElementById('grid-retirado') };
-  Object.values(grids).forEach(g => g.innerHTML = "");
+  const g = { proceso: document.getElementById('grid-proceso'), terminado: document.getElementById('grid-terminado'), retirado: document.getElementById('grid-retirado') };
+  Object.values(g).forEach(el => el.innerHTML = "");
   
+  let counts = { proceso: 0, terminado: 0, retirado: 0 };
+
   carsCache.forEach(car => {
     let zone = "proceso";
     if(car.estado.includes("listo")) zone = "terminado";
     if(car.estado.includes("retirado")) zone = "retirado";
     
-    grids[zone].innerHTML += `
+    counts[zone]++;
+    g[zone].innerHTML += `
       <div class="car-card" onclick="openCobro('${car.placa}')">
         <div class="car-plate">${car.placa}</div>
-        <div style="font-size:11px; margin-top:5px">${car.cliente}</div>
+        <div class="car-client">${car.cliente}</div>
       </div>`;
   });
+
+  document.getElementById('cnt-proceso').textContent = counts.proceso;
+  document.getElementById('cnt-terminado').textContent = counts.terminado;
+  document.getElementById('cnt-retirado').textContent = counts.retirado;
 }
 
 function openCobro(placa) {
@@ -205,12 +233,14 @@ function closeCobroModal() {
   metodos.clear();
   responsable = "";
   document.querySelectorAll('.met-btn, .resp-chip').forEach(b => b.classList.remove('active','selected'));
+  document.querySelectorAll('.monto-field-row').forEach(r => r.style.display="none");
+  document.querySelectorAll('.monto-input-wrap input').forEach(i => i.value="");
 }
 
 async function enviarCobro() {
   if(!responsable) return alert("Selecciona responsable");
   const btn = document.getElementById('btnConfirmar');
-  btn.disabled = true; btn.textContent = "Procesando...";
+  btn.disabled = true; btn.textContent = "ENVIANDO...";
 
   const payload = {
     orden: selectedCar.orden,
@@ -227,14 +257,17 @@ async function enviarCobro() {
     }
   };
 
-  await fetch(WEBHOOK, { method: 'POST', body: JSON.stringify(payload) });
-  alert("Cobro exitoso");
-  closeCobroModal();
-  loadData();
+  try {
+    await fetch(WEBHOOK, { method: 'POST', body: JSON.stringify(payload) });
+    alert("¡Cobro registrado!");
+    closeCobroModal();
+    loadData();
+  } catch(e) { alert("Error al enviar"); }
   btn.disabled = false; btn.textContent = "CONFIRMAR COBRO";
 }
 
 loadData();
+setInterval(loadData, 30000); // Auto-refresh cada 30s
 </script>
 </body>
 </html>
