@@ -162,27 +162,9 @@
 
         .pay-label input:checked ~ .pay-check::after { content: "✓"; }
 
-        .pay-label input:checked ~ .pay-text { color: var(--text); }
 
-        .pay-label input:checked { /* handled */ }
-
-        .pay-label:has(input:checked) { border-color: var(--accent); background: rgba(0,198,255,0.06); }
 
         .pay-icon { font-size: 18px; width: 24px; text-align: center; }
-
-
-
-        /* FIDELIZACIÓN */
-
-        .fid-btns { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-
-        .fid-btn { padding: 14px; border-radius: 12px; border: 1.5px solid var(--border); background: var(--bg); cursor: pointer; font-size: 15px; font-weight: 600; font-family: inherit; color: var(--muted); transition: all 0.18s; display: flex; align-items: center; justify-content: center; gap: 8px; }
-
-        .fid-btn:hover { border-color: rgba(0,198,255,0.4); color: var(--text); }
-
-        .fid-btn.active-si { border-color: var(--green); background: rgba(0,230,118,0.1); color: var(--green); }
-
-        .fid-btn.active-no { border-color: var(--red); background: rgba(255,77,109,0.1); color: var(--red); }
 
 
 
@@ -442,26 +424,6 @@
 
 
 
-            <!-- FIDELIZACIÓN -->
-
-            <div class="section-label gold-label">⭐ Recordatorio (Fidelización)</div>
-
-            <div class="form-group">
-
-                <label class="form-label">¿El cliente está en el plan de acumulación de puntos? <span class="req">*</span></label>
-
-                <div class="fid-btns">
-
-                    <button type="button" class="fid-btn" id="fidSi" onclick="setFid('si')">⭐ Sí</button>
-
-                    <button type="button" class="fid-btn" id="fidNo" onclick="setFid('no')">❌ No</button>
-
-                </div>
-
-            </div>
-
-
-
             <!-- MONTO -->
 
             <div class="section-label">💰 Monto</div>
@@ -652,15 +614,11 @@
 
 <script>
 
-    // ⚠️ Reemplaza con tu webhook de n8n actualizado
-
-    const N8N_COBRO_DOM    = "https://n8n-production-6cc7.up.railway.app/webhook/domicilio-cobro";
-
-    const N8N_REGISTRO_DOM = "https://n8n-production-6cc7.up.railway.app/webhook/domicilio";
+    // ⚠️ Webhooks de prueba de n8n cloud
+    const N8N_COBRO_DOM    = "https://neuraloom.app.n8n.cloud/webhook-test/finalizar-cobro-domicilio";
+    const N8N_REGISTRO_DOM = "https://neuraloom.app.n8n.cloud/webhook-test/registrar-domicilio";
 
 
-
-    let fidValue = null;
 
     let currentScreen = "screenEntry";
 
@@ -712,18 +670,6 @@
 
 
 
-    function setFid(val) {
-
-        fidValue = val;
-
-        document.getElementById("fidSi").className = "fid-btn" + (val === "si" ? " active-si" : "");
-
-        document.getElementById("fidNo").className = "fid-btn" + (val === "no" ? " active-no" : "");
-
-    }
-
-
-
     // ── COBRO ──────────────────────────────────────────────
 
     async function enviarCobro() {
@@ -742,7 +688,7 @@
 
 
 
-        if (!orden || metodos.length === 0 || !respEl || !fidValue || !monto) {
+        if (!orden || metodos.length === 0 || !respEl || !monto) {
 
             errMsg.textContent = "Completa todos los campos requeridos.";
 
@@ -788,8 +734,6 @@
 
             responsable: respEl.value,
 
-            fidelizacion: fidValue === "si" ? "Sí" : "No",
-
             monto_total: monto
 
         };
@@ -820,9 +764,7 @@
 
                 `<strong>${metodos.join(" + ")}</strong><br>` +
 
-                `₡${Number(monto).toLocaleString("es-CR")} — ${respEl.value}<br>` +
-
-                `Fidelización: ${fidValue === "si" ? "⭐ Sí" : "❌ No"}`;
+                `₡${Number(monto).toLocaleString("es-CR")} — ${respEl.value}`;
 
             goTo("screenSuccess");
 
