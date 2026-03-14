@@ -120,6 +120,9 @@ body{background:var(--bg);font-family:"DM Sans",sans-serif;color:var(--text);min
   border-radius:24px;
   width:100%;
   max-width:640px;
+  max-height:92vh;
+  display:flex;
+  flex-direction:column;
   overflow:hidden;
   animation:modalIn .25s cubic-bezier(.34,1.2,.64,1)
 }
@@ -128,7 +131,8 @@ body{background:var(--bg);font-family:"DM Sans",sans-serif;color:var(--text);min
   padding:22px 28px 20px;
   border-bottom:1px solid var(--border);
   background:linear-gradient(135deg,rgba(255,193,7,0.06),transparent);
-  display:flex;align-items:center;justify-content:space-between;gap:14px
+  display:flex;align-items:center;justify-content:space-between;gap:14px;
+  flex-shrink:0
 }
 .cobro-title{font-family:"Bebas Neue",sans-serif;font-size:24px;letter-spacing:2px;color:var(--yellow)}
 .cobro-subtitle{font-size:11px;color:var(--muted);margin-top:2px}
@@ -145,7 +149,8 @@ body{background:var(--bg);font-family:"DM Sans",sans-serif;color:var(--text);min
 .cobro-vehicle-bar{
   display:flex;align-items:center;gap:16px;
   padding:14px 28px;
-  background:rgba(0,0,0,0.3);border-bottom:1px solid var(--border)
+  background:rgba(0,0,0,0.3);border-bottom:1px solid var(--border);
+  flex-shrink:0
 }
 .cobro-veh-plate{
   font-family:"DM Mono",monospace;font-size:15px;font-weight:700;
@@ -158,7 +163,9 @@ body{background:var(--bg);font-family:"DM Sans",sans-serif;color:var(--text);min
 .cobro-body{
   padding:24px 28px 28px;
   display:flex;flex-direction:column;gap:20px;
-  max-height:68vh;overflow-y:auto
+  flex:1;
+  min-height:0;
+  overflow-y:auto
 }
 .cobro-body::-webkit-scrollbar{width:4px}
 .cobro-body::-webkit-scrollbar-track{background:transparent}
@@ -679,8 +686,9 @@ function abrirCobro() {
   document.getElementById("cOrden").textContent      = selectedCar.orden || "—";
   document.getElementById("cPlate").textContent      = selectedCar.placa || "—";
   document.getElementById("cClienteName").textContent= selectedCar.cliente || "—";
-  document.getElementById("cMonto").textContent      = selectedCar.monto
-    ? "₡" + Number(selectedCar.monto).toLocaleString("es-CR") : "₡0";
+  // Limpiar el monto: quitar ₡, comas y espacios antes de convertir a número
+  const montoLimpio = parseFloat((selectedCar.monto || "0").replace(/[₡,\s]/g, "")) || 0;
+  document.getElementById("cMonto").textContent = "₡" + montoLimpio.toLocaleString("es-CR");
 
   // Reset métodos — botones y campos
   ["Efectivo","Sinpe","Tarjeta","CxC"].forEach(m => {
@@ -749,7 +757,7 @@ function calcTotal() {
   document.getElementById("totalIngresado").textContent = "₡" + total.toLocaleString("es-CR");
 
   // Diferencia vs monto esperado
-  const expected = parseFloat(selectedCar?.monto) || 0;
+  const expected = parseFloat((selectedCar?.monto || "0").replace(/[₡,\s]/g, "")) || 0;
   if (expected > 0) {
     const diff    = total - expected;
     const diffEl  = document.getElementById("diffRow");
@@ -794,7 +802,7 @@ async function enviarCobro() {
     numeroOrden:    selectedCar?.orden    || "—",
     placa:          selectedCar?.placa    || "—",
     cliente:        selectedCar?.cliente  || "—",
-    montoEsperado:  Number(selectedCar?.monto) || 0,
+    montoEsperado:  parseFloat((selectedCar?.monto || "0").replace(/[₡,\s]/g, "")) || 0,
     metodoPago:     metodos.join(", "),
     montoEfectivo,
     montoSinpe,
