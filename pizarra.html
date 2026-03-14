@@ -215,17 +215,28 @@ body{background:var(--bg);font-family:"DM Sans",sans-serif;color:var(--text);min
 }
 .met-btn.active .met-check{opacity:1;background:var(--accent);border-color:var(--accent);color:#000}
 
-/* ── ISLA DE MONTOS (se llena dinámicamente) ── */
+/* ── ISLA DE MONTOS ── */
 .montos-isla{
-  display:none;flex-direction:column;gap:10px;
-  background:rgba(0,0,0,0.25);
-  border:1px solid rgba(0,212,255,0.15);
-  border-radius:14px;
-  padding:16px 18px;
-  animation:fadeSlide .2s ease
+  display:none;flex-direction:column;gap:12px;
+  background:rgba(0,212,255,0.04);
+  border:1px solid rgba(0,212,255,0.2);
+  border-radius:16px;
+  padding:18px 20px;
+  animation:fadeSlide .22s ease
 }
 .montos-isla.show{display:flex}
-@keyframes fadeSlide{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:translateY(0)}}
+@keyframes fadeSlide{from{opacity:0;transform:translateY(-8px)}to{opacity:1;transform:translateY(0)}}
+
+.montos-isla-header{
+  display:flex;align-items:baseline;gap:8px;
+  padding-bottom:12px;
+  border-bottom:1px solid rgba(0,212,255,0.12)
+}
+.montos-isla-title{
+  font-size:13px;font-weight:700;color:var(--accent);
+  text-transform:uppercase;letter-spacing:1px
+}
+.montos-isla-hint{font-size:11px;color:var(--muted)}
 
 .monto-field-row{
   display:flex;align-items:center;gap:14px
@@ -388,10 +399,10 @@ body{background:var(--bg);font-family:"DM Sans",sans-serif;color:var(--text);min
 
       <!-- SECCIÓN: MÉTODOS DE PAGO -->
       <div class="cobro-section">
-        <div class="cobro-section-title">💳 Métodos de Pago</div>
+        <div class="cobro-section-title">💳 Selecciona los métodos de pago</div>
         <div class="cobro-section-body">
 
-          <!-- 4 botones toggle -->
+          <!-- PASO 1: 4 botones toggle -->
           <div class="metodos-btns">
             <div class="met-btn" id="btnEfectivo" onclick="toggleBloque('Efectivo')">
               <span class="met-btn-icon">💵</span>
@@ -415,46 +426,50 @@ body{background:var(--bg);font-family:"DM Sans",sans-serif;color:var(--text);min
             </div>
           </div>
 
-          <!-- ISLA DE MONTOS — aparece cuando hay al menos un método activo -->
-          <div class="montos-isla" id="montosIsla">
-            <div class="monto-field-row" id="fieldRowEfectivo" style="display:none">
-              <span class="monto-field-label"><span class="mf-icon">💵</span>Efectivo</span>
-              <div class="monto-input-wrap">
-                <input type="number" id="montoEfectivo" placeholder="0" min="0" oninput="calcTotal()">
-                <span class="currency">₡</span>
-              </div>
-            </div>
-            <div class="monto-field-row" id="fieldRowSinpe" style="display:none">
-              <span class="monto-field-label"><span class="mf-icon">📱</span>SINPE</span>
-              <div class="monto-input-wrap">
-                <input type="number" id="montoSinpe" placeholder="0" min="0" oninput="calcTotal()">
-                <span class="currency">₡</span>
-              </div>
-            </div>
-            <div class="monto-field-row" id="fieldRowTarjeta" style="display:none">
-              <span class="monto-field-label"><span class="mf-icon">💳</span>Tarjeta</span>
-              <div class="monto-input-wrap">
-                <input type="number" id="montoTarjeta" placeholder="0" min="0" oninput="calcTotal()">
-                <span class="currency">₡</span>
-              </div>
-            </div>
-            <div class="monto-field-row" id="fieldRowCxC" style="display:none">
-              <span class="monto-field-label"><span class="mf-icon">📋</span>Cta. por Cobrar</span>
-              <div class="monto-input-wrap">
-                <input type="number" id="montoCxC" placeholder="0" min="0" oninput="calcTotal()">
-                <span class="currency">₡</span>
-              </div>
-            </div>
-          </div><!-- /montos-isla -->
-
-          <!-- Total -->
-          <div class="total-row">
-            <span class="total-lbl">💰 Total ingresado</span>
-            <span class="total-val" id="totalIngresado">₡0</span>
-          </div>
-          <div class="diff-row" id="diffRow"></div>
-
         </div>
+      </div>
+
+      <!-- ISLA DE MONTOS — isla separada, aparece al seleccionar -->
+      <div class="montos-isla" id="montosIsla">
+        <div class="montos-isla-header">
+          <span class="montos-isla-title">💰 Ingresa los montos</span>
+          <span class="montos-isla-hint">por método seleccionado</span>
+        </div>
+
+        <div id="fieldRowEfectivo" style="display:none" class="monto-field-row">
+          <span class="monto-field-label"><span class="mf-icon">💵</span>Efectivo</span>
+          <div class="monto-input-wrap">
+            <input type="number" id="montoEfectivo" placeholder="0" min="0" oninput="calcTotal()">
+            <span class="currency">₡</span>
+          </div>
+        </div>
+        <div id="fieldRowSinpe" style="display:none" class="monto-field-row">
+          <span class="monto-field-label"><span class="mf-icon">📱</span>SINPE</span>
+          <div class="monto-input-wrap">
+            <input type="number" id="montoSinpe" placeholder="0" min="0" oninput="calcTotal()">
+            <span class="currency">₡</span>
+          </div>
+        </div>
+        <div id="fieldRowTarjeta" style="display:none" class="monto-field-row">
+          <span class="monto-field-label"><span class="mf-icon">💳</span>Tarjeta</span>
+          <div class="monto-input-wrap">
+            <input type="number" id="montoTarjeta" placeholder="0" min="0" oninput="calcTotal()">
+            <span class="currency">₡</span>
+          </div>
+        </div>
+        <div id="fieldRowCxC" style="display:none" class="monto-field-row">
+          <span class="monto-field-label"><span class="mf-icon">📋</span>Cta. por Cobrar</span>
+          <div class="monto-input-wrap">
+            <input type="number" id="montoCxC" placeholder="0" min="0" oninput="calcTotal()">
+            <span class="currency">₡</span>
+          </div>
+        </div>
+
+        <div class="total-row">
+          <span class="total-lbl">💰 Total ingresado</span>
+          <span class="total-val" id="totalIngresado">₡0</span>
+        </div>
+        <div class="diff-row" id="diffRow"></div>
       </div>
 
       <!-- SECCIÓN: RESPONSABLE -->
@@ -499,10 +514,10 @@ const COL = {
   hora:     1,   // B — Hora entrada
   placa:    2,   // C — Placa
   cliente:  3,   // D — Nombre cliente
-  monto:    4,   // E — Monto total  ← CORRECTO
-  servicio: 7,   // H — (ajusta si tu sheet tiene diferente orden)
+  celular:  4,   // E — Celular
+  servicio: 7,   // H — Servicio
   estado:   8,   // I — Estado
-  celular:  5    // F — (ajusta si tu sheet tiene celular en otra columna)
+  monto:    12   // M — Monto total
 };
 
 // ── Estado global ──
