@@ -207,9 +207,18 @@ async function sync() {
 function parse(t) {
   return t.trim().split("\n").slice(1).map(l => {
     const c = l.split(/,(?=(?:[^"]*"[^"]*")*[^"]*$)/).map(v => v.replace(/^"|"$/g, '').trim());
-    // Evitar errores si la columna 12 viene vacía. Extraemos dígitos y si no hay asume 0.
+    // Columna 12 = Total (ej: "₡41,500" o "Ôéí41,500")
+    // Columna 15 = Estado de Pago (ej: "Pendiente" o "Pagado")
+    const paymentStatus = (c[15] || "").toLowerCase();
     const rawCash = (c[12] || "").replace(/\D/g, ''); 
-    return { id: c[0], plate: c[2], name: c[3], phone: c[4], serv: c[7], status: c[8].toLowerCase(), cash: rawCash || 0 };
+    
+    // Si dice "pendiente", asumimos que debe dinero, logrando que cash sea al menos 1 para no bloquearlo
+    let parsedCash = parseInt(rawCash) || 0;
+    if (paymentStatus.includes("pendiente") && parsedCash === 0) {
+      parsedCash = 1; 
+    }
+
+    return { id: c[0], plate: c[2], name: c[3], phone: c[4], serv: c[7], status: c[8].toLowerCase(), cash: parsedCash };
   }).filter(x => x.plate);
 }
 
