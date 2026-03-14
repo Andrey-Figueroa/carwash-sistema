@@ -81,8 +81,11 @@ body{background:var(--bg);font-family:"DM Sans",sans-serif;color:var(--text);min
 .toast.show{opacity:1}
 
 /* ── MODAL BASE ── */
-.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.82);backdrop-filter:blur(10px);z-index:2000;display:none;align-items:center;justify-content:center;padding:20px}
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.82);backdrop-filter:blur(10px);z-index:2000;display:none;align-items:flex-start;justify-content:center;padding:20px;overflow-y:auto}
 .modal-overlay.show{display:flex}
+/* centrar verticalmente solo cuando hay espacio suficiente */
+.modal-overlay::before{content:"";flex:1;min-height:20px}
+.modal-overlay::after{content:"";flex:1;min-height:20px}
 .modal-box{background:var(--surface);border:1px solid var(--border);border-radius:24px;width:100%;max-width:460px;overflow:hidden;animation:modalIn .25s cubic-bezier(.34,1.2,.64,1)}
 @keyframes modalIn{from{opacity:0;transform:scale(.93) translateY(12px)}to{opacity:1;transform:scale(1) translateY(0)}}
 
@@ -492,14 +495,14 @@ const WEBHOOKS = {
 };
 
 const COL = {
-  orden:    0,   // A
-  hora:     1,   // B
-  placa:    2,   // C
-  cliente:  3,   // D
-  celular:  4,   // E
-  servicio: 7,   // H
-  monto:    11,  // L
-  estado:   8    // I
+  orden:    0,   // A — #
+  hora:     1,   // B — Hora entrada
+  placa:    2,   // C — Placa
+  cliente:  3,   // D — Nombre cliente
+  monto:    4,   // E — Monto total  ← CORRECTO
+  servicio: 7,   // H — (ajusta si tu sheet tiene diferente orden)
+  estado:   8,   // I — Estado
+  celular:  5    // F — (ajusta si tu sheet tiene celular en otra columna)
 };
 
 // ── Estado global ──
