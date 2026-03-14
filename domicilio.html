@@ -1,278 +1,486 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>CarWash — Servicio a Domicilio</title>
-    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
-    <style>
-        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-        :root {
-            --bg: #0a0e14;
-            --card: #111720;
-            --border: #1e2d3d;
-            --accent: #00c6ff;
-            --gold: #c9a84c;
-            --text: #e8f1ff;
-            --muted: #5a7a99;
-        }
-        html, body { background: var(--bg); font-family: 'DM Sans', sans-serif; color: var(--text); min-height: 100vh; -webkit-tap-highlight-color: transparent; }
-        .container { display: flex; flex-direction: column; min-height: 100vh; padding: 16px; max-width: 580px; margin: 0 auto; padding-bottom: 40px; }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>CarWash — Servicio a Domicilio</title>
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+        :root {
+            --bg: #0a0e14;
+            --card: #111720;
+            --border: #1e2d3d;
+            --accent: #00c6ff;
+            --gold: #c9a84c;
+            --text: #e8f1ff;
+            --muted: #5a7a99;
+            --green: #00e676;
+            --red: #ff4d6d;
+        }
+        html, body { background: var(--bg); font-family: 'DM Sans', sans-serif; color: var(--text); min-height: 100vh; }
 
-        /* HEADER */
-        .header-area { display: flex; align-items: center; padding-bottom: 20px; position: relative; }
-        .btn-back { text-decoration: none; color: var(--text); font-size: 13px; font-weight: 600; background: rgba(0,198,255,0.1); padding: 8px 15px; border-radius: 8px; border: 1px solid var(--accent); z-index: 10; cursor: pointer; transition: 0.2s; }
-        .btn-back:active { transform: scale(0.95); }
-        h2 { font-family: 'Bebas Neue', sans-serif; color: var(--accent); margin: 0; font-size: 22px; letter-spacing: 2px; position: absolute; width: 100%; text-align: center; left: 0; pointer-events: none; }
+        .container { display: flex; flex-direction: column; min-height: 100vh; padding: 16px; max-width: 580px; margin: 0 auto; padding-bottom: 40px; }
 
-        /* SCREENS */
-        .screen { display: none; }
-        .screen.active { display: flex; flex-direction: column; gap: 16px; animation: fadeIn 0.3s ease; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
+        /* HEADER */
+        .header-area { display: flex; align-items: center; padding-bottom: 20px; position: relative; }
+        .btn-back { text-decoration: none; color: var(--text); font-size: 13px; font-weight: 600; background: rgba(0,198,255,0.1); padding: 8px 15px; border-radius: 8px; border: 1px solid var(--accent); z-index: 10; transition: background 0.2s; cursor: pointer; }
+        .btn-back:hover { background: rgba(0,198,255,0.2); }
+        h2 { font-family: 'Bebas Neue', sans-serif; color: var(--accent); margin: 0; font-size: 22px; letter-spacing: 2px; position: absolute; width: 100%; text-align: center; left: 0; pointer-events: none; }
 
-        /* ENTRY CARDS */
-        .entry-card { background: var(--card); border: 1px solid var(--border); border-radius: 24px; padding: 36px 28px; display: flex; flex-direction: column; align-items: center; gap: 24px; margin-top: 20px; }
-        .entry-title { font-family: 'Bebas Neue', sans-serif; font-size: 26px; letter-spacing: 2px; color: var(--text); }
-        .btn-entry-primary { background: var(--accent); color: #000; border: none; border-radius: 14px; padding: 18px; font-size: 16px; font-weight: 700; cursor: pointer; width: 100%; display: flex; align-items: center; justify-content: center; gap: 10px; }
-        .btn-entry-secondary { background: rgba(0,198,255,0.08); color: var(--accent); border: 1px solid rgba(0,198,255,0.3); border-radius: 14px; padding: 18px; font-size: 16px; font-weight: 600; cursor: pointer; width: 100%; display: flex; align-items: center; justify-content: center; gap: 10px; }
+        /* SCREENS */
+        .screen { display: none; }
+        .screen.active { display: flex; flex-direction: column; gap: 16px; }
 
-        /* FORMS */
-        .form-card { background: var(--card); border: 1px solid var(--border); border-radius: 20px; padding: 26px 22px; display: flex; flex-direction: column; gap: 22px; }
-        .form-title { font-family: 'Bebas Neue', sans-serif; font-size: 20px; color: var(--text); border-bottom: 1px solid var(--border); padding-bottom: 8px; }
-        .section-label { font-size: 11px; font-weight: 700; color: var(--accent); text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: -10px; }
-        .form-input, .form-select, .form-textarea { background: var(--bg); border: 1px solid var(--border); border-radius: 10px; color: var(--text); padding: 14px; outline: none; width: 100%; font-family: inherit; font-size: 15px; }
-        .form-input:focus { border-color: var(--accent); }
-        .row-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+        /* ─── ENTRY SCREEN ─── */
+        .entry-card { background: var(--card); border: 1px solid var(--border); border-radius: 24px; padding: 36px 28px; display: flex; flex-direction: column; align-items: center; gap: 24px; margin-top: 20px; }
+        .entry-icon { font-size: 52px; }
+        .entry-title { font-family: 'Bebas Neue', sans-serif; font-size: 26px; letter-spacing: 2px; text-align: center; color: var(--text); }
+        .entry-sub { font-size: 14px; color: var(--muted); text-align: center; line-height: 1.6; }
+        .entry-btns { display: flex; flex-direction: column; gap: 12px; width: 100%; }
 
-        /* CHIPS & SELECTORS */
-        .chips-grid { display: flex; flex-wrap: wrap; gap: 9px; }
-        .chip-label input, .check-label input { display: none; }
-        .chip { padding: 10px 16px; border-radius: 50px; border: 1px solid var(--border); background: var(--bg); color: var(--muted); font-size: 13px; cursor: pointer; transition: 0.2s; }
-        .chip-label input:checked + .chip { background: rgba(0,198,255,0.15); border-color: var(--accent); color: var(--accent); }
-        
-        .check-grid { display: flex; flex-direction: column; gap: 10px; }
-        .check-label { display: flex; align-items: center; gap: 12px; padding: 14px; border-radius: 12px; border: 1px solid var(--border); background: var(--bg); cursor: pointer; }
-        .custom-check { width: 20px; height: 20px; border-radius: 6px; border: 1.5px solid var(--border); background: var(--card); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
-        .check-label input:checked ~ .custom-check { background: var(--accent); border-color: var(--accent); }
-        .check-label input:checked ~ .custom-check::after { content: "✓"; color: #000; font-weight: 900; font-size: 14px; }
+        .btn-entry-primary { background: var(--accent); color: #000; border: none; border-radius: 14px; padding: 16px; font-size: 16px; font-weight: 700; cursor: pointer; font-family: inherit; transition: background 0.2s, transform 0.1s; display: flex; align-items: center; justify-content: center; gap: 10px; }
+        .btn-entry-primary:hover { background: #00aadd; }
+        .btn-entry-primary:active { transform: scale(0.98); }
 
-        /* BUTTONS */
-        .btn-submit { background: var(--accent); color: #000; border: none; border-radius: 14px; padding: 16px; font-size: 16px; font-weight: 700; cursor: pointer; margin-top: 10px; transition: 0.2s; }
-        .btn-submit.gold { background: linear-gradient(135deg, #c9a84c, #a07828); color: white; }
-        .btn-submit:disabled { opacity: 0.6; cursor: not-allowed; }
+        .btn-entry-secondary { background: rgba(0,198,255,0.08); color: var(--accent); border: 1px solid rgba(0,198,255,0.3); border-radius: 14px; padding: 16px; font-size: 16px; font-weight: 600; cursor: pointer; font-family: inherit; transition: all 0.2s, transform 0.1s; display: flex; align-items: center; justify-content: center; gap: 10px; }
+        .btn-entry-secondary:hover { background: rgba(0,198,255,0.15); border-color: var(--accent); }
+        .btn-entry-secondary:active { transform: scale(0.98); }
 
-        .error-banner { display: none; background: rgba(255,80,80,0.1); border: 1px solid rgba(255,80,80,0.3); border-radius: 10px; color: #ff7b7b; padding: 14px; text-align: center; font-size: 13px; }
-        .spinner { display: inline-block; width: 20px; height: 20px; border: 3px solid rgba(255,255,255,0.3); border-top-color: #fff; border-radius: 50%; animation: spin 0.8s linear infinite; }
-        @keyframes spin { to { transform: rotate(360deg); } }
+        /* ─── FORM CARD ─── */
+        .form-card { background: var(--card); border: 1px solid var(--border); border-radius: 20px; padding: 26px 22px; display: flex; flex-direction: column; gap: 22px; }
+        .form-title { font-family: 'Bebas Neue', sans-serif; font-size: 20px; letter-spacing: 1.5px; color: var(--text); padding-bottom: 4px; border-bottom: 1px solid var(--border); }
+        .section-label { font-size: 11px; font-weight: 700; color: var(--accent); text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: -8px; display: flex; align-items: center; gap: 6px; }
+        .section-label.gold-label { color: var(--gold); }
+        .form-group { display: flex; flex-direction: column; gap: 8px; }
+        .form-label { font-size: 13px; font-weight: 600; color: var(--text); display: flex; align-items: center; gap: 5px; }
+        .req { color: var(--accent); font-size: 16px; line-height: 1; }
+        .form-input, .form-select { background: var(--bg); border: 1px solid var(--border); border-radius: 10px; color: var(--text); padding: 12px 14px; font-size: 15px; font-family: inherit; outline: none; transition: border-color 0.2s, box-shadow 0.2s; width: 100%; }
+        .form-input:focus, .form-select:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(0,198,255,0.1); }
+        .form-input::placeholder { color: var(--muted); }
+        .form-select { cursor: pointer; appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%235a7a99' d='M6 8L1 3h10z'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 14px center; padding-right: 36px; }
+        .form-select option { background: #111720; }
+        .row-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+        .hint { font-size: 11px; color: var(--muted); margin-top: -4px; }
+        .divider { height: 1px; background: var(--border); margin: 2px 0; }
 
-        .success-screen { display: none; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 60px 20px; gap: 20px; }
-        .success-screen.active { display: flex; }
+        /* CHIPS (tipo vehículo / responsable) */
+        .chips-grid { display: flex; flex-wrap: wrap; gap: 9px; }
+        .chip-label { cursor: pointer; }
+        .chip-label input { display: none; }
+        .chip { display: inline-flex; align-items: center; padding: 8px 16px; border-radius: 50px; border: 1px solid var(--border); background: var(--bg); color: var(--muted); font-size: 13px; font-weight: 500; transition: all 0.18s ease; user-select: none; white-space: nowrap; }
+        .chip:hover { border-color: var(--accent); color: var(--text); }
+        .chip-label input[type="radio"]:checked + .chip { background: rgba(0,198,255,0.15); border-color: var(--accent); color: var(--accent); font-weight: 600; }
 
-        @media (max-width: 420px) { .row-2 { grid-template-columns: 1fr; } }
-    </style>
+        /* PAYMENT METHOD CHECKBOXES */
+        .pay-grid { display: flex; flex-direction: column; gap: 9px; }
+        .pay-label { display: flex; align-items: center; gap: 14px; padding: 13px 16px; border-radius: 12px; border: 1.5px solid var(--border); background: var(--bg); cursor: pointer; transition: all 0.18s; font-size: 14px; font-weight: 500; color: var(--muted); }
+        .pay-label:hover { border-color: rgba(0,198,255,0.4); color: var(--text); }
+        .pay-label input { display: none; }
+        .pay-check { width: 20px; height: 20px; border-radius: 6px; border: 1.5px solid var(--border); background: var(--card); flex-shrink: 0; display: flex; align-items: center; justify-content: center; transition: all 0.18s; font-size: 12px; font-weight: 700; }
+        .pay-label input:checked ~ .pay-check { background: var(--accent); border-color: var(--accent); color: #000; }
+        .pay-label input:checked ~ .pay-check::after { content: "✓"; }
+        .pay-label input:checked ~ .pay-text { color: var(--text); }
+        .pay-label input:checked { /* handled */ }
+        .pay-label:has(input:checked) { border-color: var(--accent); background: rgba(0,198,255,0.06); }
+        .pay-icon { font-size: 18px; width: 24px; text-align: center; }
+
+        /* FIDELIZACIÓN */
+        .fid-btns { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+        .fid-btn { padding: 14px; border-radius: 12px; border: 1.5px solid var(--border); background: var(--bg); cursor: pointer; font-size: 15px; font-weight: 600; font-family: inherit; color: var(--muted); transition: all 0.18s; display: flex; align-items: center; justify-content: center; gap: 8px; }
+        .fid-btn:hover { border-color: rgba(0,198,255,0.4); color: var(--text); }
+        .fid-btn.active-si { border-color: var(--green); background: rgba(0,230,118,0.1); color: var(--green); }
+        .fid-btn.active-no { border-color: var(--red); background: rgba(255,77,109,0.1); color: var(--red); }
+
+        /* CHECKBOXES (servicios especiales) */
+        .check-grid { display: flex; flex-direction: column; gap: 8px; }
+        .check-label { display: flex; align-items: center; gap: 12px; padding: 11px 14px; border-radius: 10px; border: 1px solid var(--border); background: var(--bg); cursor: pointer; transition: all 0.18s; font-size: 14px; color: var(--muted); }
+        .check-label:hover { border-color: rgba(0,198,255,0.4); color: var(--text); }
+        .check-label input { display: none; }
+        .custom-check { width: 18px; height: 18px; border-radius: 5px; border: 1.5px solid var(--border); background: var(--card); flex-shrink: 0; display: flex; align-items: center; justify-content: center; transition: all 0.18s; font-size: 11px; }
+        .check-label input:checked ~ .custom-check { background: var(--accent); border-color: var(--accent); color: #000; }
+        .check-label input:checked ~ .custom-check::after { content: "✓"; font-weight: 700; }
+        .check-label input:checked ~ .check-text { color: var(--text); }
+        .check-icon { font-size: 16px; }
+
+        /* ERROR / SUBMIT */
+        .error-banner { display: none; background: rgba(255,80,80,0.1); border: 1px solid rgba(255,80,80,0.3); border-radius: 10px; color: #ff7b7b; padding: 12px 16px; font-size: 13px; text-align: center; }
+        .btn-submit { background: var(--accent); color: #000; border: none; border-radius: 12px; padding: 15px; font-size: 16px; font-weight: 700; cursor: pointer; font-family: inherit; transition: background 0.2s, transform 0.1s; display: flex; align-items: center; justify-content: center; gap: 8px; width: 100%; margin-top: 4px; }
+        .btn-submit:hover { background: #00aadd; }
+        .btn-submit:active { transform: scale(0.98); }
+        .btn-submit:disabled { opacity: 0.6; cursor: not-allowed; }
+        .btn-submit.gold { background: linear-gradient(135deg, #c9a84c, #a07828); }
+        .btn-submit.gold:hover { opacity: 0.88; background: linear-gradient(135deg, #c9a84c, #a07828); }
+
+        /* SPINNER */
+        .spinner { display: inline-block; width: 18px; height: 18px; border: 2px solid rgba(0,0,0,0.3); border-top-color: #000; border-radius: 50%; animation: spin 0.6s linear infinite; }
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        /* SUCCESS */
+        .success-screen { flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 60px 20px; gap: 14px; }
+        .success-screen.active { display: flex; }
+        .check-icon-big { font-size: 64px; }
+        .success-screen h3 { font-family: 'Bebas Neue', sans-serif; font-size: 30px; letter-spacing: 2px; }
+        .success-screen p { color: var(--muted); font-size: 14px; line-height: 1.7; }
+        .btn-nuevo { margin-top: 10px; background: rgba(0,198,255,0.1); border: 1px solid var(--accent); color: var(--accent); border-radius: 12px; padding: 12px 28px; font-size: 15px; font-weight: 600; cursor: pointer; font-family: inherit; transition: background 0.2s; }
+        .btn-nuevo:hover { background: rgba(0,198,255,0.2); }
+
+        @media (max-width: 420px) { .row-2 { grid-template-columns: 1fr; } }
+    </style>
 </head>
 <body>
 <div class="container">
 
-    <div class="header-area">
-        <button class="btn-back" onclick="handleBack()">← VOLVER</button>
-        <h2 id="pageTitle">SERVICIO DOMICILIO</h2>
-    </div>
+    <!-- HEADER -->
+    <div class="header-area">
+        <button class="btn-back" id="btnBack" onclick="handleBack()">← VOLVER</button>
+        <h2 id="pageTitle">SERVICIO DOMICILIO</h2>
+    </div>
 
-    <div class="screen active" id="screenEntry">
-        <div class="entry-card">
-            <div style="font-size: 50px;">🚐</div>
-            <div class="entry-title">Servicio a Domicilio</div>
-            <div class="entry-sub" style="color:var(--muted); text-align:center;">Gestión de rutas y cobros</div>
-            <div class="entry-btns">
-                <button class="btn-entry-primary" onclick="goTo('screenCobro')">💰 Finalizar Cobro Domicilio</button>
-                <button class="btn-entry-secondary" onclick="goTo('screenRegistro')">📋 Registrar Nuevo Domicilio</button>
-            </div>
-        </div>
-    </div>
+    <!-- ══ SCREEN 0: ENTRY ══ -->
+    <div class="screen active" id="screenEntry">
+        <div class="entry-card">
+            <div class="entry-icon">🚐</div>
+            <div class="entry-title">Servicio a Domicilio</div>
+            <div class="entry-sub">¿Qué deseas hacer?</div>
+            <div class="entry-btns">
+                <button class="btn-entry-primary" onclick="goTo('screenCobro')">
+                    💰 Finalizar Cobro Domicilio
+                </button>
+                <button class="btn-entry-secondary" onclick="goTo('screenRegistro')">
+                    📋 Registrar Nuevo Domicilio
+                </button>
+            </div>
+        </div>
+    </div>
 
-    <div class="screen" id="screenCobro">
-        <div class="form-card">
-            <div class="form-title">💰 Finalizar Transacción</div>
-            
-            <div class="section-label">📋 Orden del Vehículo</div>
-            <input class="form-input" type="number" id="c_orden" placeholder="Ej: 1245">
-            
-            <div class="section-label">💳 Métodos de Pago</div>
-            <div class="check-grid">
-                <label class="check-label"><input type="checkbox" class="pay-cb" value="Efectivo"><span class="custom-check"></span> 💵 Efectivo</label>
-                <label class="check-label"><input type="checkbox" class="pay-cb" value="SINPE Móvil"><span class="custom-check"></span> 📱 SINPE Móvil</label>
-                <label class="check-label"><input type="checkbox" class="pay-cb" value="Tarjeta"><span class="custom-check"></span> 💳 Tarjeta</label>
-            </div>
+    <!-- ══ SCREEN 1: COBRO DOMICILIO ══ -->
+    <div class="screen" id="screenCobro">
+        <div class="form-card">
+            <div class="form-title">💰 Completar Transacción</div>
 
-            <div class="section-label">👤 Responsable</div>
-            <div class="chips-grid">
-                <label class="chip-label"><input type="radio" name="c_resp" value="Juan"><span class="chip">Juan</span></label>
-                <label class="chip-label"><input type="radio" name="c_resp" value="Eder"><span class="chip">Eder</span></label>
-                <label class="chip-label"><input type="radio" name="c_resp" value="Massiel"><span class="chip">Massiel</span></label>
-                <label class="chip-label"><input type="radio" name="c_resp" value="Andrey"><span class="chip">Andrey</span></label>
-            </div>
+            <!-- ORDEN -->
+            <div class="section-label">📋 Orden</div>
+            <div class="form-group">
+                <label class="form-label">Número de orden del vehículo <span class="req">*</span></label>
+                <input class="form-input" type="number" id="c_orden" placeholder="1" min="1"/>
+                <span class="hint">Puedes verificarlo en el Google Sheets</span>
+            </div>
 
-            <div class="section-label">💰 Monto Total</div>
-            <input class="form-input" type="number" id="c_monto" placeholder="Total cobrado ₡">
+            <!-- PAGO -->
+            <div class="section-label">💳 Detalles de pago</div>
+            <div class="form-group">
+                <label class="form-label">Método de pago <span class="req">*</span> <span style="font-size:11px;color:var(--muted);font-weight:400">(puede elegir varios)</span></label>
+                <div class="pay-grid">
+                    <label class="pay-label">
+                        <input type="checkbox" class="pay-cb" value="Tarjeta crédito / débito"/>
+                        <div class="pay-check"></div>
+                        <span class="pay-icon">💳</span>
+                        <span class="pay-text">Tarjeta crédito / débito</span>
+                    </label>
+                    <label class="pay-label">
+                        <input type="checkbox" class="pay-cb" value="Cuenta por cobrar"/>
+                        <div class="pay-check"></div>
+                        <span class="pay-icon">📄</span>
+                        <span class="pay-text">Cuenta por cobrar</span>
+                    </label>
+                    <label class="pay-label">
+                        <input type="checkbox" class="pay-cb" value="Efectivo"/>
+                        <div class="pay-check"></div>
+                        <span class="pay-icon">💵</span>
+                        <span class="pay-text">Efectivo</span>
+                    </label>
+                    <label class="pay-label">
+                        <input type="checkbox" class="pay-cb" value="SINPE Móvil"/>
+                        <div class="pay-check"></div>
+                        <span class="pay-icon">📱</span>
+                        <span class="pay-text">SINPE Móvil</span>
+                    </label>
+                    <label class="pay-label">
+                        <input type="checkbox" class="pay-cb" value="Tarjeta de regalo"/>
+                        <div class="pay-check"></div>
+                        <span class="pay-icon">🎁</span>
+                        <span class="pay-text">Tarjeta de regalo</span>
+                    </label>
+                </div>
+            </div>
 
-            <div class="error-banner" id="errorCobro">⚠️ Por favor, completa todos los campos requeridos.</div>
-            <button class="btn-submit gold" id="btnCobro" onclick="enviarCobro()">💰 Confirmar Cobro</button>
-        </div>
-    </div>
+            <!-- FACTURACIÓN -->
+            <div class="section-label">🧾 Facturación</div>
+            <div class="form-group">
+                <label class="form-label">Responsable que recibe el pago <span class="req">*</span></label>
+                <div class="chips-grid">
+                    <label class="chip-label"><input type="radio" name="c_resp" value="Juan"><span class="chip">Juan</span></label>
+                    <label class="chip-label"><input type="radio" name="c_resp" value="Eder"><span class="chip">Eder</span></label>
+                    <label class="chip-label"><input type="radio" name="c_resp" value="Massiel"><span class="chip">Massiel</span></label>
+                    <label class="chip-label"><input type="radio" name="c_resp" value="Jesús"><span class="chip">Jesús</span></label>
+                    <label class="chip-label"><input type="radio" name="c_resp" value="Andrey"><span class="chip">Andrey</span></label>
+                    <label class="chip-label"><input type="radio" name="c_resp" value="Ronald"><span class="chip">Ronald</span></label>
+                    <label class="chip-label"><input type="radio" name="c_resp" value="Ricardo"><span class="chip">Ricardo</span></label>
+                </div>
+            </div>
 
-    <div class="screen" id="screenRegistro">
-        <div class="form-card">
-            <div class="form-title">📋 Nuevo Agendamiento</div>
-            
-            <div class="section-label">👤 Información del Cliente</div>
-            <input class="form-input" type="text" id="r_nombre" placeholder="Nombre completo">
-            <div class="row-2">
-                <input class="form-input" type="tel" id="r_celular" placeholder="Celular / WhatsApp">
-                <input class="form-input" type="time" id="r_hora">
-            </div>
-            <input class="form-textarea" type="text" id="r_direccion" placeholder="Dirección exacta del servicio">
+            <!-- FIDELIZACIÓN -->
+            <div class="section-label gold-label">⭐ Recordatorio (Fidelización)</div>
+            <div class="form-group">
+                <label class="form-label">¿El cliente está en el plan de acumulación de puntos? <span class="req">*</span></label>
+                <div class="fid-btns">
+                    <button type="button" class="fid-btn" id="fidSi" onclick="setFid('si')">⭐ Sí</button>
+                    <button type="button" class="fid-btn" id="fidNo" onclick="setFid('no')">❌ No</button>
+                </div>
+            </div>
 
-            <div class="section-label">🚗 Tipo de Vehículo</div>
-            <div class="chips-grid">
-                <label class="chip-label"><input type="radio" name="r_vehiculo" value="Sedán"><span class="chip">🚗 Sedán</span></label>
-                <label class="chip-label"><input type="radio" name="r_vehiculo" value="SUV"><span class="chip">🚙 SUV</span></label>
-                <label class="chip-label"><input type="radio" name="r_vehiculo" value="Pick-up"><span class="chip">🛻 Pick-up</span></label>
-                <label class="chip-label"><input type="radio" name="r_vehiculo" value="Moto"><span class="chip">🏍️ Moto</span></label>
-            </div>
+            <!-- MONTO -->
+            <div class="section-label">💰 Monto</div>
+            <div class="form-group">
+                <label class="form-label">Total cobrado (₡) <span class="req">*</span></label>
+                <input class="form-input" type="number" id="c_monto" placeholder="Ej: 25000" min="0"/>
+            </div>
 
-            <div class="section-label">✨ Servicio Solicitado</div>
-            <select class="form-select" id="r_servicio">
-                <option value="">Seleccione un servicio...</option>
-                <option value="Lavado Completo">Lavado Completo</option>
-                <option value="Detallado de Interiores">Detallado de Interiores</option>
-                <option value="Encerado y Pulido">Encerado y Pulido</option>
-                <option value="Motor y Chasis">Motor y Chasis</option>
-            </select>
+            <div class="error-banner" id="errorCobro">⚠️ <span id="errorMsgCobro">Completa todos los campos requeridos.</span></div>
+            <button class="btn-submit gold" id="btnCobro" onclick="enviarCobro()">💰 Finalizar Cobro</button>
+        </div>
+    </div>
 
-            <div class="error-banner" id="errorRegistro">⚠️ Completa los datos mínimos (Nombre y Dirección).</div>
-            <button class="btn-submit" id="btnRegistro" onclick="enviarRegistro()">📋 Agendar Servicio</button>
-        </div>
-    </div>
+    <!-- ══ SCREEN 2: REGISTRO NUEVO DOMICILIO ══ -->
+    <div class="screen" id="screenRegistro">
+        <div class="form-card">
+            <div class="form-title">🚐 Agendar Domicilio</div>
 
-    <div class="screen success-screen" id="screenSuccess">
-        <div style="font-size:70px;">✅</div>
-        <h3 id="successTitle" style="font-family:'Bebas Neue'; font-size:30px; letter-spacing:1px;">¡Operación Exitosa!</h3>
-        <p id="successDetail" style="color:var(--muted); line-height:1.5;"></p>
-        <button class="btn-entry-secondary" onclick="goTo('screenEntry')" style="width: auto; padding: 12px 30px;">Finalizar</button>
-    </div>
+            <div class="section-label">👤 Datos del cliente</div>
+            <div class="form-group">
+                <label class="form-label">Nombre del cliente <span class="req">*</span></label>
+                <input class="form-input" type="text" id="r_nombre" placeholder="Ej: Carlos Vargas"/>
+            </div>
+            <div class="row-2">
+                <div class="form-group">
+                    <label class="form-label">Celular <span class="req">*</span></label>
+                    <input class="form-input" type="tel" id="r_celular" placeholder="8888-0000"/>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Hora agendada <span class="req">*</span></label>
+                    <input class="form-input" type="time" id="r_hora"/>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="form-label">Dirección <span class="req">*</span></label>
+                <input class="form-input" type="text" id="r_direccion" placeholder="Ej: 200m norte del parque central, San José"/>
+            </div>
+
+            <div class="divider"></div>
+            <div class="section-label">🚗 Tipo de vehículo</div>
+            <div class="form-group">
+                <label class="form-label">¿Qué tipo de vehículo es? <span class="req">*</span></label>
+                <div class="chips-grid">
+                    <label class="chip-label"><input type="radio" name="r_vehiculo" value="SUV"><span class="chip">🚙 SUV</span></label>
+                    <label class="chip-label"><input type="radio" name="r_vehiculo" value="Sedán"><span class="chip">🚗 Sedán</span></label>
+                    <label class="chip-label"><input type="radio" name="r_vehiculo" value="Pick-up"><span class="chip">🛻 Pick-up</span></label>
+                    <label class="chip-label"><input type="radio" name="r_vehiculo" value="4x4"><span class="chip">🏔️ 4×4</span></label>
+                    <label class="chip-label"><input type="radio" name="r_vehiculo" value="Hatchback"><span class="chip">🚘 Hatchback</span></label>
+                    <label class="chip-label"><input type="radio" name="r_vehiculo" value="Camión"><span class="chip">🚛 Camión</span></label>
+                    <label class="chip-label"><input type="radio" name="r_vehiculo" value="Motocicleta"><span class="chip">🏍️ Motocicleta</span></label>
+                    <label class="chip-label"><input type="radio" name="r_vehiculo" value="Buseta / Microbús"><span class="chip">🚌 Buseta</span></label>
+                </div>
+            </div>
+
+            <div class="divider"></div>
+            <div class="section-label">✨ Servicio</div>
+            <div class="form-group">
+                <label class="form-label">Tipo de servicio <span class="req">*</span></label>
+                <select class="form-select" id="r_servicio">
+                    <option value="">Seleccionar servicio...</option>
+                    <option>Detallado Clásico</option>
+                    <option>Detallado Premium</option>
+                    <option>Detallado Gold</option>
+                    <option>Abrillantado Premium</option>
+                    <option>Hidrosellado Cerámico</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label class="form-label">Servicios especiales <span style="color:var(--muted);font-weight:400;font-size:12px">(opcional)</span></label>
+                <div class="check-grid">
+                    <label class="check-label"><input type="checkbox" value="Pulido de silvines"><span class="custom-check"></span><span class="check-icon">🔵</span><span class="check-text">Pulido de silvines</span></label>
+                    <label class="check-label"><input type="checkbox" value="Pulido de vidrios"><span class="custom-check"></span><span class="check-icon">🪟</span><span class="check-text">Pulido de vidrios</span></label>
+                    <label class="check-label"><input type="checkbox" value="Pulido de parabrisas"><span class="custom-check"></span><span class="check-icon">☀️</span><span class="check-text">Pulido de parabrisas</span></label>
+                    <label class="check-label"><input type="checkbox" value="Pulido de carrocería"><span class="custom-check"></span><span class="check-icon">💎</span><span class="check-text">Pulido de carrocería</span></label>
+                    <label class="check-label"><input type="checkbox" value="Lavado de motor"><span class="custom-check"></span><span class="check-icon">🔧</span><span class="check-text">Lavado de motor</span></label>
+                    <label class="check-label"><input type="checkbox" value="Tapicería profunda"><span class="custom-check"></span><span class="check-icon">🛋️</span><span class="check-text">Tapicería profunda</span></label>
+                </div>
+            </div>
+
+            <div class="error-banner" id="errorRegistro">⚠️ <span id="errorMsgRegistro">Completa todos los campos requeridos.</span></div>
+            <button class="btn-submit" id="btnRegistro" onclick="enviarRegistro()">📋 Agendar Domicilio</button>
+        </div>
+    </div>
+
+    <!-- ══ SUCCESS ══ -->
+    <div class="screen success-screen" id="screenSuccess">
+        <div class="check-icon-big" id="successIcon">✅</div>
+        <h3 id="successTitle">¡Listo!</h3>
+        <p id="successDetail">Registrado correctamente.</p>
+        <button class="btn-nuevo" onclick="goTo('screenEntry')">← Volver al inicio</button>
+        <a href="index.html" class="btn-back" style="margin-top:8px;text-decoration:none;display:inline-block;">🏠 Menú principal</a>
+    </div>
 
 </div>
 
 <script>
-    const URL_COBRO = "https://n8n-production-6cc7.up.railway.app/webhook/domicilio-cobro";
-    const URL_REGISTRO = "https://n8n-production-6cc7.up.railway.app/webhook/domicilio";
-    let currentScreen = "screenEntry";
+    // ⚠️ Reemplaza con tu webhook de n8n actualizado
+    const N8N_COBRO_DOM    = "https://n8n-production-6cc7.up.railway.app/webhook/domicilio-cobro";
+    const N8N_REGISTRO_DOM = "https://n8n-production-6cc7.up.railway.app/webhook/domicilio";
 
-    function goTo(id) {
-        document.querySelectorAll(".screen").forEach(s => s.classList.remove("active"));
-        document.getElementById(id).classList.add("active");
-        currentScreen = id;
-        window.scrollTo(0, 0);
-    }
+    let fidValue = null;
+    let currentScreen = "screenEntry";
 
-    function handleBack() {
-        if (currentScreen === "screenEntry") window.location.href = "index.html";
-        else goTo("screenEntry");
-    }
+    function goTo(screenId) {
+        document.querySelectorAll(".screen").forEach(s => s.classList.remove("active"));
+        document.getElementById(screenId).classList.add("active");
+        currentScreen = screenId;
+        // Update title
+        const titles = {
+            screenEntry: "SERVICIO DOMICILIO",
+            screenCobro: "FINALIZAR COBRO",
+            screenRegistro: "AGENDAR DOMICILIO",
+            screenSuccess: "LISTO"
+        };
+        document.getElementById("pageTitle").textContent = titles[screenId] || "DOMICILIO";
+        window.scrollTo(0, 0);
+    }
 
-    // LÓGICA COBRO
-    async function enviarCobro() {
-        const orden = document.getElementById("c_orden").value.trim();
-        const metodos = Array.from(document.querySelectorAll(".pay-cb:checked")).map(el => el.value);
-        const respEl = document.querySelector('input[name="c_resp"]:checked');
-        const monto = document.getElementById("c_monto").value.trim();
-        const err = document.getElementById("errorCobro");
+    function handleBack() {
+        if (currentScreen === "screenEntry" || currentScreen === "screenSuccess") {
+            window.location.href = "index.html";
+        } else {
+            goTo("screenEntry");
+        }
+    }
 
-        if (!orden || metodos.length === 0 || !respEl || !monto) {
-            err.style.display = "block";
-            return;
-        }
-        err.style.display = "none";
+    function setFid(val) {
+        fidValue = val;
+        document.getElementById("fidSi").className = "fid-btn" + (val === "si" ? " active-si" : "");
+        document.getElementById("fidNo").className = "fid-btn" + (val === "no" ? " active-no" : "");
+    }
 
-        const btn = document.getElementById("btnCobro");
-        btn.disabled = true;
-        btn.innerHTML = '<span class="spinner"></span> Procesando...';
+    // ── COBRO ──────────────────────────────────────────────
+    async function enviarCobro() {
+        const orden = document.getElementById("c_orden").value.trim();
+        const metodos = Array.from(document.querySelectorAll(".pay-cb:checked")).map(el => el.value);
+        const respEl = document.querySelector('input[name="c_resp"]:checked');
+        const monto = document.getElementById("c_monto").value.trim();
+        const errBanner = document.getElementById("errorCobro");
+        const errMsg = document.getElementById("errorMsgCobro");
 
-        const payload = {
-            tipo: "cobro_finalizado",
-            orden: orden,
-            metodo_pago: metodos.join(", "),
-            responsable: respEl.value,
-            monto: monto,
-            fecha: new Date().toLocaleString("es-CR")
-        };
+        if (!orden || metodos.length === 0 || !respEl || !fidValue || !monto) {
+            errMsg.textContent = "Completa todos los campos requeridos.";
+            errBanner.style.display = "block";
+            errBanner.scrollIntoView({ behavior: "smooth", block: "center" });
+            return;
+        }
+        errBanner.style.display = "none";
 
-        try {
-            const res = await fetch(URL_COBRO, {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(payload)
-            });
-            if (!res.ok) throw new Error();
-            document.getElementById("successTitle").innerText = "Cobro Registrado";
-            document.getElementById("successDetail").innerHTML = `Orden #${orden} finalizada con éxito por ₡${monto}.`;
-            goTo("screenSuccess");
-        } catch (e) {
-            err.innerText = "❌ Error de conexión con el servidor.";
-            err.style.display = "block";
-            btn.disabled = false;
-            btn.innerHTML = "💰 Confirmar Cobro";
-        }
-    }
+        const btn = document.getElementById("btnCobro");
+        btn.disabled = true;
+        btn.innerHTML = '<span class="spinner"></span> Enviando...';
 
-    // LÓGICA REGISTRO
-    async function enviarRegistro() {
-        const nombre = document.getElementById("r_nombre").value.trim();
-        const cel = document.getElementById("r_celular").value.trim();
-        const hora = document.getElementById("r_hora").value;
-        const dir = document.getElementById("r_direccion").value.trim();
-        const vehiculo = document.querySelector('input[name="r_vehiculo"]:checked')?.value;
-        const servicio = document.getElementById("r_servicio").value;
-        const err = document.getElementById("errorRegistro");
+        const ahora = new Date();
+        const fecha = ahora.toLocaleDateString("es-CR", { timeZone: "America/Costa_Rica", day: "2-digit", month: "2-digit", year: "numeric" });
+        const hora  = ahora.toLocaleTimeString("es-CR", { timeZone: "America/Costa_Rica", hour: "2-digit", minute: "2-digit" });
 
-        if (!nombre || !dir || !vehiculo || !servicio) {
-            err.style.display = "block";
-            return;
-        }
-        err.style.display = "none";
+        const payload = {
+            tipo: "cobro_domicilio",
+            fecha,
+            hora,
+            numero_orden: orden,
+            metodo_pago: metodos.join(", "),
+            responsable: respEl.value,
+            fidelizacion: fidValue === "si" ? "Sí" : "No",
+            monto_total: monto
+        };
 
-        const btn = document.getElementById("btnRegistro");
-        btn.disabled = true;
-        btn.innerHTML = '<span class="spinner"></span> Agendando...';
+        try {
+            const res = await fetch(N8N_COBRO_DOM, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(payload)
+            });
+            if (!res.ok) throw new Error("Error " + res.status);
+            document.getElementById("successIcon").textContent = "💰";
+            document.getElementById("successTitle").textContent = "¡Cobro Registrado!";
+            document.getElementById("successDetail").innerHTML =
+                `Orden #${orden}<br>` +
+                `<strong>${metodos.join(" + ")}</strong><br>` +
+                `₡${Number(monto).toLocaleString("es-CR")} — ${respEl.value}<br>` +
+                `Fidelización: ${fidValue === "si" ? "⭐ Sí" : "❌ No"}`;
+            goTo("screenSuccess");
+        } catch (err) {
+            errMsg.textContent = "Error al enviar. Verifica la conexión e intenta de nuevo.";
+            errBanner.style.display = "block";
+            btn.disabled = false;
+            btn.innerHTML = "💰 Finalizar Cobro";
+        }
+    }
 
-        const payload = {
-            tipo: "nuevo_registro",
-            cliente: nombre,
-            celular: cel,
-            hora_pactada: hora,
-            direccion: dir,
-            vehiculo: vehiculo,
-            servicio: servicio
-        };
+    // ── REGISTRO ───────────────────────────────────────────
+    async function enviarRegistro() {
+        const nombre    = document.getElementById("r_nombre").value.trim();
+        const celular   = document.getElementById("r_celular").value.trim();
+        const hora      = document.getElementById("r_hora").value;
+        const direccion = document.getElementById("r_direccion").value.trim();
+        const vehiculoEl = document.querySelector('input[name="r_vehiculo"]:checked');
+        const servicio  = document.getElementById("r_servicio").value;
+        const errBanner = document.getElementById("errorRegistro");
+        const errMsg    = document.getElementById("errorMsgRegistro");
+        const especiales = Array.from(document.querySelectorAll('#screenRegistro .check-grid input:checked')).map(el => el.value);
 
-        try {
-            const res = await fetch(URL_REGISTRO, {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(payload)
-            });
-            if (!res.ok) throw new Error();
-            document.getElementById("successTitle").innerText = "Servicio Agendado";
-            document.getElementById("successDetail").innerHTML = `El servicio para ${nombre} ha sido enviado a la hoja de ruta.`;
-            goTo("screenSuccess");
-        } catch (e) {
-            err.innerText = "❌ No se pudo agendar. Revisa la red.";
-            err.style.display = "block";
-            btn.disabled = false;
-            btn.innerHTML = "📋 Agendar Servicio";
-        }
-    }
+        if (!nombre || !celular || !hora || !direccion || !vehiculoEl || !servicio) {
+            errMsg.textContent = "Completa todos los campos requeridos.";
+            errBanner.style.display = "block";
+            errBanner.scrollIntoView({ behavior: "smooth", block: "center" });
+            return;
+        }
+        errBanner.style.display = "none";
+
+        const btn = document.getElementById("btnRegistro");
+        btn.disabled = true;
+        btn.innerHTML = '<span class="spinner"></span> Enviando...';
+
+        const ahora = new Date();
+        const fecha = ahora.toLocaleDateString("es-CR", { timeZone: "America/Costa_Rica", day: "2-digit", month: "2-digit", year: "numeric" });
+
+        const payload = {
+            tipo: "registro_domicilio",
+            fecha,
+            hora_agendada: hora,
+            nombre_cliente: nombre,
+            celular_cliente: celular,
+            direccion,
+            tipo_vehiculo: vehiculoEl.value,
+            tipo_servicio: servicio,
+            servicios_especiales: especiales.length ? especiales.join(", ") : "Ninguno"
+        };
+
+        try {
+            const res = await fetch(N8N_REGISTRO_DOM, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(payload)
+            });
+            if (!res.ok) throw new Error("Error " + res.status);
+            document.getElementById("successIcon").textContent = "✅";
+            document.getElementById("successTitle").textContent = "¡Domicilio Agendado!";
+            document.getElementById("successDetail").innerHTML =
+                `<strong>${nombre}</strong> — ${vehiculoEl.value}<br>${servicio}<br>📅 ${fecha} a las ${hora}`;
+            goTo("screenSuccess");
+        } catch (err) {
+            errMsg.textContent = "Error al enviar. Verifica la conexión e intenta de nuevo.";
+            errBanner.style.display = "block";
+            btn.disabled = false;
+            btn.innerHTML = "📋 Agendar Domicilio";
+        }
+    }
 </script>
 </body>
 </html>
+
+
+Aqui esta 
