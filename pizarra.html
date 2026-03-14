@@ -207,7 +207,9 @@ async function sync() {
 function parse(t) {
   return t.trim().split("\n").slice(1).map(l => {
     const c = l.split(/,(?=(?:[^"]*"[^"]*")*[^"]*$)/).map(v => v.replace(/^"|"$/g, '').trim());
-    return { id: c[0], plate: c[2], name: c[3], phone: c[4], serv: c[7], status: c[8].toLowerCase(), cash: c[12].replace(/\D/g,'')||0 };
+    // Evitar errores si la columna 12 viene vacía. Extraemos dígitos y si no hay asume 0.
+    const rawCash = (c[12] || "").replace(/\D/g, ''); 
+    return { id: c[0], plate: c[2], name: c[3], phone: c[4], serv: c[7], status: c[8].toLowerCase(), cash: rawCash || 0 };
   }).filter(x => x.plate);
 }
 
