@@ -87,7 +87,7 @@ body{background:var(--bg);font-family:"DM Sans",sans-serif;color:var(--text);min
 .orden-chip-val{font-family:"DM Mono",monospace;font-size:22px;font-weight:900;color:var(--accent);background:rgba(0,212,255,0.1);border:1px solid rgba(0,212,255,0.35);border-radius:8px;padding:5px 14px}
 
 .cobro-vehicle-bar{display:flex;align-items:center;gap:16px;padding-bottom:15px;border-bottom:1px solid var(--border)}
-.cobro-veh-plate{font-family:"DM Mono",monospace;font-size:15px;font-weight:700;background:rgba(0,212,255,0.08);border:1px solid rgba(0,212,255,0.2);border-radius:7px;padding:5px 12px}
+.cobro-veh-plate{font-family:"DM Mono",monospace;font-size:15px;font-weight:700;background:rgba(0,212,255,0.08);border:1px solid var(--border);border-radius:7px;padding:5px 12px}
 
 .metodos-btns{display:grid;grid-template-columns:repeat(auto-fit, minmax(90px, 1fr));gap:10px}
 .met-btn{display:flex;flex-direction:column;align-items:center;gap:6px;padding:12px 5px;border:2px solid var(--border);border-radius:14px;background:rgba(0,0,0,0.3);cursor:pointer;transition:all .2s;color:var(--muted);text-align:center}
@@ -102,6 +102,7 @@ body{background:var(--bg);font-family:"DM Sans",sans-serif;color:var(--text);min
 .monto-field-label{font-size:12px;font-weight:600;color:var(--muted);min-width:110px}
 .monto-input-wrap{flex:1;display:flex;background:var(--bg);border:1px solid var(--border);border-radius:10px;overflow:hidden}
 .monto-input-wrap input{flex:1;background:none;border:none;color:var(--text);padding:10px 14px;font-family:"DM Mono",monospace;outline:none}
+.monto-input-wrap input:read-only{color:var(--gift);cursor:not-allowed}
 
 .total-row{display:flex;justify-content:space-between;align-items:center;padding:16px;background:rgba(255,193,7,0.1);border:1px solid var(--yellow);border-radius:12px;margin-top:10px}
 .total-val{font-family:"DM Mono",monospace;font-size:22px;font-weight:800;color:var(--yellow)}
@@ -185,7 +186,7 @@ body{background:var(--bg);font-family:"DM Sans",sans-serif;color:var(--text);min
         <div class="met-btn" id="btnTarjeta" onclick="toggleBloque('Tarjeta')">
           <span class="met-btn-icon">💳</span><span class="met-btn-name">Tarjeta</span>
         </div>
-        <div class="met-btn" id="btnGiftCard" onclick="toggleBloque('GiftCard')">
+        <div class="met-btn" id="btnGiftCard" onclick="toggleGiftCard()">
           <span class="met-btn-icon">🎁</span><span class="met-btn-name">Gift Card</span>
         </div>
         <div class="met-btn" id="btnCxC" onclick="toggleBloque('CxC')">
@@ -208,7 +209,7 @@ body{background:var(--bg);font-family:"DM Sans",sans-serif;color:var(--text);min
         </div>
         <div id="fieldRowGiftCard" style="display:none" class="monto-field-row">
           <span class="monto-field-label">🎁 Gift Card</span>
-          <div class="monto-input-wrap"><input type="number" id="montoGiftCard" placeholder="0" oninput="calcTotal()"></div>
+          <div class="monto-input-wrap"><input type="number" id="montoGiftCard" readonly value="0"></div>
         </div>
         <div id="fieldRowCxC" style="display:none" class="monto-field-row">
           <span class="monto-field-label">📋 CxC</span>
@@ -222,7 +223,7 @@ body{background:var(--bg);font-family:"DM Sans",sans-serif;color:var(--text);min
         <div id="diffRow" style="text-align:right;font-size:11px;font-family:'DM Mono'"></div>
       </div>
 
-      <div style="font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:1px">👤 Responsable del Cobro</div>
+      <div style="font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:1px">👤 Responsable</div>
       <div class="responsable-chips" id="respChips">
         <div class="resp-chip" onclick="selectResp(this,'Eder')">Eder</div>
         <div class="resp-chip" onclick="selectResp(this,'Massiel')">Massiel</div>
@@ -242,7 +243,7 @@ body{background:var(--bg);font-family:"DM Sans",sans-serif;color:var(--text);min
 
 <div id="loadingOverlay" class="loading-overlay">
   <div class="spinner"></div>
-  <div style="font-family:'DM Mono'">CARGANDO TABLERO...</div>
+  <div style="font-family:'DM Mono'">CARGANDO...</div>
 </div>
 <div id="toast" class="toast"></div>
 
@@ -253,7 +254,7 @@ const WEBHOOK_COBRO = "https://neuraloom.app.n8n.cloud/webhook-test/finalizar-co
 let carsCache = [];
 let selectedCar = null;
 let metodosSeleccionados = new Set();
-const METODOS = ["Efectivo", "Sinpe", "Tarjeta", "GiftCard", "CxC"];
+const METODOS_MANUALES = ["Efectivo", "Sinpe", "Tarjeta", "CxC"];
 
 async function loadData() {
   try {
@@ -262,7 +263,7 @@ async function loadData() {
     render(parseCSV(text));
     document.getElementById("lastUpdate").textContent = "En vivo: " + new Date().toLocaleTimeString();
     document.getElementById("loadingOverlay").style.display = "none";
-  } catch(e) { showToast("⚠️ Error al sincronizar datos"); }
+  } catch(e) { showToast("⚠️ Error de sincronización"); }
 }
 
 function parseCSV(text) {
@@ -284,14 +285,11 @@ function parseCSV(text) {
 function render(cars) {
   carsCache = cars;
   const groups = { proceso: [], terminado: [], retirado: [] };
-  
   cars.forEach(car => {
-    let z = "proceso";
-    if (car.estado.includes("listo") || car.estado.includes("terminado")) z = "terminado";
-    else if (car.estado.includes("retirado") || car.estado.includes("entregado")) z = "retirado";
+    let z = car.estado.includes("listo") || car.estado.includes("terminado") ? "terminado" : 
+            car.estado.includes("retirado") || car.estado.includes("entregado") ? "retirado" : "proceso";
     groups[z].push(car);
   });
-
   ["proceso","terminado","retirado"].forEach(z => {
     const grid = document.getElementById("grid-" + z);
     document.getElementById("cnt-" + z).textContent = groups[z].length;
@@ -310,12 +308,10 @@ function render(cars) {
 function abrirCobroDirecto(placa) {
   selectedCar = carsCache.find(c => c.placa === placa);
   if (!selectedCar) return;
-  
   document.getElementById("cOrden").textContent = selectedCar.orden;
   document.getElementById("cPlate").textContent = selectedCar.placa;
   document.getElementById("cClienteName").textContent = selectedCar.cliente;
   document.getElementById("cMonto").textContent = "₡" + parseInt(selectedCar.monto).toLocaleString();
-  
   document.getElementById("cobroModal").classList.add("show");
   calcTotal();
 }
@@ -323,44 +319,69 @@ function abrirCobroDirecto(placa) {
 function toggleBloque(metodo) {
   const btn = document.getElementById("btn" + metodo);
   const row = document.getElementById("fieldRow" + metodo);
-  
   if (metodosSeleccionados.has(metodo)) {
     metodosSeleccionados.delete(metodo);
-    btn.classList.remove("active", "gift");
+    btn.classList.remove("active");
     row.style.display = "none";
     document.getElementById("monto" + metodo).value = "";
   } else {
     metodosSeleccionados.add(metodo);
     btn.classList.add("active");
-    if(metodo === 'GiftCard') btn.classList.add("gift");
     row.style.display = "flex";
     setTimeout(() => row.querySelector('input').focus(), 50);
   }
+  actualizarIslaYCalculos();
+}
+
+function toggleGiftCard() {
+  const metodo = "GiftCard";
+  const btn = document.getElementById("btnGiftCard");
+  const row = document.getElementById("fieldRowGiftCard");
   
+  if (metodosSeleccionados.has(metodo)) {
+    metodosSeleccionados.delete(metodo);
+    btn.classList.remove("active", "gift");
+    row.style.display = "none";
+    document.getElementById("montoGiftCard").value = "0";
+  } else {
+    metodosSeleccionados.add(metodo);
+    btn.classList.add("active", "gift");
+    row.style.display = "flex";
+  }
+  actualizarIslaYCalculos();
+}
+
+function actualizarIslaYCalculos() {
   document.getElementById("montosIsla").classList.toggle("show", metodosSeleccionados.size > 0);
   calcTotal();
 }
 
 function calcTotal() {
-  let total = 0;
-  METODOS.forEach(m => {
-    total += parseInt(document.getElementById("monto" + m).value || 0);
-  });
-  
-  const totalEl = document.getElementById("totalIngresado");
-  const diffEl = document.getElementById("diffRow");
   const montoEsperado = parseInt(selectedCar?.monto || 0);
+  let sumaManual = 0;
   
-  totalEl.textContent = "₡" + total.toLocaleString();
+  // Sumamos lo que el usuario escribió manualmente
+  METODOS_MANUALES.forEach(m => {
+    sumaManual += parseInt(document.getElementById("monto" + m).value || 0);
+  });
+
+  // Si Gift Card está activa, calcula automáticamente el faltante
+  let montoGC = 0;
+  if (metodosSeleccionados.has("GiftCard")) {
+    montoGC = Math.max(0, montoEsperado - sumaManual);
+    document.getElementById("montoGiftCard").value = montoGC;
+  }
+
+  const totalFinal = sumaManual + montoGC;
+  document.getElementById("totalIngresado").textContent = "₡" + totalFinal.toLocaleString();
   
-  if (total === 0) {
-    diffEl.innerHTML = `<span style="color:var(--muted)">Faltan ₡${montoEsperado.toLocaleString()}</span>`;
-  } else if (total < montoEsperado) {
-    diffEl.innerHTML = `<span style="color:var(--red)">Faltan ₡${(montoEsperado - total).toLocaleString()}</span>`;
-  } else if (total > montoEsperado) {
-    diffEl.innerHTML = `<span style="color:var(--green)">Vuelto: ₡${(total - montoEsperado).toLocaleString()}</span>`;
+  const diffEl = document.getElementById("diffRow");
+  if (totalFinal < montoEsperado) {
+    diffEl.innerHTML = `<span style="color:var(--red)">Faltan ₡${(montoEsperado - totalFinal).toLocaleString()}</span>`;
+  } else if (totalFinal > montoEsperado) {
+    diffEl.innerHTML = `<span style="color:var(--green)">Vuelto: ₡${(totalFinal - montoEsperado).toLocaleString()}</span>`;
   } else {
-    diffEl.innerHTML = `<span style="color:var(--green)">✓ Monto exacto</span>`;
+    diffEl.innerHTML = `<span style="color:var(--green)">✓ Pago Cubierto</span>`;
   }
 }
 
@@ -373,10 +394,13 @@ function selectResp(el, nombre) {
 function closeCobroModal() {
   document.getElementById("cobroModal").classList.remove("show");
   metodosSeleccionados.clear();
-  METODOS.forEach(m => {
-    document.getElementById("btn" + m).classList.remove("active", "gift");
-    document.getElementById("fieldRow" + m).style.display = "none";
-    document.getElementById("monto" + m).value = "";
+  [...METODOS_MANUALES, "GiftCard"].forEach(m => {
+    const btn = document.getElementById("btn" + m);
+    if(btn) btn.classList.remove("active", "gift");
+    const row = document.getElementById("fieldRow" + m);
+    if(row) row.style.display = "none";
+    const input = document.getElementById("monto" + m);
+    if(input) input.value = (m === "GiftCard") ? "0" : "";
   });
   document.getElementById("montosIsla").classList.remove("show");
   document.querySelectorAll('.resp-chip').forEach(c => c.classList.remove('selected'));
@@ -386,7 +410,7 @@ function closeCobroModal() {
 async function enviarCobro() {
   const facturador = document.getElementById("cFacturador").value;
   if (!facturador) return showToast("⚠️ Selecciona un responsable");
-  if (metodosSeleccionados.size === 0) return showToast("⚠️ Selecciona un método de pago");
+  if (metodosSeleccionados.size === 0) return showToast("⚠️ Selecciona un método");
 
   const btn = document.getElementById("btnCobrar");
   btn.disabled = true;
@@ -404,8 +428,7 @@ async function enviarCobro() {
       tarjeta: document.getElementById("montoTarjeta").value || 0,
       giftcard: document.getElementById("montoGiftCard").value || 0,
       cxc: document.getElementById("montoCxC").value || 0
-    },
-    fechaHora: new Date().toISOString()
+    }
   };
 
   try {
@@ -415,18 +438,13 @@ async function enviarCobro() {
       body: JSON.stringify(payload)
     });
     if (res.ok) {
-      showToast("✅ Cobro registrado con éxito");
+      showToast("✅ Cobro registrado");
       closeCobroModal();
-      setTimeout(loadData, 1500);
-    } else {
-      throw new Error();
+      setTimeout(loadData, 1000);
     }
-  } catch(e) { 
-    showToast("⚠️ Error al conectar con n8n"); 
-  } finally {
-    btn.disabled = false;
-    btn.textContent = "💰 Confirmar Cobro";
-  }
+  } catch(e) { showToast("⚠️ Error de conexión"); }
+  btn.disabled = false;
+  btn.textContent = "💰 Confirmar Cobro";
 }
 
 function showToast(m) {
