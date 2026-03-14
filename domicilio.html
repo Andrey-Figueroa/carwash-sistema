@@ -15,56 +15,57 @@
             --gold: #c9a84c;
             --text: #e8f1ff;
             --muted: #5a7a99;
-            --green: #00e676;
-            --red: #ff4d6d;
         }
-        html, body { background: var(--bg); font-family: 'DM Sans', sans-serif; color: var(--text); min-height: 100vh; }
+        html, body { background: var(--bg); font-family: 'DM Sans', sans-serif; color: var(--text); min-height: 100vh; -webkit-tap-highlight-color: transparent; }
         .container { display: flex; flex-direction: column; min-height: 100vh; padding: 16px; max-width: 580px; margin: 0 auto; padding-bottom: 40px; }
 
         /* HEADER */
         .header-area { display: flex; align-items: center; padding-bottom: 20px; position: relative; }
-        .btn-back { text-decoration: none; color: var(--text); font-size: 13px; font-weight: 600; background: rgba(0,198,255,0.1); padding: 8px 15px; border-radius: 8px; border: 1px solid var(--accent); z-index: 10; cursor: pointer; }
+        .btn-back { text-decoration: none; color: var(--text); font-size: 13px; font-weight: 600; background: rgba(0,198,255,0.1); padding: 8px 15px; border-radius: 8px; border: 1px solid var(--accent); z-index: 10; cursor: pointer; transition: 0.2s; }
+        .btn-back:active { transform: scale(0.95); }
         h2 { font-family: 'Bebas Neue', sans-serif; color: var(--accent); margin: 0; font-size: 22px; letter-spacing: 2px; position: absolute; width: 100%; text-align: center; left: 0; pointer-events: none; }
 
         /* SCREENS */
         .screen { display: none; }
-        .screen.active { display: flex; flex-direction: column; gap: 16px; }
+        .screen.active { display: flex; flex-direction: column; gap: 16px; animation: fadeIn 0.3s ease; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
 
         /* ENTRY CARDS */
         .entry-card { background: var(--card); border: 1px solid var(--border); border-radius: 24px; padding: 36px 28px; display: flex; flex-direction: column; align-items: center; gap: 24px; margin-top: 20px; }
         .entry-title { font-family: 'Bebas Neue', sans-serif; font-size: 26px; letter-spacing: 2px; color: var(--text); }
-        .btn-entry-primary { background: var(--accent); color: #000; border: none; border-radius: 14px; padding: 16px; font-size: 16px; font-weight: 700; cursor: pointer; width: 100%; display: flex; align-items: center; justify-content: center; gap: 10px; }
-        .btn-entry-secondary { background: rgba(0,198,255,0.08); color: var(--accent); border: 1px solid rgba(0,198,255,0.3); border-radius: 14px; padding: 16px; font-size: 16px; font-weight: 600; cursor: pointer; width: 100%; display: flex; align-items: center; justify-content: center; gap: 10px; }
+        .btn-entry-primary { background: var(--accent); color: #000; border: none; border-radius: 14px; padding: 18px; font-size: 16px; font-weight: 700; cursor: pointer; width: 100%; display: flex; align-items: center; justify-content: center; gap: 10px; }
+        .btn-entry-secondary { background: rgba(0,198,255,0.08); color: var(--accent); border: 1px solid rgba(0,198,255,0.3); border-radius: 14px; padding: 18px; font-size: 16px; font-weight: 600; cursor: pointer; width: 100%; display: flex; align-items: center; justify-content: center; gap: 10px; }
 
         /* FORMS */
         .form-card { background: var(--card); border: 1px solid var(--border); border-radius: 20px; padding: 26px 22px; display: flex; flex-direction: column; gap: 22px; }
-        .form-title { font-family: 'Bebas Neue', sans-serif; font-size: 20px; color: var(--text); border-bottom: 1px solid var(--border); padding-bottom: 4px; }
-        .section-label { font-size: 11px; font-weight: 700; color: var(--accent); text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: -8px; }
-        .form-group { display: flex; flex-direction: column; gap: 8px; }
-        .form-label { font-size: 13px; font-weight: 600; }
-        .form-input, .form-select { background: var(--bg); border: 1px solid var(--border); border-radius: 10px; color: var(--text); padding: 12px 14px; outline: none; width: 100%; font-family: inherit; }
+        .form-title { font-family: 'Bebas Neue', sans-serif; font-size: 20px; color: var(--text); border-bottom: 1px solid var(--border); padding-bottom: 8px; }
+        .section-label { font-size: 11px; font-weight: 700; color: var(--accent); text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: -10px; }
+        .form-input, .form-select, .form-textarea { background: var(--bg); border: 1px solid var(--border); border-radius: 10px; color: var(--text); padding: 14px; outline: none; width: 100%; font-family: inherit; font-size: 15px; }
+        .form-input:focus { border-color: var(--accent); }
         .row-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
 
-        /* CHIPS & CHECKS */
+        /* CHIPS & SELECTORS */
         .chips-grid { display: flex; flex-wrap: wrap; gap: 9px; }
         .chip-label input, .check-label input { display: none; }
-        .chip { padding: 8px 16px; border-radius: 50px; border: 1px solid var(--border); background: var(--bg); color: var(--muted); font-size: 13px; cursor: pointer; }
+        .chip { padding: 10px 16px; border-radius: 50px; border: 1px solid var(--border); background: var(--bg); color: var(--muted); font-size: 13px; cursor: pointer; transition: 0.2s; }
         .chip-label input:checked + .chip { background: rgba(0,198,255,0.15); border-color: var(--accent); color: var(--accent); }
         
-        .check-grid { display: flex; flex-direction: column; gap: 8px; }
-        .check-label { display: flex; align-items: center; gap: 12px; padding: 11px 14px; border-radius: 10px; border: 1px solid var(--border); background: var(--bg); cursor: pointer; font-size: 14px; }
-        .custom-check { width: 18px; height: 18px; border-radius: 5px; border: 1.5px solid var(--border); background: var(--card); display: flex; align-items: center; justify-content: center; }
-        .check-label input:checked ~ .custom-check { background: var(--accent); border-color: var(--accent); color: #000; }
-        .check-label input:checked ~ .custom-check::after { content: "✓"; font-weight: 700; }
+        .check-grid { display: flex; flex-direction: column; gap: 10px; }
+        .check-label { display: flex; align-items: center; gap: 12px; padding: 14px; border-radius: 12px; border: 1px solid var(--border); background: var(--bg); cursor: pointer; }
+        .custom-check { width: 20px; height: 20px; border-radius: 6px; border: 1.5px solid var(--border); background: var(--card); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+        .check-label input:checked ~ .custom-check { background: var(--accent); border-color: var(--accent); }
+        .check-label input:checked ~ .custom-check::after { content: "✓"; color: #000; font-weight: 900; font-size: 14px; }
 
-        /* SUBMIT & UTILS */
-        .btn-submit { background: var(--accent); color: #000; border: none; border-radius: 12px; padding: 15px; font-size: 16px; font-weight: 700; cursor: pointer; }
-        .btn-submit.gold { background: linear-gradient(135deg, #c9a84c, #a07828); }
-        .error-banner { display: none; background: rgba(255,80,80,0.1); border: 1px solid rgba(255,80,80,0.3); border-radius: 10px; color: #ff7b7b; padding: 12px; text-align: center; }
-        .spinner { display: inline-block; width: 18px; height: 18px; border: 2px solid rgba(0,0,0,0.3); border-top-color: #000; border-radius: 50%; animation: spin 0.6s linear infinite; }
+        /* BUTTONS */
+        .btn-submit { background: var(--accent); color: #000; border: none; border-radius: 14px; padding: 16px; font-size: 16px; font-weight: 700; cursor: pointer; margin-top: 10px; transition: 0.2s; }
+        .btn-submit.gold { background: linear-gradient(135deg, #c9a84c, #a07828); color: white; }
+        .btn-submit:disabled { opacity: 0.6; cursor: not-allowed; }
+
+        .error-banner { display: none; background: rgba(255,80,80,0.1); border: 1px solid rgba(255,80,80,0.3); border-radius: 10px; color: #ff7b7b; padding: 14px; text-align: center; font-size: 13px; }
+        .spinner { display: inline-block; width: 20px; height: 20px; border: 3px solid rgba(255,255,255,0.3); border-top-color: #fff; border-radius: 50%; animation: spin 0.8s linear infinite; }
         @keyframes spin { to { transform: rotate(360deg); } }
 
-        .success-screen { display: none; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 60px 20px; }
+        .success-screen { display: none; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 60px 20px; gap: 20px; }
         .success-screen.active { display: flex; }
 
         @media (max-width: 420px) { .row-2 { grid-template-columns: 1fr; } }
@@ -80,9 +81,9 @@
 
     <div class="screen active" id="screenEntry">
         <div class="entry-card">
-            <div class="entry-icon">🚐</div>
+            <div style="font-size: 50px;">🚐</div>
             <div class="entry-title">Servicio a Domicilio</div>
-            <div class="entry-sub">¿Qué deseas hacer?</div>
+            <div class="entry-sub" style="color:var(--muted); text-align:center;">Gestión de rutas y cobros</div>
             <div class="entry-btns">
                 <button class="btn-entry-primary" onclick="goTo('screenCobro')">💰 Finalizar Cobro Domicilio</button>
                 <button class="btn-entry-secondary" onclick="goTo('screenRegistro')">📋 Registrar Nuevo Domicilio</button>
@@ -92,68 +93,80 @@
 
     <div class="screen" id="screenCobro">
         <div class="form-card">
-            <div class="form-title">💰 Completar Transacción</div>
-            <div class="section-label">📋 Orden</div>
-            <input class="form-input" type="number" id="c_orden" placeholder="Número de orden">
+            <div class="form-title">💰 Finalizar Transacción</div>
             
-            <div class="section-label">💳 Detalles de pago</div>
-            <div class="pay-grid" style="display:flex; flex-direction:column; gap:8px;">
+            <div class="section-label">📋 Orden del Vehículo</div>
+            <input class="form-input" type="number" id="c_orden" placeholder="Ej: 1245">
+            
+            <div class="section-label">💳 Métodos de Pago</div>
+            <div class="check-grid">
                 <label class="check-label"><input type="checkbox" class="pay-cb" value="Efectivo"><span class="custom-check"></span> 💵 Efectivo</label>
                 <label class="check-label"><input type="checkbox" class="pay-cb" value="SINPE Móvil"><span class="custom-check"></span> 📱 SINPE Móvil</label>
                 <label class="check-label"><input type="checkbox" class="pay-cb" value="Tarjeta"><span class="custom-check"></span> 💳 Tarjeta</label>
             </div>
 
-            <div class="section-label">💰 Monto</div>
+            <div class="section-label">👤 Responsable</div>
+            <div class="chips-grid">
+                <label class="chip-label"><input type="radio" name="c_resp" value="Juan"><span class="chip">Juan</span></label>
+                <label class="chip-label"><input type="radio" name="c_resp" value="Eder"><span class="chip">Eder</span></label>
+                <label class="chip-label"><input type="radio" name="c_resp" value="Massiel"><span class="chip">Massiel</span></label>
+                <label class="chip-label"><input type="radio" name="c_resp" value="Andrey"><span class="chip">Andrey</span></label>
+            </div>
+
+            <div class="section-label">💰 Monto Total</div>
             <input class="form-input" type="number" id="c_monto" placeholder="Total cobrado ₡">
 
-            <div class="error-banner" id="errorCobro">⚠️ Completa los campos requeridos.</div>
-            <button class="btn-submit gold" id="btnCobro" onclick="enviarCobro()">💰 Finalizar Cobro</button>
+            <div class="error-banner" id="errorCobro">⚠️ Por favor, completa todos los campos requeridos.</div>
+            <button class="btn-submit gold" id="btnCobro" onclick="enviarCobro()">💰 Confirmar Cobro</button>
         </div>
     </div>
 
     <div class="screen" id="screenRegistro">
         <div class="form-card">
-            <div class="form-title">🚐 Agendar Domicilio</div>
+            <div class="form-title">📋 Nuevo Agendamiento</div>
             
-            <div class="section-label">👤 Datos Cliente</div>
+            <div class="section-label">👤 Información del Cliente</div>
             <input class="form-input" type="text" id="r_nombre" placeholder="Nombre completo">
             <div class="row-2">
-                <input class="form-input" type="tel" id="r_celular" placeholder="Celular">
+                <input class="form-input" type="tel" id="r_celular" placeholder="Celular / WhatsApp">
                 <input class="form-input" type="time" id="r_hora">
             </div>
-            <input class="form-input" type="text" id="r_direccion" placeholder="Dirección exacta">
+            <input class="form-textarea" type="text" id="r_direccion" placeholder="Dirección exacta del servicio">
 
-            <div class="section-label">🚗 Vehículo</div>
+            <div class="section-label">🚗 Tipo de Vehículo</div>
             <div class="chips-grid">
                 <label class="chip-label"><input type="radio" name="r_vehiculo" value="Sedán"><span class="chip">🚗 Sedán</span></label>
                 <label class="chip-label"><input type="radio" name="r_vehiculo" value="SUV"><span class="chip">🚙 SUV</span></label>
                 <label class="chip-label"><input type="radio" name="r_vehiculo" value="Pick-up"><span class="chip">🛻 Pick-up</span></label>
+                <label class="chip-label"><input type="radio" name="r_vehiculo" value="Moto"><span class="chip">🏍️ Moto</span></label>
             </div>
 
-            <div class="section-label">✨ Servicio</div>
+            <div class="section-label">✨ Servicio Solicitado</div>
             <select class="form-select" id="r_servicio">
-                <option value="">Seleccionar...</option>
-                <option>Detallado Clásico</option>
-                <option>Detallado Premium</option>
+                <option value="">Seleccione un servicio...</option>
+                <option value="Lavado Completo">Lavado Completo</option>
+                <option value="Detallado de Interiores">Detallado de Interiores</option>
+                <option value="Encerado y Pulido">Encerado y Pulido</option>
+                <option value="Motor y Chasis">Motor y Chasis</option>
             </select>
 
-            <div class="error-banner" id="errorRegistro">⚠️ Completa los campos requeridos.</div>
-            <button class="btn-submit" id="btnRegistro" onclick="enviarRegistro()">📋 Agendar Domicilio</button>
+            <div class="error-banner" id="errorRegistro">⚠️ Completa los datos mínimos (Nombre y Dirección).</div>
+            <button class="btn-submit" id="btnRegistro" onclick="enviarRegistro()">📋 Agendar Servicio</button>
         </div>
     </div>
 
     <div class="screen success-screen" id="screenSuccess">
-        <div style="font-size:64px;">✅</div>
-        <h3 id="successTitle">¡Listo!</h3>
-        <p id="successDetail" style="color:var(--muted); margin:10px 0;"></p>
-        <button class="btn-entry-secondary" onclick="goTo('screenEntry')">Volver al inicio</button>
+        <div style="font-size:70px;">✅</div>
+        <h3 id="successTitle" style="font-family:'Bebas Neue'; font-size:30px; letter-spacing:1px;">¡Operación Exitosa!</h3>
+        <p id="successDetail" style="color:var(--muted); line-height:1.5;"></p>
+        <button class="btn-entry-secondary" onclick="goTo('screenEntry')" style="width: auto; padding: 12px 30px;">Finalizar</button>
     </div>
 
 </div>
 
 <script>
-    const N8N_COBRO = "https://n8n-production-6cc7.up.railway.app/webhook/domicilio-cobro";
-    const N8N_REGISTRO = "https://n8n-production-6cc7.up.railway.app/webhook/domicilio";
+    const URL_COBRO = "https://n8n-production-6cc7.up.railway.app/webhook/domicilio-cobro";
+    const URL_REGISTRO = "https://n8n-production-6cc7.up.railway.app/webhook/domicilio";
     let currentScreen = "screenEntry";
 
     function goTo(id) {
@@ -168,33 +181,97 @@
         else goTo("screenEntry");
     }
 
+    // LÓGICA COBRO
     async function enviarCobro() {
-        const orden = document.getElementById("c_orden").value;
-        const monto = document.getElementById("c_monto").value;
-        if(!orden || !monto) { document.getElementById("errorCobro").style.display="block"; return; }
-        
+        const orden = document.getElementById("c_orden").value.trim();
+        const metodos = Array.from(document.querySelectorAll(".pay-cb:checked")).map(el => el.value);
+        const respEl = document.querySelector('input[name="c_resp"]:checked');
+        const monto = document.getElementById("c_monto").value.trim();
+        const err = document.getElementById("errorCobro");
+
+        if (!orden || metodos.length === 0 || !respEl || !monto) {
+            err.style.display = "block";
+            return;
+        }
+        err.style.display = "none";
+
         const btn = document.getElementById("btnCobro");
-        btn.disabled = true; btn.innerHTML = '<span class="spinner"></span>';
+        btn.disabled = true;
+        btn.innerHTML = '<span class="spinner"></span> Procesando...';
+
+        const payload = {
+            tipo: "cobro_finalizado",
+            orden: orden,
+            metodo_pago: metodos.join(", "),
+            responsable: respEl.value,
+            monto: monto,
+            fecha: new Date().toLocaleString("es-CR")
+        };
 
         try {
-            await fetch(N8N_COBRO, { method: "POST", headers:{"Content-Type":"application/json"}, body: JSON.stringify({orden, monto, tipo:"cobro"}) });
-            document.getElementById("successDetail").textContent = `Cobro de orden #${orden} registrado.`;
+            const res = await fetch(URL_COBRO, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(payload)
+            });
+            if (!res.ok) throw new Error();
+            document.getElementById("successTitle").innerText = "Cobro Registrado";
+            document.getElementById("successDetail").innerHTML = `Orden #${orden} finalizada con éxito por ₡${monto}.`;
             goTo("screenSuccess");
-        } catch(e) { btn.disabled=false; btn.textContent="💰 Finalizar Cobro"; }
+        } catch (e) {
+            err.innerText = "❌ Error de conexión con el servidor.";
+            err.style.display = "block";
+            btn.disabled = false;
+            btn.innerHTML = "💰 Confirmar Cobro";
+        }
     }
 
+    // LÓGICA REGISTRO
     async function enviarRegistro() {
-        const nombre = document.getElementById("r_nombre").value;
-        if(!nombre) { document.getElementById("errorRegistro").style.display="block"; return; }
-        
+        const nombre = document.getElementById("r_nombre").value.trim();
+        const cel = document.getElementById("r_celular").value.trim();
+        const hora = document.getElementById("r_hora").value;
+        const dir = document.getElementById("r_direccion").value.trim();
+        const vehiculo = document.querySelector('input[name="r_vehiculo"]:checked')?.value;
+        const servicio = document.getElementById("r_servicio").value;
+        const err = document.getElementById("errorRegistro");
+
+        if (!nombre || !dir || !vehiculo || !servicio) {
+            err.style.display = "block";
+            return;
+        }
+        err.style.display = "none";
+
         const btn = document.getElementById("btnRegistro");
-        btn.disabled = true; btn.innerHTML = '<span class="spinner"></span>';
+        btn.disabled = true;
+        btn.innerHTML = '<span class="spinner"></span> Agendando...';
+
+        const payload = {
+            tipo: "nuevo_registro",
+            cliente: nombre,
+            celular: cel,
+            hora_pactada: hora,
+            direccion: dir,
+            vehiculo: vehiculo,
+            servicio: servicio
+        };
 
         try {
-            await fetch(N8N_REGISTRO, { method: "POST", headers:{"Content-Type":"application/json"}, body: JSON.stringify({nombre, tipo:"registro"}) });
-            document.getElementById("successDetail").textContent = `Cita agendada para ${nombre}.`;
+            const res = await fetch(URL_REGISTRO, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(payload)
+            });
+            if (!res.ok) throw new Error();
+            document.getElementById("successTitle").innerText = "Servicio Agendado";
+            document.getElementById("successDetail").innerHTML = `El servicio para ${nombre} ha sido enviado a la hoja de ruta.`;
             goTo("screenSuccess");
-        } catch(e) { btn.disabled=false; btn.textContent="📋 Agendar Domicilio"; }
+        } catch (e) {
+            err.innerText = "❌ No se pudo agendar. Revisa la red.";
+            err.style.display = "block";
+            btn.disabled = false;
+            btn.innerHTML = "📋 Agendar Servicio";
+        }
     }
 </script>
 </body>
