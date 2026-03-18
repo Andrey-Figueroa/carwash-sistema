@@ -19,7 +19,6 @@ body{background:var(--bg);font-family:"DM Sans",sans-serif;color:var(--text);min
 .logo-area{display:flex;align-items:center;gap:15px}
 .logo-chip{background:rgba(0,212,255,0.08);border:1px solid rgba(0,212,255,0.25);border-radius:8px;padding:6px 14px;font-family:"Bebas Neue",sans-serif;font-size:18px;color:var(--accent);letter-spacing:1px}
 
-/* BOTÓN SALIR */
 .btn-exit {
   display: flex;
   align-items: center;
@@ -188,50 +187,55 @@ body{background:var(--bg);font-family:"DM Sans",sans-serif;color:var(--text);min
 <div class="toast" id="toast"></div>
 
 <script>
-const CSV = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRZKI99U4UgQBDH7Can0vVO9TO0hhi6TkTYx4jNdTDxYDsM1dQrEG5UaIoftDmOdzkXAr8LOscVFxv-/pub?gid=0&single=true&output=csv";
+// ── CAMBIO PRINCIPAL: ya no usamos el CSV de Google, sino el webhook de n8n ──
+const API      = "https://neuraloom.app.n8n.cloud/webhook/pizarra-data";
 const WH_COBRO = "https://neuraloom.app.n8n.cloud/webhook/finalizar-cobro";
 const WH_ESTADO = "https://neuraloom.app.n8n.cloud/webhook/estado-vehiculo";
 
 let db = []; let cur = null; let selMethods = new Set(); let resSel = "";
 
+// ── sync: ahora lee JSON desde n8n en lugar de CSV desde Google ──
 async function sync() {
   try {
-    const r = await fetch(CSV + "&t=" + Date.now(), {cache:"no-store"});
-    const t = await r.text();
-    db = parse(t);
+    const r = await fetch(API, { cache: "no-store" });
+    const rows = await r.json();
+    db = parseJSON(rows);
     draw();
-    document.getElementById("updateTimer").textContent = "Vivo: " + new Date().toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'});
-  } catch(e) { console.log("Error sync"); }
+    document.getElementById("updateTimer").textContent =
+      "Vivo: " + new Date().toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'});
+  } catch(e) { console.log("Error sync", e); }
 }
 
-function parse(t) {
-  return t.trim().split("\n").slice(1).map(l => {
-    const c = l.split(/,(?=(?:[^"]*"[^"]*")*[^"]*$)/).map(v => v.replace(/^"|"$/g, '').trim());
-    // Columna 12 = Total (ej: "₡41,500" o "Ôéí41,500")
-    // Columna 15 = Estado de Pago (ej: "Pendiente" o "Pagado")
-    const paymentStatus = (c[15] || "").toLowerCase();
-    const rawCash = (c[12] || "").replace(/\D/g, ''); 
-    
-    // Si dice "pendiente", asumimos que debe dinero, logrando que cash sea al menos 1 para no bloquearlo
-    let parsedCash = parseInt(rawCash) || 0;
-    if (paymentStatus.includes("pendiente") && parsedCash === 0) {
-      parsedCash = 1; 
-    }
+// ── parseJSON: mapea las columnas del JSON de n8n a los campos que usa la pizarra ──
+function parseJSON(rows) {
+  return rows.map(r => {
+    // "Hora de pago" distinto de "Pendiente" significa que ya se cobró → cash 0
+    const pagado = (r["Hora de pago"] || "").toLowerCase() !== "pendiente";
+    const monto  = parseInt(r["Monto final"]) || 0;
 
-    return { id: c[0], plate: c[2], name: c[3], phone: c[4], serv: c[7], status: c[8].toLowerCase(), cash: parsedCash };
+    return {
+      id:    r["#"],
+      plate: r["Placa"],
+      name:  r["Nombre cliente"],
+      phone: String(r["Celular cliente"] || ""),
+      serv:  r["Categoria servicio"],
+      status:(r["Estado"] || "").toLowerCase(),
+      cash:  pagado ? 0 : monto
+    };
   }).filter(x => x.plate);
 }
 
 function draw() {
   const g = { proceso: [], terminado: [], retirado: [] };
   db.forEach(x => {
-    let s = x.status.includes("retira") || x.status.includes("entrega") ? "retirado" : (x.status.includes("listo") || x.status.includes("termina") ? "terminado" : "proceso");
+    let s = x.status.includes("retira") || x.status.includes("entrega") ? "retirado"
+          : (x.status.includes("listo") || x.status.includes("termina") ? "terminado"
+          : "proceso");
     g[s].push(x);
   });
   ["proceso","terminado","retirado"].forEach(k => {
     document.getElementById("c-"+k).textContent = g[k].length;
     document.getElementById("g-"+k).innerHTML = g[k].map(x => {
-      // Si está retirado pero aún tiene saldo > 0 se le permite click (sin fully disabled pointer)
       let isDisabled = (k === 'retirado' && parseInt(x.cash) === 0) ? 'disabled' : '';
       return `
       <div class="car-card ${isDisabled}" onclick="clickCar('${x.plate}','${k}')">
@@ -247,12 +251,11 @@ function draw() {
 
 function clickCar(p, z) {
   cur = db.find(x => x.plate === p);
-  
-  if (z === 'retirado' && parseInt(cur.cash) === 0) return; // Si ya se cobró, no hacer nada
+  if (z === 'retirado' && parseInt(cur.cash) === 0) return;
 
   document.getElementById("aPlate").textContent = cur.plate;
   document.getElementById("aClient").textContent = cur.name;
-  
+
   let h = "";
   if(z === 'proceso') {
     h += `<button class="action-btn" onclick="setSt('Terminado')">✅ MARCAR COMO LISTO</button>`;
@@ -266,7 +269,7 @@ function clickCar(p, z) {
     h += `<div style="padding:15px; color:var(--muted); font-size:12px; text-align:center;">Este vehículo ya fue entregado.</div>`;
     h += `<button class="action-btn btn-cobrar" onclick="goCobro()">💰 FINALIZAR COBRO</button>`;
   }
-  
+
   document.getElementById("aButtons").innerHTML = h;
   document.getElementById("modalActions").classList.add("show");
 }
@@ -327,7 +330,16 @@ async function finalize() {
   if(!resSel) return toast("Selecciona responsable");
   const b = document.getElementById("btnSend");
   b.disabled = true; b.textContent = "ENVIANDO...";
-  const p = { id: cur.id, plate: cur.plate, resp: resSel, pays: { e: document.getElementById("in-Efectivo").value || 0, s: document.getElementById("in-Sinpe").value || 0, t: document.getElementById("in-Tarjeta").value || 0, g: document.getElementById("in-GiftCard").value || 0, c: document.getElementById("in-CxC").value || 0 } };
+  const p = {
+    id: cur.id, plate: cur.plate, resp: resSel,
+    pays: {
+      e: document.getElementById("in-Efectivo").value || 0,
+      s: document.getElementById("in-Sinpe").value || 0,
+      t: document.getElementById("in-Tarjeta").value || 0,
+      g: document.getElementById("in-GiftCard").value || 0,
+      c: document.getElementById("in-CxC").value || 0
+    }
+  };
   try {
     await fetch(WH_COBRO, { method:"POST", body: JSON.stringify(p)});
     toast("Registro Exitoso ✓"); closeAll(); sync();
