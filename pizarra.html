@@ -199,7 +199,15 @@ function csvToObjects(text) {
   const lines = text.trim().split("\n");
   const headers = lines[0].split(",").map(h => h.replace(/^"|"$/g, '').trim());
   return lines.slice(1).map(line => {
-    const vals = line.match(/(".*?"|[^,]+|(?<=,)(?=,)|^(?=,)|(?<=,)$)/g) || [];
+    const vals = [];
+    let cur = "", inQ = false;
+    for (let i = 0; i < line.length; i++) {
+      const c = line[i];
+      if (c === '"') { inQ = !inQ; }
+      else if (c === ',' && !inQ) { vals.push(cur.trim()); cur = ""; }
+      else { cur += c; }
+    }
+    vals.push(cur.trim());
     const obj = {};
     headers.forEach((h, i) => obj[h] = (vals[i] || "").replace(/^"|"$/g, '').trim());
     return obj;
