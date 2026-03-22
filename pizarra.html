@@ -261,10 +261,12 @@ function clickCar(p, z) {
     h += `<button class="action-btn" onclick="setSt('Terminado')">✅ MARCAR COMO LISTO</button>`;
     h += `<button class="action-btn" onclick="setSt('Retirado')">🚗 MARCAR COMO ENTREGADO</button>`;
     h += `<button class="action-btn btn-cobrar" onclick="goCobro()">💰 FINALIZAR COBRO</button>`;
+    h += `<button class="action-btn" style="color:var(--gift)" onclick="window.open('https://tally.so/r/OD0Oda?%23+de+orden='+cur.id,'_blank')">✏️ MODIFICAR ORDEN</button>`;
   } else if (z === 'terminado') {
     h += `<button class="action-btn" onclick="setSt('Retirado')">🚗 MARCAR COMO ENTREGADO</button>`;
     h += `<button class="action-btn btn-cobrar" onclick="goCobro()">💰 FINALIZAR COBRO</button>`;
     h += `<button class="action-btn btn-wa" onclick="wa()">📱 ENVIAR WHATSAPP</button>`;
+    h += `<button class="action-btn" style="color:var(--gift)" onclick="window.open('https://tally.so/r/OD0Oda?%23+de+orden='+cur.id,'_blank')">✏️ MODIFICAR ORDEN</button>`;
   } else if (z === 'retirado') {
     h += `<div style="padding:15px; color:var(--muted); font-size:12px; text-align:center;">Este vehículo ya fue entregado.</div>`;
     h += `<button class="action-btn btn-cobrar" onclick="goCobro()">💰 FINALIZAR COBRO</button>`;
