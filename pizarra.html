@@ -188,17 +188,29 @@ body{background:var(--bg);font-family:"DM Sans",sans-serif;color:var(--text);min
 
 <script>
 // ── CAMBIO PRINCIPAL: ya no usamos el CSV de Google, sino el webhook de n8n ──
-const API      = "https://neuraloom.app.n8n.cloud/webhook/pizarra-data";
+const API = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRZKI99U4UgQBDH7Can0vVO9TO0hhi6TkTYx4jNdTDxYDsM1
 const WH_COBRO = "https://neuraloom.app.n8n.cloud/webhook/finalizar-cobro";
 const WH_ESTADO = "https://neuraloom.app.n8n.cloud/webhook/estado-vehiculo";
 
 let db = []; let cur = null; let selMethods = new Set(); let resSel = "";
 
 // ── sync: ahora lee JSON desde n8n en lugar de CSV desde Google ──
+function csvToObjects(text) {
+  const lines = text.trim().split("\n");
+  const headers = lines[0].split(",").map(h => h.replace(/^"|"$/g, '').trim());
+  return lines.slice(1).map(line => {
+    const vals = line.match(/(".*?"|[^,]+|(?<=,)(?=,)|^(?=,)|(?<=,)$)/g) || [];
+    const obj = {};
+    headers.forEach((h, i) => obj[h] = (vals[i] || "").replace(/^"|"$/g, '').trim());
+    return obj;
+  }).filter(o => o["Placa"]);
+}
+
 async function sync() {
   try {
     const r = await fetch(API, { cache: "no-store" });
-    const rows = await r.json();
+    const text = await r.text();
+    const rows = csvToObjects(text);
     db = parseJSON(rows);
     draw();
     document.getElementById("updateTimer").textContent =
