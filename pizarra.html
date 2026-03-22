@@ -87,6 +87,7 @@ body{background:var(--bg);font-family:"DM Sans",sans-serif;color:var(--text);min
   <div class="zone"><span class="zone-title" style="color:var(--muted)">🚗 RETIRADOS</span><div class="cars-grid" id="g-retirado"></div></div>
 </div>
 
+<!-- MODAL ACCIONES -->
 <div class="modal-overlay" id="modalActions">
   <div class="action-box">
     <div style="padding:20px;text-align:center;border-bottom:1px solid var(--border);background:rgba(0,0,0,0.2)">
@@ -98,6 +99,7 @@ body{background:var(--bg);font-family:"DM Sans",sans-serif;color:var(--text);min
   </div>
 </div>
 
+<!-- MODAL COBRO -->
 <div class="modal-overlay" id="modalCobro">
   <div class="cobro-box">
     <div class="btn-close-x" onclick="closeAll()">✕</div>
@@ -140,11 +142,39 @@ body{background:var(--bg);font-family:"DM Sans",sans-serif;color:var(--text);min
   </div>
 </div>
 
+<!-- MODAL CANCELAR -->
+<div class="modal-overlay" id="modalCancelar">
+  <div class="action-box" style="max-width:400px">
+    <div style="padding:20px;text-align:center;border-bottom:1px solid var(--border);background:rgba(255,82,82,0.05)">
+      <div style="font-family:'Bebas Neue';font-size:22px;color:var(--red)">❌ CANCELAR ORDEN</div>
+      <div id="cancelPlate" style="font-family:'DM Mono';color:var(--muted);margin-top:4px">---</div>
+    </div>
+    <div style="padding:20px;display:flex;flex-direction:column;gap:15px">
+      <div>
+        <p style="font-size:11px;color:var(--muted);text-transform:uppercase;margin-bottom:8px">¿Quién cancela?</p>
+        <div style="display:flex;flex-wrap:wrap;gap:8px" id="cancelResp">
+          <div class="chip" onclick="selCR(this,'Eder')">Eder</div>
+          <div class="chip" onclick="selCR(this,'Massiel')">Massiel</div>
+          <div class="chip" onclick="selCR(this,'Andrey')">Andrey</div>
+          <div class="chip" onclick="selCR(this,'Angie')">Angie</div>
+        </div>
+      </div>
+      <div>
+        <p style="font-size:11px;color:var(--muted);text-transform:uppercase;margin-bottom:8px">Motivo</p>
+        <textarea id="cancelMotivo" placeholder="Describe el motivo de la cancelación..."
+          style="width:100%;background:var(--bg);border:1px solid var(--border);color:var(--text);border-radius:10px;padding:10px;font-family:'DM Sans';font-size:13px;resize:none;height:80px;outline:none"></textarea>
+      </div>
+      <button onclick="confirmarCancelar()" style="width:100%;padding:14px;background:var(--red);color:#fff;border:none;border-radius:14px;font-weight:800;font-size:15px;cursor:pointer">CONFIRMAR CANCELACIÓN</button>
+      <button onclick="closeAll()" style="width:100%;padding:10px;background:none;border:none;color:var(--muted);font-size:12px;cursor:pointer">VOLVER</button>
+    </div>
+  </div>
+</div>
+
 <div class="toast" id="toast"></div>
 
 <script>
-var API = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRZKI99U4UgQBDH7Can0vVO9TO0hhi6TkTYx4jNdTDxYDsM1dQrEG5UaIoftDmOdzkXAr8LOscVFxv-/pub?gid=0&single=true&output=csv";
-var WH_COBRO  = "https://neuraloom.app.n8n.cloud/webhook/finalizar-cobro";
+var API          = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRZKI99U4UgQBDH7Can0vVO9TO0hhi6TkTYx4jNdTDxYDsM1dQrEG5UaIoftDmOdzkXAr8LOscVFxv-/pub?gid=0&single=true&output=csv";
+var WH_COBRO     = "https://neuraloom.app.n8n.cloud/webhook/finalizar-cobro";
 var WH_ESTADO    = "https://neuraloom.app.n8n.cloud/webhook/estado-vehiculo";
 var WH_CANCELAR  = "https://neuraloom.app.n8n.cloud/webhook/cancelar-orden";
 
@@ -152,6 +182,7 @@ var db = [];
 var cur = null;
 var selMethods = new Set();
 var resSel = "";
+var cancelResSel = "";
 
 function parseCSV(text) {
   var lines = text.trim().split("\n");
@@ -189,13 +220,13 @@ function parseCSV(text) {
 function parseRows(rows) {
   return rows.map(function(r) {
     var pagado = (r["Hora de pago"] || "").toLowerCase() !== "pendiente";
-    var monto = Math.round(parseFloat((r["Monto final"] || "0").replace(/[^0-9.]/g, "")) || 0);
+    var monto  = Math.round(parseFloat((r["Monto final"] || "0").replace(/[^0-9.]/g, "")) || 0);
     return {
       id:     r["#"],
       plate:  String(r["Placa"]),
       name:   r["Nombre cliente"],
       phone:  String(r["Celular cliente"] || ""),
-      serv:   r["Categoría servicio"] || r["Categoria servicio"],
+      serv:   r["Categoría servicio"] || r["Categoria servicio"] || "",
       status: (r["Estado"] || "").toLowerCase(),
       cash:   pagado ? 0 : monto
     };
@@ -257,6 +288,7 @@ function clickCar(p, z) {
     h += "<button class='action-btn' onclick=\"setSt('Retirado')\">&#x1F697; MARCAR COMO ENTREGADO</button>";
     h += "<button class='action-btn btn-cobrar' onclick='goCobro()'>&#x1F4B0; FINALIZAR COBRO</button>";
     h += "<button class='action-btn' style='color:var(--gift)' onclick=\"window.open('https://tally.so/r/OD0Oda?%23+de+orden=' + cur.id, '_blank')\">&#x270F;&#xFE0F; MODIFICAR ORDEN</button>";
+    h += "<button class='action-btn' style='color:var(--red)' onclick='goCancelar()'>&#x274C; CANCELAR ORDEN</button>";
   } else if (z === "terminado") {
     h += "<button class='action-btn' onclick=\"setSt('Retirado')\">&#x1F697; MARCAR COMO ENTREGADO</button>";
     h += "<button class='action-btn btn-cobrar' onclick='goCobro()'>&#x1F4B0; FINALIZAR COBRO</button>";
@@ -293,6 +325,37 @@ function goCobro() {
   recalc();
 }
 
+function goCancelar() {
+  document.getElementById("modalActions").classList.remove("show");
+  document.getElementById("cancelPlate").textContent = cur.plate + " — #" + cur.id;
+  document.getElementById("cancelMotivo").value = "";
+  document.querySelectorAll("#cancelResp .chip").forEach(function(c) { c.classList.remove("selected"); });
+  cancelResSel = "";
+  document.getElementById("modalCancelar").classList.add("show");
+}
+
+function selCR(el, n) {
+  document.querySelectorAll("#cancelResp .chip").forEach(function(c) { c.classList.remove("selected"); });
+  el.classList.add("selected");
+  cancelResSel = n;
+}
+
+async function confirmarCancelar() {
+  if (!cancelResSel) return toast("Selecciona quién cancela");
+  var motivo = document.getElementById("cancelMotivo").value.trim();
+  if (!motivo) return toast("Escribe el motivo");
+  toast("Cancelando...");
+  try {
+    await fetch(WH_CANCELAR, {
+      method: "POST",
+      body: JSON.stringify({ id: cur.id, plate: cur.plate, responsable: cancelResSel, motivo: motivo })
+    });
+    toast("Orden cancelada ✓");
+    closeAll();
+    sync();
+  } catch(e) { toast("Error al cancelar"); }
+}
+
 function toggleM(m) {
   var b = document.getElementById("m-" + m);
   var row = document.getElementById("row-" + m);
@@ -312,10 +375,10 @@ function toggleGift() {
   var b = document.getElementById("m-GiftCard");
   var row = document.getElementById("row-GiftCard");
   if (selMethods.has("GiftCard")) {
-    selMethods.delete("GiftCard"); b.classList.remove("active", "gift");
+    selMethods.delete("GiftCard"); b.classList.remove("active","gift");
     row.style.display = "none";
   } else {
-    selMethods.add("GiftCard"); b.classList.add("active", "gift");
+    selMethods.add("GiftCard"); b.classList.add("active","gift");
     row.style.display = "flex";
   }
   recalc();
@@ -363,7 +426,7 @@ async function finalize() {
 
 function closeAll() {
   document.querySelectorAll(".modal-overlay").forEach(function(m) { m.classList.remove("show"); });
-  selMethods.clear(); resSel = "";
+  selMethods.clear(); resSel = ""; cancelResSel = "";
   document.querySelectorAll(".met-btn").forEach(function(b) { b.classList.remove("active","gift"); });
   document.querySelectorAll(".monto-row").forEach(function(r) { r.style.display = "none"; });
   ["Efectivo","Sinpe","Tarjeta","GiftCard","CxC"].forEach(function(m) {
