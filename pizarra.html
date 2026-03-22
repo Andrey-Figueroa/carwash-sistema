@@ -188,13 +188,13 @@ function parseCSV(text) {
 function parseRows(rows) {
   return rows.map(function(r) {
     var pagado = (r["Hora de pago"] || "").toLowerCase() !== "pendiente";
-    var monto  = parseInt(r["Monto final"]) || 0;
+    var monto = parseInt((r["Monto final"] || "0").replace(/[^0-9]/g, "")) || 0;
     return {
       id:     r["#"],
       plate:  String(r["Placa"]),
       name:   r["Nombre cliente"],
       phone:  String(r["Celular cliente"] || ""),
-      serv:   r["Categoria servicio"],
+      serv:   r["Categoría servicio"] || r["Categoria servicio"],
       status: (r["Estado"] || "").toLowerCase(),
       cash:   pagado ? 0 : monto
     };
