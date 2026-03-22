@@ -352,6 +352,10 @@ function closeAll() {
   selMethods.clear(); resSel = "";
   document.querySelectorAll(".met-btn").forEach(b => b.classList.remove("active","gift"));
   document.querySelectorAll(".monto-row").forEach(r => r.style.display = "none");
+["Efectivo","Sinpe","Tarjeta","GiftCard","CxC"].forEach(m => {
+  const el = document.getElementById("in-"+m);
+  if(el) el.value = "";
+});
   document.querySelectorAll(".chip").forEach(c => c.classList.remove("selected"));
   document.getElementById("isla").style.display = "none";
 }
