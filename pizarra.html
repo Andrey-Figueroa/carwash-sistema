@@ -215,7 +215,7 @@ function parseJSON(rows) {
 
     return {
       id:    r["#"],
-      plate: r["Placa"],
+      plate: String(r["Placa"]),
       name:  r["Nombre cliente"],
       phone: String(r["Celular cliente"] || ""),
       serv:  r["Categoria servicio"],
