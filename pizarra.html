@@ -188,7 +188,7 @@ function parseCSV(text) {
 function parseRows(rows) {
   return rows.map(function(r) {
     var pagado = (r["Hora de pago"] || "").toLowerCase() !== "pendiente";
-    var monto = parseInt((r["Monto final"] || "0").replace(/[^0-9]/g, "")) || 0;
+    var monto = Math.round(parseFloat((r["Monto final"] || "0").replace(/[^0-9.]/g, "")) || 0);
     return {
       id:     r["#"],
       plate:  String(r["Placa"]),
