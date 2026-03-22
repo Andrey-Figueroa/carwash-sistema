@@ -13,95 +13,56 @@
   --text:#dff0ff;--muted:#4a6a85;--gift:#e040fb;--wa:#25d366;
 }
 body{background:var(--bg);font-family:"DM Sans",sans-serif;color:var(--text);min-height:100vh;display:flex;flex-direction:column;overflow-x:hidden}
-
-/* ── TOPBAR ── */
 .topbar{display:flex;align-items:center;justify-content:space-between;padding:14px 28px;background:linear-gradient(90deg,#050d14,#081525);border-bottom:1px solid var(--border);position:sticky;top:0;z-index:100}
 .logo-area{display:flex;align-items:center;gap:15px}
 .logo-chip{background:rgba(0,212,255,0.08);border:1px solid rgba(0,212,255,0.25);border-radius:8px;padding:6px 14px;font-family:"Bebas Neue",sans-serif;font-size:18px;color:var(--accent);letter-spacing:1px}
-
-.btn-exit {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 32px;
-  height: 32px;
-  background: rgba(255, 82, 82, 0.1);
-  color: var(--red);
-  border: 1px solid var(--red);
-  border-radius: 8px;
-  text-decoration: none;
-  font-weight: bold;
-  transition: 0.2s;
-}
-.btn-exit:hover { background: var(--red); color: #fff; }
-
+.btn-exit{display:flex;align-items:center;justify-content:center;width:32px;height:32px;background:rgba(255,82,82,0.1);color:var(--red);border:1px solid var(--red);border-radius:8px;text-decoration:none;font-weight:bold;transition:0.2s}
+.btn-exit:hover{background:var(--red);color:#fff}
 .status-pill{display:flex;align-items:center;gap:7px;font-size:11px;color:var(--muted);background:rgba(0,0,0,0.3);border:1px solid var(--border);border-radius:20px;padding:5px 12px}
 .pulse-dot{width:7px;height:7px;border-radius:50%;background:var(--green);animation:pulse 2s infinite}
 @keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(0,230,118,0.5)}50%{box-shadow:0 0 0 5px rgba(0,230,118,0)}}
-
-/* ── STATS ── */
 .stats-bar{display:flex;border-bottom:1px solid var(--border);background:var(--surface)}
 .stat{flex:1;padding:12px 20px;border-right:1px solid var(--border);text-align:center}
 .stat-val{font-size:22px;font-weight:700;font-family:"DM Mono",monospace;display:block}
 .stat-lbl{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:1px}
-
-/* ── BOARD ── */
 .board{display:grid;grid-template-columns:1fr 1fr 1fr;flex:1}
 .zone{border-right:1px solid var(--border);padding:20px;min-height:300px}
 .zone-title{font-family:"Bebas Neue",sans-serif;font-size:18px;letter-spacing:1px;color:var(--accent);margin-bottom:15px;display:block}
 .cars-grid{display:flex;flex-wrap:wrap;gap:12px;align-content:flex-start}
-
-/* ── CARDS ── */
 .car-card{width:165px;background:var(--card);border-radius:16px;border:1px solid var(--border);padding:12px;position:relative;cursor:pointer;transition:0.2s}
 .car-card:hover{border-color:var(--accent);transform:translateY(-3px)}
 .car-card.disabled{opacity:0.3;filter:grayscale(1)}
-.car-card.disabled:hover{transform:none; border-color:var(--border)}
+.car-card.disabled:hover{transform:none;border-color:var(--border)}
 .orden-badge{position:absolute;top:8px;right:8px;font-family:"DM Mono";font-size:9px;color:var(--accent);background:rgba(0,212,255,0.1);padding:2px 5px;border-radius:4px}
 .car-plate{font-family:"DM Mono";font-size:13px;font-weight:bold;color:#fff;background:rgba(255,255,255,0.05);text-align:center;padding:4px;border-radius:6px;margin:8px 0}
 .car-name{font-size:12px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .car-service{font-size:10px;color:var(--muted);margin-top:2px}
-
-/* ── MODALES ── */
 .modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.8);backdrop-filter:blur(10px);z-index:1000;display:none;align-items:center;justify-content:center;padding:15px}
 .modal-overlay.show{display:flex}
-
 .action-box{background:var(--surface);border:1px solid var(--border);border-radius:24px;width:100%;max-width:320px;overflow:hidden;animation:slideUp 0.3s ease-out}
 @keyframes slideUp{from{transform:translateY(50px);opacity:0}to{transform:translateY(0);opacity:1}}
 .action-btn{width:100%;padding:18px;background:none;border:none;border-bottom:1px solid var(--border);color:#fff;font-size:14px;font-weight:600;cursor:pointer;transition:0.2s;text-align:center}
 .action-btn:hover{background:rgba(255,255,255,0.05)}
 .btn-wa{color:var(--wa) !important}
 .btn-cobrar{color:var(--yellow) !important}
-
 .cobro-box{background:var(--surface);border:1px solid var(--border);border-radius:24px;width:100%;max-width:480px;max-height:95vh;position:relative;overflow:hidden}
-.cobro-padding{padding:24px; overflow-y:auto; max-height:calc(95vh - 20px)}
-
-.btn-close-x {
-  position: absolute; top: 15px; right: 15px; width: 34px; height: 34px;
-  background: rgba(255, 82, 82, 0.1); color: var(--red); border: 1px solid var(--red);
-  border-radius: 50%; display: flex; align-items: center; justify-content: center;
-  font-weight: bold; cursor: pointer; z-index: 100; transition: 0.2s;
-}
-.btn-close-x:hover { background: var(--red); color: #fff; }
-
-.metodos-grid{display:grid;grid-template-columns:repeat(auto-fit, minmax(75px, 1fr));gap:8px;margin:15px 0}
+.cobro-padding{padding:24px;overflow-y:auto;max-height:calc(95vh - 20px)}
+.btn-close-x{position:absolute;top:15px;right:15px;width:34px;height:34px;background:rgba(255,82,82,0.1);color:var(--red);border:1px solid var(--red);border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:bold;cursor:pointer;z-index:100;transition:0.2s}
+.btn-close-x:hover{background:var(--red);color:#fff}
+.metodos-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(75px,1fr));gap:8px;margin:15px 0}
 .met-btn{background:rgba(0,0,0,0.2);border:2px solid var(--border);border-radius:12px;padding:10px 4px;text-align:center;cursor:pointer;color:var(--muted);transition:0.2s;font-size:10px}
 .met-btn.active{border-color:var(--accent);color:var(--accent);background:rgba(0,212,255,0.05)}
 .met-btn.active.gift{border-color:var(--gift);color:var(--gift)}
-
 .isla-montos{background:rgba(255,255,255,0.03);border-radius:16px;padding:15px;display:none;flex-direction:column;gap:10px}
 .monto-row{display:flex;align-items:center;justify-content:space-between;gap:10px}
 .monto-row input{background:var(--bg);border:1px solid var(--border);color:#fff;padding:8px;border-radius:8px;width:110px;text-align:right;font-family:"DM Mono";outline:none}
 .monto-row input:focus{border-color:var(--accent)}
-
 .resp-grid{display:flex;flex-wrap:wrap;gap:8px;margin-top:15px}
 .chip{padding:8px 15px;border:1px solid var(--border);border-radius:50px;font-size:12px;cursor:pointer}
 .chip.selected{border-color:var(--accent);background:var(--accent);color:#000;font-weight:bold}
-
 .btn-final{width:100%;padding:16px;background:var(--yellow);color:#000;border:none;border-radius:14px;font-weight:800;font-size:16px;cursor:pointer;margin-top:20px}
-
 .toast{position:fixed;bottom:25px;left:50%;transform:translateX(-50%);background:var(--accent);color:#000;padding:12px 25px;border-radius:12px;font-weight:bold;z-index:2000;display:none;box-shadow:0 10px 30px rgba(0,0,0,0.5)}
-
-@media(max-width:768px){ .board{grid-template-columns:1fr} .zone{min-height:auto;border-right:none;border-bottom:1px solid var(--border)} }
+@media(max-width:768px){.board{grid-template-columns:1fr}.zone{min-height:auto;border-right:none;border-bottom:1px solid var(--border)}}
 </style>
 </head>
 <body>
@@ -128,12 +89,12 @@ body{background:var(--bg);font-family:"DM Sans",sans-serif;color:var(--text);min
 
 <div class="modal-overlay" id="modalActions">
   <div class="action-box">
-    <div style="padding:20px; text-align:center; border-bottom:1px solid var(--border); background:rgba(0,0,0,0.2)">
-      <div id="aPlate" style="font-family:'DM Mono'; font-weight:bold; font-size:20px; color:var(--accent)">---</div>
-      <div id="aClient" style="font-size:13px; color:var(--muted); margin-top:4px">---</div>
+    <div style="padding:20px;text-align:center;border-bottom:1px solid var(--border);background:rgba(0,0,0,0.2)">
+      <div id="aPlate" style="font-family:'DM Mono';font-weight:bold;font-size:20px;color:var(--accent)">---</div>
+      <div id="aClient" style="font-size:13px;color:var(--muted);margin-top:4px">---</div>
     </div>
     <div id="aButtons"></div>
-    <button onclick="closeAll()" style="width:100%; padding:15px; background:none; border:none; color:var(--muted); font-size:12px; cursor:pointer;">VOLVER</button>
+    <button onclick="closeAll()" style="width:100%;padding:15px;background:none;border:none;color:var(--muted);font-size:12px;cursor:pointer">VOLVER</button>
   </div>
 </div>
 
@@ -141,17 +102,15 @@ body{background:var(--bg);font-family:"DM Sans",sans-serif;color:var(--text);min
   <div class="cobro-box">
     <div class="btn-close-x" onclick="closeAll()">✕</div>
     <div class="cobro-padding">
-      <div style="display:flex; justify-content:space-between; align-items:flex-start">
-        <h3 style="font-family:'Bebas Neue'; letter-spacing:1px; color:var(--yellow); font-size:24px">FINALIZAR COBRO</h3>
-        <span id="cOrden" style="font-family:'DM Mono'; color:var(--muted); margin-right:40px">#---</span>
+      <div style="display:flex;justify-content:space-between;align-items:flex-start">
+        <h3 style="font-family:'Bebas Neue';letter-spacing:1px;color:var(--yellow);font-size:24px">FINALIZAR COBRO</h3>
+        <span id="cOrden" style="font-family:'DM Mono';color:var(--muted);margin-right:40px">#---</span>
       </div>
-
-      <div style="margin:18px 0; padding:18px; background:rgba(255,255,255,0.03); border-radius:16px; border:1px solid var(--border)">
-        <div id="cPlate" style="font-family:'DM Mono'; font-weight:bold; font-size:18px">---</div>
-        <div id="cTotal" style="font-size:32px; font-weight:800; color:var(--green); margin-top:5px">₡0</div>
+      <div style="margin:18px 0;padding:18px;background:rgba(255,255,255,0.03);border-radius:16px;border:1px solid var(--border)">
+        <div id="cPlate" style="font-family:'DM Mono';font-weight:bold;font-size:18px">---</div>
+        <div id="cTotal" style="font-size:32px;font-weight:800;color:var(--green);margin-top:5px">₡0</div>
       </div>
-
-      <p style="font-size:11px; color:var(--muted); text-transform:uppercase; margin-bottom:10px">Métodos de pago</p>
+      <p style="font-size:11px;color:var(--muted);text-transform:uppercase;margin-bottom:10px">Métodos de pago</p>
       <div class="metodos-grid">
         <div class="met-btn" id="m-Efectivo" onclick="toggleM('Efectivo')">💵<br>Efectivo</div>
         <div class="met-btn" id="m-Sinpe" onclick="toggleM('Sinpe')">📱<br>Sinpe</div>
@@ -159,26 +118,23 @@ body{background:var(--bg);font-family:"DM Sans",sans-serif;color:var(--text);min
         <div class="met-btn" id="m-GiftCard" onclick="toggleGift()">🎁<br>Gift Card</div>
         <div class="met-btn" id="m-CxC" onclick="toggleM('CxC')">📋<br>CxC</div>
       </div>
-
       <div class="isla-montos" id="isla">
         <div id="row-Efectivo" class="monto-row" style="display:none"><span>💵 Efectivo</span><input type="number" id="in-Efectivo" oninput="recalc()"></div>
         <div id="row-Sinpe" class="monto-row" style="display:none"><span>📱 Sinpe</span><input type="number" id="in-Sinpe" oninput="recalc()"></div>
         <div id="row-Tarjeta" class="monto-row" style="display:none"><span>💳 Tarjeta</span><input type="number" id="in-Tarjeta" oninput="recalc()"></div>
-        <div id="row-GiftCard" class="monto-row" style="display:none"><span>🎁 Gift Card</span><input type="number" id="in-GiftCard" readonly value="0" style="border-color:var(--gift); color:var(--gift)"></div>
+        <div id="row-GiftCard" class="monto-row" style="display:none"><span>🎁 Gift Card</span><input type="number" id="in-GiftCard" readonly value="0" style="border-color:var(--gift);color:var(--gift)"></div>
         <div id="row-CxC" class="monto-row" style="display:none"><span>📋 CxC</span><input type="number" id="in-CxC" oninput="recalc()"></div>
-        <div style="border-top:1px solid var(--border); padding-top:12px; display:flex; justify-content:space-between; font-weight:bold; font-size:16px">
+        <div style="border-top:1px solid var(--border);padding-top:12px;display:flex;justify-content:space-between;font-weight:bold;font-size:16px">
           <span>Cubierto:</span><span id="cubierto">₡0</span>
         </div>
       </div>
-
-      <p style="font-size:11px; color:var(--muted); text-transform:uppercase; margin-top:20px; margin-bottom:10px">Responsable</p>
+      <p style="font-size:11px;color:var(--muted);text-transform:uppercase;margin-top:20px;margin-bottom:10px">Responsable</p>
       <div class="resp-grid">
         <div class="chip" onclick="selR(this,'Eder')">Eder</div>
         <div class="chip" onclick="selR(this,'Massiel')">Massiel</div>
         <div class="chip" onclick="selR(this,'Andrey')">Andrey</div>
         <div class="chip" onclick="selR(this,'Angie')">Angie</div>
       </div>
-      
       <button class="btn-final" id="btnSend" onclick="finalize()">CONFIRMAR REGISTRO</button>
     </div>
   </div>
@@ -187,109 +143,127 @@ body{background:var(--bg);font-family:"DM Sans",sans-serif;color:var(--text);min
 <div class="toast" id="toast"></div>
 
 <script>
-// ── CAMBIO PRINCIPAL: ya no usamos el CSV de Google, sino el webhook de n8n ──
-const API = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRZKI99U4UgQBDH7Can0vVO9TO0hhi6TkTYx4jNdTDxYDsM1
-const WH_COBRO = "https://neuraloom.app.n8n.cloud/webhook/finalizar-cobro";
-const WH_ESTADO = "https://neuraloom.app.n8n.cloud/webhook/estado-vehiculo";
+var API       = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRZKI99U4UgQBDH7Can0vVO9TO0hhi6TkTYx4jNdTDxYDsM1dQrEG5UaIoftDmOdzkXAr8LOscVFxv-/pub?output=csv";
+var WH_COBRO  = "https://neuraloom.app.n8n.cloud/webhook/finalizar-cobro";
+var WH_ESTADO = "https://neuraloom.app.n8n.cloud/webhook/estado-vehiculo";
 
-let db = []; let cur = null; let selMethods = new Set(); let resSel = "";
+var db = [];
+var cur = null;
+var selMethods = new Set();
+var resSel = "";
 
-// ── sync: ahora lee JSON desde n8n en lugar de CSV desde Google ──
-function csvToObjects(text) {
-  const lines = text.trim().split("\n");
-  const headers = lines[0].split(",").map(h => h.replace(/^"|"$/g, '').trim());
-  return lines.slice(1).map(line => {
-    const vals = [];
-    let cur = "", inQ = false;
-    for (let i = 0; i < line.length; i++) {
-      const c = line[i];
-      if (c === '"') { inQ = !inQ; }
-      else if (c === ',' && !inQ) { vals.push(cur.trim()); cur = ""; }
-      else { cur += c; }
+function parseCSV(text) {
+  var lines = text.trim().split("\n");
+  if (lines.length < 2) return [];
+  var headers = lines[0].split(",").map(function(h) {
+    return h.replace(/^"|"$/g, "").trim();
+  });
+  var result = [];
+  for (var i = 1; i < lines.length; i++) {
+    var line = lines[i];
+    var vals = [];
+    var cell = "";
+    var inQ = false;
+    for (var j = 0; j < line.length; j++) {
+      var ch = line[j];
+      if (ch === '"') {
+        inQ = !inQ;
+      } else if (ch === "," && !inQ) {
+        vals.push(cell.trim());
+        cell = "";
+      } else {
+        cell += ch;
+      }
     }
-    vals.push(cur.trim());
-    const obj = {};
-    headers.forEach((h, i) => obj[h] = (vals[i] || "").replace(/^"|"$/g, '').trim());
-    return obj;
-  }).filter(o => o["Placa"]);
+    vals.push(cell.trim());
+    var obj = {};
+    for (var k = 0; k < headers.length; k++) {
+      obj[headers[k]] = (vals[k] || "").replace(/^"|"$/g, "").trim();
+    }
+    if (obj["Placa"]) result.push(obj);
+  }
+  return result;
+}
+
+function parseRows(rows) {
+  return rows.map(function(r) {
+    var pagado = (r["Hora de pago"] || "").toLowerCase() !== "pendiente";
+    var monto  = parseInt(r["Monto final"]) || 0;
+    return {
+      id:     r["#"],
+      plate:  String(r["Placa"]),
+      name:   r["Nombre cliente"],
+      phone:  String(r["Celular cliente"] || ""),
+      serv:   r["Categoria servicio"],
+      status: (r["Estado"] || "").toLowerCase(),
+      cash:   pagado ? 0 : monto
+    };
+  }).filter(function(x) { return x.plate; });
 }
 
 async function sync() {
   try {
-    const r = await fetch(API, { cache: "no-store" });
-    const text = await r.text();
-    const rows = csvToObjects(text);
-    db = parseJSON(rows);
+    var r = await fetch(API + "&t=" + Date.now());
+    var text = await r.text();
+    var rows = parseCSV(text);
+    db = parseRows(rows);
     draw();
     document.getElementById("updateTimer").textContent =
-      "Vivo: " + new Date().toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'});
-  } catch(e) { console.log("Error sync", e); }
-}
-
-// ── parseJSON: mapea las columnas del JSON de n8n a los campos que usa la pizarra ──
-function parseJSON(rows) {
-  return rows.map(r => {
-    // "Hora de pago" distinto de "Pendiente" significa que ya se cobró → cash 0
-    const pagado = (r["Hora de pago"] || "").toLowerCase() !== "pendiente";
-    const monto  = parseInt(r["Monto final"]) || 0;
-
-    return {
-      id:    r["#"],
-      plate: String(r["Placa"]),
-      name:  r["Nombre cliente"],
-      phone: String(r["Celular cliente"] || ""),
-      serv:  r["Categoria servicio"],
-      status:(r["Estado"] || "").toLowerCase(),
-      cash:  pagado ? 0 : monto
-    };
-  }).filter(x => x.plate);
+      "Vivo: " + new Date().toLocaleTimeString([], {hour:"2-digit", minute:"2-digit"});
+  } catch(e) {
+    console.error("Error sync:", e);
+    document.getElementById("updateTimer").textContent = "Error de conexion";
+  }
 }
 
 function draw() {
-  const g = { proceso: [], terminado: [], retirado: [] };
-  db.forEach(x => {
-    let s = x.status.includes("retira") || x.status.includes("entrega") ? "retirado"
-          : (x.status.includes("listo") || x.status.includes("termina") ? "terminado"
-          : "proceso");
+  var g = { proceso: [], terminado: [], retirado: [] };
+  db.forEach(function(x) {
+    var s = (x.status.includes("retira") || x.status.includes("entrega")) ? "retirado"
+          : (x.status.includes("listo") || x.status.includes("termina")) ? "terminado"
+          : "proceso";
     g[s].push(x);
   });
-  ["proceso","terminado","retirado"].forEach(k => {
-    document.getElementById("c-"+k).textContent = g[k].length;
-    document.getElementById("g-"+k).innerHTML = g[k].map(x => {
-      let isDisabled = (k === 'retirado' && parseInt(x.cash) === 0) ? 'disabled' : '';
-      return `
-      <div class="car-card ${isDisabled}" onclick="clickCar('${x.plate}','${k}')">
-        <span class="orden-badge">#${x.id}</span>
-        <div style="font-size:24px; text-align:center">🚗</div>
-        <div class="car-plate">${x.plate}</div>
-        <div class="car-name">${x.name}</div>
-        <div class="car-service">${x.serv}</div>
-      </div>
-    `}).join("");
+  ["proceso","terminado","retirado"].forEach(function(k) {
+    document.getElementById("c-" + k).textContent = g[k].length;
+    document.getElementById("g-" + k).innerHTML = g[k].map(function(x) {
+      var dis = (k === "retirado" && parseInt(x.cash) === 0) ? "disabled" : "";
+      return "<div class='car-card " + dis + "' onclick=\"clickCar('" + x.plate + "','" + k + "')\">"
+        + "<span class='orden-badge'>#" + x.id + "</span>"
+        + "<div style='font-size:24px;text-align:center'>&#x1F697;</div>"
+        + "<div class='car-plate'>" + x.plate + "</div>"
+        + "<div class='car-name'>" + x.name + "</div>"
+        + "<div class='car-service'>" + x.serv + "</div>"
+        + "</div>";
+    }).join("");
   });
 }
 
 function clickCar(p, z) {
-  cur = db.find(x => x.plate === p);
-  if (z === 'retirado' && parseInt(cur.cash) === 0) return;
+  cur = null;
+  for (var i = 0; i < db.length; i++) {
+    if (db[i].plate === p) { cur = db[i]; break; }
+  }
+  if (!cur) return;
+  if (z === "retirado" && parseInt(cur.cash) === 0) return;
 
   document.getElementById("aPlate").textContent = cur.plate;
   document.getElementById("aClient").textContent = cur.name;
 
-  let h = "";
-  if(z === 'proceso') {
-    h += `<button class="action-btn" onclick="setSt('Terminado')">✅ MARCAR COMO LISTO</button>`;
-    h += `<button class="action-btn" onclick="setSt('Retirado')">🚗 MARCAR COMO ENTREGADO</button>`;
-    h += `<button class="action-btn btn-cobrar" onclick="goCobro()">💰 FINALIZAR COBRO</button>`;
-    h += `<button class="action-btn" style="color:var(--gift)" onclick="window.open('https://tally.so/r/OD0Oda?%23+de+orden='+cur.id,'_blank')">✏️ MODIFICAR ORDEN</button>`;
-  } else if (z === 'terminado') {
-    h += `<button class="action-btn" onclick="setSt('Retirado')">🚗 MARCAR COMO ENTREGADO</button>`;
-    h += `<button class="action-btn btn-cobrar" onclick="goCobro()">💰 FINALIZAR COBRO</button>`;
-    h += `<button class="action-btn btn-wa" onclick="wa()">📱 ENVIAR WHATSAPP</button>`;
-    h += `<button class="action-btn" style="color:var(--gift)" onclick="window.open('https://tally.so/r/OD0Oda?%23+de+orden='+cur.id,'_blank')">✏️ MODIFICAR ORDEN</button>`;
-  } else if (z === 'retirado') {
-    h += `<div style="padding:15px; color:var(--muted); font-size:12px; text-align:center;">Este vehículo ya fue entregado.</div>`;
-    h += `<button class="action-btn btn-cobrar" onclick="goCobro()">💰 FINALIZAR COBRO</button>`;
+  var h = "";
+  if (z === "proceso") {
+    h += "<button class='action-btn' onclick=\"setSt('Terminado')\">&#x2705; MARCAR COMO LISTO</button>";
+    h += "<button class='action-btn' onclick=\"setSt('Retirado')\">&#x1F697; MARCAR COMO ENTREGADO</button>";
+    h += "<button class='action-btn btn-cobrar' onclick='goCobro()'>&#x1F4B0; FINALIZAR COBRO</button>";
+    h += "<button class='action-btn' style='color:var(--gift)' onclick=\"window.open('https://tally.so/r/OD0Oda?%23+de+orden=' + cur.id, '_blank')\">&#x270F;&#xFE0F; MODIFICAR ORDEN</button>";
+  } else if (z === "terminado") {
+    h += "<button class='action-btn' onclick=\"setSt('Retirado')\">&#x1F697; MARCAR COMO ENTREGADO</button>";
+    h += "<button class='action-btn btn-cobrar' onclick='goCobro()'>&#x1F4B0; FINALIZAR COBRO</button>";
+    h += "<button class='action-btn btn-wa' onclick='wa()'>&#x1F4F1; ENVIAR WHATSAPP</button>";
+    h += "<button class='action-btn' style='color:var(--gift)' onclick=\"window.open('https://tally.so/r/OD0Oda?%23+de+orden=' + cur.id, '_blank')\">&#x270F;&#xFE0F; MODIFICAR ORDEN</button>";
+  } else if (z === "retirado") {
+    h += "<div style='padding:15px;color:var(--muted);font-size:12px;text-align:center'>Este vehículo ya fue entregado.</div>";
+    h += "<button class='action-btn btn-cobrar' onclick='goCobro()'>&#x1F4B0; FINALIZAR COBRO</button>";
   }
 
   document.getElementById("aButtons").innerHTML = h;
@@ -299,60 +273,77 @@ function clickCar(p, z) {
 async function setSt(s) {
   toast("Actualizando...");
   try {
-    await fetch(WH_ESTADO, { method:"POST", body: JSON.stringify({id: cur.id, estado: s}) });
+    await fetch(WH_ESTADO, { method: "POST", body: JSON.stringify({id: cur.id, estado: s}) });
     closeAll(); sync(); toast("Estado actualizado ✓");
   } catch(e) { toast("Error al conectar"); }
 }
 
 function wa() {
-  const m = encodeURIComponent(`¡Hola ${cur.name}! Tu vehículo (${cur.plate}) ya está listo. ¡Te esperamos! 🚗✨`);
-  window.open(`https://wa.me/506${cur.phone.replace(/\D/g,'')}?text=${m}`, '_blank');
+  var m = encodeURIComponent("¡Hola " + cur.name + "! Tu vehículo (" + cur.plate + ") ya está listo. ¡Te esperamos! 🚗✨");
+  window.open("https://wa.me/506" + cur.phone.replace(/\D/g, "") + "?text=" + m, "_blank");
 }
 
 function goCobro() {
   document.getElementById("modalActions").classList.remove("show");
-  document.getElementById("cOrden").textContent = "#"+cur.id;
+  document.getElementById("cOrden").textContent = "#" + cur.id;
   document.getElementById("cPlate").textContent = cur.plate;
-  document.getElementById("cTotal").textContent = "₡"+parseInt(cur.cash).toLocaleString();
+  document.getElementById("cTotal").textContent = "₡" + parseInt(cur.cash).toLocaleString();
   document.getElementById("modalCobro").classList.add("show");
   recalc();
 }
 
 function toggleM(m) {
-  const b = document.getElementById("m-"+m); const r = document.getElementById("row-"+m);
-  if(selMethods.has(m)) { selMethods.delete(m); b.classList.remove("active"); r.style.display = "none"; document.getElementById("in-"+m).value = ""; }
-  else { selMethods.add(m); b.classList.add("active"); r.style.display = "flex"; }
+  var b = document.getElementById("m-" + m);
+  var row = document.getElementById("row-" + m);
+  if (selMethods.has(m)) {
+    selMethods.delete(m); b.classList.remove("active");
+    row.style.display = "none";
+    document.getElementById("in-" + m).value = "";
+  } else {
+    selMethods.add(m); b.classList.add("active");
+    row.style.display = "flex";
+  }
   document.getElementById("isla").style.display = selMethods.size > 0 ? "flex" : "none";
   recalc();
 }
 
 function toggleGift() {
-  const b = document.getElementById("m-GiftCard"); const r = document.getElementById("row-GiftCard");
-  if(selMethods.has("GiftCard")) { selMethods.delete("GiftCard"); b.classList.remove("active", "gift"); r.style.display = "none"; }
-  else { selMethods.add("GiftCard"); b.classList.add("active", "gift"); r.style.display = "flex"; }
+  var b = document.getElementById("m-GiftCard");
+  var row = document.getElementById("row-GiftCard");
+  if (selMethods.has("GiftCard")) {
+    selMethods.delete("GiftCard"); b.classList.remove("active", "gift");
+    row.style.display = "none";
+  } else {
+    selMethods.add("GiftCard"); b.classList.add("active", "gift");
+    row.style.display = "flex";
+  }
   recalc();
 }
 
 function recalc() {
-  const goal = parseInt(cur?.cash || 0);
-  let man = 0; ["Efectivo","Sinpe","Tarjeta","CxC"].forEach(m => man += parseInt(document.getElementById("in-"+m).value || 0));
-  let gv = selMethods.has("GiftCard") ? Math.max(0, goal - man) : 0;
+  var goal = parseInt(cur ? cur.cash : 0);
+  var man = 0;
+  ["Efectivo","Sinpe","Tarjeta","CxC"].forEach(function(m) {
+    man += parseInt(document.getElementById("in-" + m).value || 0);
+  });
+  var gv = selMethods.has("GiftCard") ? Math.max(0, goal - man) : 0;
   document.getElementById("in-GiftCard").value = gv;
-  const total = man + gv;
-  document.getElementById("cubierto").textContent = "₡"+total.toLocaleString();
+  var total = man + gv;
+  document.getElementById("cubierto").textContent = "₡" + total.toLocaleString();
   document.getElementById("cubierto").style.color = total >= goal ? "var(--green)" : "var(--red)";
 }
 
 function selR(el, n) {
-  document.querySelectorAll(".chip").forEach(c => c.classList.remove("selected"));
-  el.classList.add("selected"); resSel = n;
+  document.querySelectorAll(".chip").forEach(function(c) { c.classList.remove("selected"); });
+  el.classList.add("selected");
+  resSel = n;
 }
 
 async function finalize() {
-  if(!resSel) return toast("Selecciona responsable");
-  const b = document.getElementById("btnSend");
+  if (!resSel) return toast("Selecciona responsable");
+  var b = document.getElementById("btnSend");
   b.disabled = true; b.textContent = "ENVIANDO...";
-  const p = {
+  var p = {
     id: cur.id, plate: cur.plate, resp: resSel,
     pays: {
       e: document.getElementById("in-Efectivo").value || 0,
@@ -363,29 +354,29 @@ async function finalize() {
     }
   };
   try {
-    await fetch(WH_COBRO, { method:"POST", body: JSON.stringify(p)});
+    await fetch(WH_COBRO, { method: "POST", body: JSON.stringify(p) });
     toast("Registro Exitoso ✓"); closeAll(); sync();
   } catch(e) { toast("Error de red"); }
   b.disabled = false; b.textContent = "CONFIRMAR REGISTRO";
 }
 
 function closeAll() {
-  document.querySelectorAll(".modal-overlay").forEach(m => m.classList.remove("show"));
+  document.querySelectorAll(".modal-overlay").forEach(function(m) { m.classList.remove("show"); });
   selMethods.clear(); resSel = "";
-  document.querySelectorAll(".met-btn").forEach(b => b.classList.remove("active","gift"));
-  document.querySelectorAll(".monto-row").forEach(r => r.style.display = "none");
-["Efectivo","Sinpe","Tarjeta","GiftCard","CxC"].forEach(m => {
-  const el = document.getElementById("in-"+m);
-  if(el) el.value = "";
-});
-  document.querySelectorAll(".chip").forEach(c => c.classList.remove("selected"));
+  document.querySelectorAll(".met-btn").forEach(function(b) { b.classList.remove("active","gift"); });
+  document.querySelectorAll(".monto-row").forEach(function(r) { r.style.display = "none"; });
+  ["Efectivo","Sinpe","Tarjeta","GiftCard","CxC"].forEach(function(m) {
+    var el = document.getElementById("in-" + m);
+    if (el) el.value = "";
+  });
+  document.querySelectorAll(".chip").forEach(function(c) { c.classList.remove("selected"); });
   document.getElementById("isla").style.display = "none";
 }
 
 function toast(m) {
-  const t = document.getElementById("toast");
+  var t = document.getElementById("toast");
   t.textContent = m; t.style.display = "block";
-  setTimeout(() => t.style.display = "none", 3000);
+  setTimeout(function() { t.style.display = "none"; }, 3000);
 }
 
 sync();
