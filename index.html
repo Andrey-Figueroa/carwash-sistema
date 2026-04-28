@@ -7,21 +7,21 @@
     <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet" />
     <style>
         *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-        :root { --bg: #0a0e14; --card: #111720; --card-hover: #161f2c; --border: #1e2d3d; --accent: #00c6ff; --text: #e8f1ff; --muted: #5a7a99; --gold: #c9a84c; }
+        :root { --bg: #080600; --card: #130f00; --card-hover: #1c1500; --border: #2e2400; --accent: #c9a84c; --text: #f5e8c8; --muted: #8a7540; --gold: #c9a84c; }
         body { background: var(--bg); font-family: "DM Sans", sans-serif; color: var(--text); min-height: 100vh; display: flex; flex-direction: column; align-items: center; padding: 0 0 80px; overflow-x: hidden; }
 
         .header { width: 100%; position: relative; height: 260px; overflow: hidden; display: flex; align-items: flex-end; justify-content: center; padding-bottom: 28px; }
-        .header-bg { position: absolute; inset: 0; background: linear-gradient(180deg, transparent 20%, var(--bg) 100%), linear-gradient(135deg, #001529 0%, #003566 50%, #0072ff22 100%); }
+        .header-bg { position: absolute; inset: 0; background: linear-gradient(180deg, transparent 20%, var(--bg) 100%), linear-gradient(135deg, #0d0900 0%, #2a1f00 50%, #c9a84c22 100%); }
         .drops { position: absolute; inset: 0; overflow: hidden; pointer-events: none; }
         .drop { position: absolute; top: -20px; width: 2px; border-radius: 50px; background: linear-gradient(to bottom, transparent, var(--accent)); opacity: 0; animation: fall linear infinite; }
         @keyframes fall { 0% { transform: translateY(0); opacity: 0; } 10% { opacity: 0.6; } 100% { transform: translateY(280px); opacity: 0; } }
 
         .header-content { position: relative; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 10px; }
         .logo-img { width: 130px; height: 130px; object-fit: contain; border-radius: 16px; border: 1px solid rgba(201,168,76,0.2); background: #000; padding: 6px; box-shadow: 0 0 30px rgba(201,168,76,0.15); }
-        .badge { display: inline-flex; align-items: center; gap: 6px; background: rgba(0, 198, 255, 0.1); border: 1px solid rgba(0, 198, 255, 0.25); border-radius: 50px; padding: 4px 14px; font-size: 11px; font-weight: 500; letter-spacing: 2px; text-transform: uppercase; color: var(--accent); }
+        .badge { display: inline-flex; align-items: center; gap: 6px; background: rgba(201,168,76,0.1); border: 1px solid rgba(201,168,76,0.3); border-radius: 50px; padding: 4px 14px; font-size: 11px; font-weight: 500; letter-spacing: 2px; text-transform: uppercase; color: var(--accent); }
         h1 { font-family: "Bebas Neue", sans-serif; font-size: clamp(28px, 6vw, 44px); letter-spacing: 4px; line-height: 1; background: linear-gradient(135deg, #fff 30%, var(--accent)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
 
-        .datetime { display: flex; align-items: center; gap: 16px; background: rgba(0, 198, 255, 0.05); border: 1px solid var(--border); border-radius: 12px; padding: 12px 20px; width: calc(100% - 40px); max-width: 640px; margin-bottom: 20px; }
+        .datetime { display: flex; align-items: center; gap: 16px; background: rgba(201,168,76,0.05); border: 1px solid var(--border); border-radius: 12px; padding: 12px 20px; width: calc(100% - 40px); max-width: 640px; margin-bottom: 20px; }
         .datetime-item { display: flex; align-items: center; gap: 8px; color: var(--muted); font-size: 13px; }
         .datetime-item span { color: var(--text); font-weight: 500; }
         .datetime-sep { width: 1px; height: 20px; background: var(--border); }
@@ -30,7 +30,7 @@
         .card { display: flex; align-items: center; gap: 16px; background: var(--card); border: 1px solid var(--border); border-radius: 18px; padding: 24px 20px; text-decoration: none; color: var(--text); transition: all 0.2s ease; animation: slideUp 0.4s ease forwards; cursor: pointer; }
         .card:hover { transform: translateY(-3px); border-color: var(--accent); background: var(--card-hover); }
         .card.full { grid-column: 1 / -1; }
-        .icon-wrap { width: 50px; height: 50px; border-radius: 12px; background: rgba(0, 198, 255, 0.1); display: flex; align-items: center; justify-content: center; font-size: 24px; flex-shrink: 0; }
+        .icon-wrap { width: 50px; height: 50px; border-radius: 12px; background: rgba(201,168,76,0.1); display: flex; align-items: center; justify-content: center; font-size: 24px; flex-shrink: 0; }
         .card-title { font-size: 15px; font-weight: 600; }
         .card-sub { font-size: 12px; color: var(--muted); }
 
@@ -46,8 +46,8 @@
         @keyframes pulse2 { 0%,100%{box-shadow:0 0 0 0 rgba(0,230,118,0.5)} 50%{box-shadow:0 0 0 5px rgba(0,230,118,0)} }
 
         .fab-wrap { position: fixed; bottom: 25px; right: 25px; z-index: 200; }
-        .fab-btn { display: flex; align-items: center; gap: 10px; background: var(--card); border: 1px solid var(--accent); border-radius: 50px; padding: 11px 20px; cursor: pointer; color: var(--text); font-size: 14px; font-weight: 500; transition: all 0.2s ease; white-space: nowrap; box-shadow: 0 4px 20px rgba(0,198,255,0.15); }
-        .fab-btn:hover { background: var(--card-hover); box-shadow: 0 4px 24px rgba(0,198,255,0.3); }
+        .fab-btn { display: flex; align-items: center; gap: 10px; background: var(--card); border: 1px solid var(--accent); border-radius: 50px; padding: 11px 20px; cursor: pointer; color: var(--text); font-size: 14px; font-weight: 500; transition: all 0.2s ease; white-space: nowrap; box-shadow: 0 4px 20px rgba(201,168,76,0.15); }
+        .fab-btn:hover { background: var(--card-hover); box-shadow: 0 4px 24px rgba(201,168,76,0.3); }
         .hamburger { display: flex; flex-direction: column; gap: 4px; }
         .hamburger span { display: block; width: 18px; height: 2px; background: var(--accent); border-radius: 2px; transition: all 0.2s; }
 
@@ -62,8 +62,8 @@
         .fab-item:hover { background: var(--card-hover); color: var(--accent); }
         .fab-item .fi { font-size: 18px; width: 28px; text-align: center; }
 
-        .soporte-btn { position: fixed; bottom: 25px; left: 25px; z-index: 200; display: flex; align-items: center; gap: 10px; background: var(--card); border: 1px solid #2a3d52; border-radius: 50px; padding: 11px 20px; cursor: pointer; color: var(--muted); font-size: 14px; font-weight: 500; transition: all 0.2s ease; box-shadow: 0 4px 20px rgba(0,0,0,0.3); }
-        .soporte-btn:hover { color: var(--text); border-color: var(--accent); box-shadow: 0 4px 24px rgba(0,198,255,0.2); }
+        .soporte-btn { position: fixed; bottom: 25px; left: 25px; z-index: 200; display: flex; align-items: center; gap: 10px; background: var(--card); border: 1px solid var(--border); border-radius: 50px; padding: 11px 20px; cursor: pointer; color: var(--muted); font-size: 14px; font-weight: 500; transition: all 0.2s ease; box-shadow: 0 4px 20px rgba(0,0,0,0.3); }
+        .soporte-btn:hover { color: var(--text); border-color: var(--accent); box-shadow: 0 4px 24px rgba(201,168,76,0.2); }
         .gear-icon { font-size: 18px; transition: transform 0.5s ease; display: inline-block; }
         .soporte-btn:hover .gear-icon { transform: rotate(90deg); }
 
@@ -91,10 +91,10 @@
         .calc-screen { width: 100%; height: 70px; background: #000; color: var(--accent); font-size: 32px; text-align: right; padding: 15px; margin-bottom: 15px; border-radius: 12px; border: 1px solid var(--border); font-family: monospace; }
         .calc-buttons { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
         .calc-btn { padding: 18px; border-radius: 12px; border: 1px solid var(--border); background: var(--bg); color: white; cursor: pointer; font-size: 16px; transition: background 0.15s; }
-        .calc-btn:hover { background: #1a2535; }
+        .calc-btn:hover { background: var(--card-hover); }
         .calc-btn.op { color: var(--accent); }
         .calc-btn.equal { background: var(--accent); color: #000; font-weight: 700; }
-        .calc-btn.equal:hover { background: #00aadd; }
+        .calc-btn.equal:hover { background: #a07828; }
 
         .modal-box { background: var(--card); border: 1px solid var(--border); border-radius: 24px; width: 420px; max-width: calc(100vw - 40px); overflow: hidden; }
         .modal-header { padding: 22px 24px 18px; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; }
@@ -109,19 +109,19 @@
         .form-textarea { resize: vertical; min-height: 100px; }
         .form-select option { background: var(--card); }
         .btn-send { background: var(--accent); color: #000; border: none; border-radius: 12px; padding: 13px; font-size: 15px; font-weight: 700; cursor: pointer; font-family: inherit; transition: background 0.2s; }
-        .btn-send:hover { background: #00aadd; }
+        .btn-send:hover { background: #a07828; }
         .success-msg { display: none; text-align: center; padding: 30px 20px; }
         .success-msg .check { font-size: 48px; margin-bottom: 12px; }
         .success-msg p { color: var(--muted); font-size: 14px; margin-top: 6px; }
 
         .horario-table { width: 100%; border-collapse: collapse; font-size: 13px; }
         .horario-table th { color: var(--accent); font-weight: 600; padding: 10px 12px; border-bottom: 1px solid var(--border); text-align: left; font-size: 11px; text-transform: uppercase; letter-spacing: 1px; }
-        .horario-table td { padding: 10px 12px; border-bottom: 1px solid rgba(30,45,61,0.5); }
+        .horario-table td { padding: 10px 12px; border-bottom: 1px solid rgba(46,36,0,0.5); }
         .horario-table tr:last-child td { border-bottom: none; }
         .turno-tag { display: inline-block; padding: 3px 10px; border-radius: 20px; font-size: 11px; font-weight: 600; }
         .turno-m { background: rgba(255,200,50,0.15); color: #ffc832; }
-        .turno-t { background: rgba(0,198,255,0.12); color: var(--accent); }
-        .turno-libre { background: rgba(90,122,153,0.15); color: var(--muted); }
+        .turno-t { background: rgba(201,168,76,0.12); color: var(--accent); }
+        .turno-libre { background: rgba(138,117,64,0.15); color: var(--muted); }
     </style>
 </head>
 <body>
@@ -129,7 +129,7 @@
         <div class="header-bg"></div>
         <div class="drops" id="drops"></div>
         <div class="header-content">
-            <img src="logo.jpg" alt="Sus Amigos Detailer's Center" class="logo-img" /> 
+            <img src="logo.jpg" alt="Sus Amigos Detailer's Center" class="logo-img" />
             <div class="badge">Sistema CarWash</div>
             <h1>REGISTRO DE SERVICIO</h1>
         </div>
@@ -152,20 +152,18 @@
         <a class="card" href="gastos.html"><div class="icon-wrap">💸</div><div class="card-text"><div class="card-title">Registrar Gastos</div></div></a>
         <a class="card full" href="cierre.html"><div class="icon-wrap">🔒</div><div class="card-text"><div class="card-title">Cierre de Operaciones</div></div></a>
 
-        <!-- PIZARRA — ahora centraliza todo -->
-        <a class="card full" href="pizarra.html" style="border-color:rgba(0,212,255,0.25);background:linear-gradient(135deg,rgba(0,212,255,0.07),rgba(0,100,200,0.05));">
-            <div class="icon-wrap" style="background:rgba(0,212,255,0.15);font-size:28px;">🗺️</div>
+        <a class="card full" href="pizarra.html" style="border-color:rgba(201,168,76,0.3);background:linear-gradient(135deg,rgba(201,168,76,0.07),rgba(160,120,40,0.05));">
+            <div class="icon-wrap" style="background:rgba(201,168,76,0.15);font-size:28px;">🗺️</div>
             <div class="card-text">
-                <div class="card-title" style="color:#00d4ff;font-size:16px;">Pizarra del Local</div>
+                <div class="card-title" style="color:#c9a84c;font-size:16px;">Pizarra del Local</div>
                 <div class="card-sub">Estado en tiempo real · Cobros · Cambio de estado</div>
             </div>
-            <div style="margin-left:auto;display:flex;align-items:center;gap:6px;font-size:11px;color:#00d4ff;background:rgba(0,212,255,0.1);border:1px solid rgba(0,212,255,0.2);border-radius:20px;padding:4px 12px;white-space:nowrap;">
+            <div style="margin-left:auto;display:flex;align-items:center;gap:6px;font-size:11px;color:#c9a84c;background:rgba(201,168,76,0.1);border:1px solid rgba(201,168,76,0.2);border-radius:20px;padding:4px 12px;white-space:nowrap;">
                 <div style="width:6px;height:6px;border-radius:50%;background:#00e676;animation:pulse2 2s infinite"></div>
                 En vivo
             </div>
         </a>
 
-        <!-- ADMIN -->
         <div class="card full admin-card" onclick="openAdmin()">
             <div class="icon-wrap">🔐</div>
             <div class="card-text">
