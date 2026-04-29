@@ -56,6 +56,21 @@ body {
   background: rgba(212,175,55,.12); color: var(--gold); border: 1px solid var(--gold-dim);
   padding: 5px 14px; border-radius: 20px;
 }
+.btn-regresar {
+  color: var(--text-muted);
+  text-decoration: none;
+  font-size: 0.85rem;
+  font-weight: 600;
+  padding: 6px 12px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  transition: var(--transition);
+  background: var(--bg-card);
+}
+.btn-regresar:hover {
+  color: var(--text);
+  border-color: var(--gold-dim);
+}
 
 /* ---------- PROGRESS BAR ---------- */
 .progress-bar {
