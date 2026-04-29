@@ -291,6 +291,10 @@
             bottom: 25px;
             right: 25px;
             z-index: 200;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            align-items: flex-end;
         }
 
         .fab-btn {
@@ -820,12 +824,6 @@
     </div>
 
     <div class="grid">
-        <a class="card full" href="../Formulario%20Mecanico/formulario.html">
-            <div class="icon-wrap">📝</div>
-            <div class="card-text">
-                <div class="card-title">Crear Formulario Mecanico</div>
-            </div>
-        </a>
         <a class="card full"
             href="https://docs.google.com/spreadsheets/d/1VGBiKE8xOYRk22-EZFMGdXVPosUvXbHj-aeEOOQYzr4/edit?usp=drive_link"
             target="_blank">
@@ -900,6 +898,9 @@
             <a class="fab-item" href="verCxc.html"><span class="fi">📄</span> Ver cuentas por cobrar</a>
             <a class="fab-item" onclick="openHorario()"><span class="fi">📅</span> Ver horario próxima semana</a>
         </div>
+        <a href="../Formulario%20Mecanico/formulario.html" class="fab-btn" style="font-size: 13px; padding: 8px 16px; text-decoration: none;">
+            📝 Formulario Mecánico
+        </a>
         <button class="fab-btn" onclick="document.getElementById('fabWrap').classList.toggle('open')" id="fabBtn">
             <div class="hamburger"><span></span><span></span><span></span></div>
             Menú rápido
