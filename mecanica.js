@@ -41,7 +41,7 @@ async function fetchInspecciones() {
         const { data, error } = await supabaseClient
             .from('inspecciones')
             .select('*')
-            .order('id', { ascending: false });
+            .order('created_at', { ascending: false });
 
         if (error) {
             if (loader) {
@@ -94,6 +94,15 @@ function renderList() {
                 fechaFormat = 'Sin fecha';
             }
 
+            // Hora desde created_at
+            let horaFormat = '';
+            if (insp.created_at) {
+                try {
+                    const dt = new Date(insp.created_at);
+                    horaFormat = dt.toLocaleTimeString('es-GT', { hour: '2-digit', minute: '2-digit', hour12: true });
+                } catch(e) { horaFormat = ''; }
+            }
+
             return `
                 <div class="card">
                     <div class="card-top">
@@ -102,7 +111,7 @@ function renderList() {
                                 🚗 ${insp.marca} ${insp.modelo}
                                 <span class="card-placa">${insp.placa || 'S/P'}</span>
                             </div>
-                            <div class="card-date">🗓️ ${fechaFormat}</div>
+                            <div class="card-date">🗓️ ${fechaFormat}${horaFormat ? ' &nbsp;⏰ ' + horaFormat : ''}</div>
                         </div>
                         <button class="btn-delete" onclick="openDeleteModal('${insp.id}')" title="Borrar inspección">✕</button>
                     </div>
@@ -124,30 +133,57 @@ function renderList() {
 
                     <div class="card-actions">
                         <button class="btn-action btn-pdf" onclick="descargarPDF('${insp.id}')" id="btnPdf_${insp.id}">
-                            📄 Descargar PDF
+                            📄 PDF
                         </button>
-                        <a href="javascript:void(0)" class="btn-action btn-whatsapp" onclick="enviarWhatsApp('${insp.id}')">
-                            💬 Enviar al Cliente
+                        <button class="btn-action btn-fotos" onclick="openFotoModal('${insp.id}')" id="btnFotos_${insp.id}">
+                            📷 Fotos<span class="foto-badge" id="fotoBadge_${insp.id}"></span>
+                        </button>
+                        <a href="javascript:void(0)" class="btn-action btn-whatsapp" onclick="enviarWhatsApp('${insp.id}')" id="btnWA_${insp.id}">
+                            💬 Enviar
                         </a>
                     </div>
                 </div>
             `;
         }).join('');
+        setTimeout(() => loadAllFotoCounts(), 200);
     }
 }
 
 // ===================== WHATSAPP =====================
-function enviarWhatsApp(id) {
+async function enviarWhatsApp(id) {
     const insp = inspecciones.find(i => String(i.id) === String(id));
     if (!insp) return;
 
-    const texto = `Hola ${insp.cliente || ''},%0A%0A` +
-        `Te compartimos que la inspección mecánica de tu vehículo *${insp.marca} ${insp.modelo} (Placa: ${insp.placa})* ha sido registrada.%0A%0A` +
-        `Puedes solicitarnos el reporte completo en PDF por este medio.%0A%0A` +
-        `*Sus Amigos Detailer's Center*`;
+    const btnWA = document.getElementById(`btnWA_${id}`);
+    if (btnWA) { btnWA.style.pointerEvents = 'none'; btnWA.innerHTML = '⏳...'; }
 
-    const url = `https://wa.me/?text=${texto}`;
-    window.open(url, '_blank');
+    try {
+        // 1. Generar y descargar PDF
+        await descargarPDF(id);
+
+        // 2. Si hay fotos, crear y descargar ZIP
+        if (!fotosCache[id]) await loadFotoCount(id);
+        const fotos = fotosCache[id] || [];
+        if (fotos.length > 0) await descargarZip(id);
+
+        // 3. Abrir WhatsApp con mensaje
+        const hayFotos = (fotosCache[id] || []).length > 0;
+        const texto = encodeURIComponent(
+            `Hola ${insp.cliente || ''},\n\n` +
+            `Te compartimos el reporte de inspección mecánica de tu vehículo *${insp.marca} ${insp.modelo}* (Placa: *${insp.placa}*).\n\n` +
+            (hayFotos
+                ? `Se descargaron el *PDF de inspección* y el *ZIP con fotos* en este dispositivo. Por favor compártelos por este medio.\n\n`
+                : `Se descargó el *PDF de inspección* en este dispositivo. Por favor compártelo por este medio.\n\n`) +
+            `*Sus Amigos Detailer's Center* ✨`
+        );
+        window.open(`https://wa.me/?text=${texto}`, '_blank');
+
+    } catch(e) {
+        console.error(e);
+        showToast('Error al preparar envío', 'error');
+    } finally {
+        if (btnWA) { btnWA.style.pointerEvents = ''; btnWA.innerHTML = '💬 Enviar'; }
+    }
 }
 
 // ===================== GENERAR PDF =====================
@@ -500,4 +536,180 @@ if (deleteModal) {
     deleteModal.addEventListener('click', e => {
         if (e.target === deleteModal) closeDeleteModal();
     });
+}
+
+// ===================== FOTOS =====================
+const BUCKET = 'inspeccion-fotos';
+let fotoTargetId = null;
+let fotosCache = {};
+
+// --- Modal control ---
+function openFotoModal(id) {
+    fotoTargetId = id;
+    const modal = document.getElementById('fotoModal');
+    const grid = document.getElementById('fotoGrid');
+    if (modal) modal.classList.add('show');
+    if (grid) grid.innerHTML = '<div class="foto-loading">Cargando fotos...</div>';
+    loadFotos(id);
+    // reset file input
+    const inp = document.getElementById('fotoInput');
+    if (inp) inp.value = '';
+}
+
+function closeFotoModal() {
+    const modal = document.getElementById('fotoModal');
+    if (modal) modal.classList.remove('show');
+    fotoTargetId = null;
+}
+
+if (document.getElementById('fotoModal')) {
+    document.getElementById('fotoModal').addEventListener('click', e => {
+        if (e.target === document.getElementById('fotoModal')) closeFotoModal();
+    });
+}
+
+// --- Cargar fotos desde Supabase Storage ---
+async function loadFotos(id) {
+    const grid = document.getElementById('fotoGrid');
+    try {
+        const { data, error } = await supabaseClient.storage
+            .from(BUCKET)
+            .list(String(id), { sortBy: { column: 'created_at', order: 'desc' } });
+        if (error) throw error;
+
+        const fotos = (data || []).filter(f => f.name !== '.emptyFolderPlaceholder');
+        fotosCache[id] = fotos.map(f => ({
+            name: f.name,
+            url: supabaseClient.storage.from(BUCKET).getPublicUrl(`${id}/${f.name}`).data.publicUrl
+        }));
+
+        updateFotoBadge(id, fotos.length);
+        renderFotoGrid(id);
+    } catch(e) {
+        console.error('Error cargando fotos:', e);
+        if (grid) grid.innerHTML = '<div class="foto-loading" style="color:#ff4d6d">⚠️ Error al cargar fotos.<br>Verifica que el bucket "inspeccion-fotos" exista y sea público en Supabase.</div>';
+    }
+}
+
+function renderFotoGrid(id) {
+    const grid = document.getElementById('fotoGrid');
+    if (!grid) return;
+    const fotos = fotosCache[id] || [];
+    if (fotos.length === 0) {
+        grid.innerHTML = '<div class="foto-empty">📷 Sin fotos aún. Agrega fotos arriba.</div>';
+        return;
+    }
+    grid.innerHTML = fotos.map(f => `
+        <div class="foto-item">
+            <img src="${f.url}" alt="${f.name}" loading="lazy" onclick="window.open('${f.url}','_blank')">
+            <button class="foto-delete" onclick="deleteFoto('${id}','${f.name}')">✕</button>
+        </div>
+    `).join('');
+}
+
+function updateFotoBadge(id, count) {
+    const badge = document.getElementById(`fotoBadge_${id}`);
+    if (!badge) return;
+    badge.textContent = count > 0 ? count : '';
+    badge.style.display = count > 0 ? 'inline-flex' : 'none';
+}
+
+// --- Subir fotos ---
+async function uploadFotos(files) {
+    if (!fotoTargetId || !files || files.length === 0) return;
+    const label = document.querySelector('.foto-upload-area');
+    if (label) label.style.opacity = '0.5';
+
+    let uploaded = 0;
+    for (const file of Array.from(files)) {
+        const ext = file.name.split('.').pop().toLowerCase();
+        const fileName = `foto_${Date.now()}_${Math.random().toString(36).slice(2,6)}.${ext}`;
+        const path = `${fotoTargetId}/${fileName}`;
+        try {
+            const { error } = await supabaseClient.storage.from(BUCKET).upload(path, file, { upsert: false });
+            if (!error) uploaded++;
+            else console.error('Upload error:', error);
+        } catch(e) { console.error(e); }
+    }
+
+    if (label) label.style.opacity = '1';
+    // reset input
+    const inp = document.getElementById('fotoInput');
+    if (inp) inp.value = '';
+
+    if (uploaded > 0) {
+        showToast(`✅ ${uploaded} foto(s) subida(s)`, 'success');
+        loadFotos(fotoTargetId);
+    } else {
+        showToast('❌ Error al subir fotos', 'error');
+    }
+}
+
+// --- Eliminar foto ---
+async function deleteFoto(id, name) {
+    const { error } = await supabaseClient.storage.from(BUCKET).remove([`${id}/${name}`]);
+    if (error) { showToast('Error al borrar foto', 'error'); return; }
+    showToast('🗑️ Foto eliminada', 'success');
+    loadFotos(id);
+}
+
+// --- Descargar ZIP (desde modal) ---
+async function descargarZipModal() {
+    if (fotoTargetId) await descargarZip(fotoTargetId);
+}
+
+// --- Descargar ZIP por ID ---
+async function descargarZip(id) {
+    if (!fotosCache[id]) await loadFotoCount(id);
+    const fotos = fotosCache[id] || [];
+    if (fotos.length === 0) { showToast('No hay fotos para comprimir', 'error'); return; }
+    if (!window.JSZip) { showToast('Error: librería ZIP no cargó', 'error'); return; }
+
+    const btn = document.getElementById('btnModalZip');
+    if (btn) { btn.disabled = true; btn.innerHTML = '⏳ Creando ZIP...'; }
+
+    try {
+        const insp = inspecciones.find(i => String(i.id) === String(id));
+        const zip = new window.JSZip();
+        const carpeta = zip.folder(`Fotos_${insp?.placa || id}`);
+
+        for (const foto of fotos) {
+            const resp = await fetch(foto.url);
+            const blob = await resp.blob();
+            carpeta.file(foto.name, blob);
+        }
+
+        const content = await zip.generateAsync({ type: 'blob' });
+        const a = document.createElement('a');
+        a.href = URL.createObjectURL(content);
+        a.download = `Fotos_${insp?.placa || id}_${insp?.fecha || ''}.zip`;
+        a.click();
+        URL.revokeObjectURL(a.href);
+        showToast('✅ ZIP descargado', 'success');
+    } catch(e) {
+        console.error('Error ZIP:', e);
+        showToast('Error al crear ZIP', 'error');
+    } finally {
+        if (btn) { btn.disabled = false; btn.innerHTML = '🗜️ Descargar ZIP de Fotos'; }
+    }
+}
+
+// --- Cargar conteo de fotos en segundo plano ---
+async function loadAllFotoCounts() {
+    for (const insp of inspecciones) {
+        loadFotoCount(insp.id);
+    }
+}
+
+async function loadFotoCount(id) {
+    try {
+        const { data, error } = await supabaseClient.storage.from(BUCKET).list(String(id));
+        if (error) return;
+        const fotos = (data || []).filter(f => f.name !== '.emptyFolderPlaceholder');
+        fotosCache[id] = fotos.map(f => ({
+            name: f.name,
+            url: supabaseClient.storage.from(BUCKET).getPublicUrl(`${id}/${f.name}`).data.publicUrl
+        }));
+        updateFotoBadge(id, fotos.length);
+    } catch(e) { /* silent */ }
 }
