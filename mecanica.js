@@ -147,32 +147,93 @@ async function enviarWhatsApp(id) {
     if (!insp) return;
 
     const btnWA = document.getElementById(`btnWA_${id}`);
-    if (btnWA) { btnWA.style.pointerEvents = 'none'; btnWA.innerHTML = '⏳...'; }
+    if (btnWA) { btnWA.style.pointerEvents = 'none'; btnWA.innerHTML = '⏳ Preparando...'; }
+
+    const mensaje = `Hola ${insp.cliente || ''},\n\n` +
+        `Te compartimos el reporte de inspección mecánica de tu vehículo *${insp.marca} ${insp.modelo}* (Placa: *${insp.placa}*).\n\n` +
+        `*Sus Amigos Detailer's Center* ✨`;
 
     try {
-        await descargarPDF(id);
+        // 1. Generar PDF como blob
+        if (btnWA) btnWA.innerHTML = '⏳ Generando PDF...';
+        const pdfBlob = await generarPDFBlob(id);
 
+        // 2. Generar ZIP si hay fotos
         if (!fotosCache[id]) await loadFotoCount(id);
         const fotos = fotosCache[id] || [];
-        if (fotos.length > 0) await descargarZip(id);
+        let zipBlob = null;
+        if (fotos.length > 0) {
+            if (btnWA) btnWA.innerHTML = '⏳ Empaquetando fotos...';
+            zipBlob = await generarZipBlob(id);
+        }
 
-        const hayFotos = (fotosCache[id] || []).length > 0;
-        const texto = encodeURIComponent(
-            `Hola ${insp.cliente || ''},\n\n` +
-            `Te compartimos el reporte de inspección mecánica de tu vehículo *${insp.marca} ${insp.modelo}* (Placa: *${insp.placa}*).\n\n` +
-            (hayFotos
-                ? `Se descargaron el *PDF de inspección* y el *ZIP con fotos* en este dispositivo. Por favor compártelos por este medio.\n\n`
-                : `Se descargó el *PDF de inspección* en este dispositivo. Por favor compártelo por este medio.\n\n`) +
-            `*Sus Amigos Detailer's Center* ✨`
-        );
-        window.open(`https://wa.me/?text=${texto}`, '_blank');
+        // 3. Construir lista de archivos para compartir
+        const archivos = [];
+        if (pdfBlob) {
+            archivos.push(new File([pdfBlob],
+                `Inspeccion_${insp.placa || 'SP'}_${insp.fecha || 'SF'}.pdf`,
+                { type: 'application/pdf' }));
+        }
+        if (zipBlob) {
+            archivos.push(new File([zipBlob],
+                `Fotos_${insp.placa || id}_${insp.fecha || ''}.zip`,
+                { type: 'application/zip' }));
+        }
+
+        // 4. Intentar Web Share API (funciona en móvil y algunos escritorios)
+        const puedeCompartirArchivos = navigator.share && navigator.canShare && archivos.length > 0 && navigator.canShare({ files: archivos });
+        const puedeCompartirTexto = navigator.share;
+
+        if (puedeCompartirArchivos) {
+            await navigator.share({ title: 'Inspección Mecánica', text: mensaje, files: archivos });
+        } else if (puedeCompartirTexto) {
+            // Compartir texto + descargar archivos manualmente
+            archivos.forEach(f => { const a = document.createElement('a'); a.href = URL.createObjectURL(f); a.download = f.name; a.click(); URL.revokeObjectURL(a.href); });
+            await navigator.share({ title: 'Inspección Mecánica', text: mensaje });
+        } else {
+            // Fallback escritorio: descargar archivos + abrir wa.me
+            archivos.forEach(f => { const a = document.createElement('a'); a.href = URL.createObjectURL(f); a.download = f.name; a.click(); URL.revokeObjectURL(a.href); });
+            const nota = archivos.length > 0 ? `\nSe descargaron los archivos (${archivos.map(f=>f.name).join(', ')}) — adjúntalos en WhatsApp.\n\n` : '\n\n';
+            window.open(`https://wa.me/?text=${encodeURIComponent(mensaje + nota)}`, '_blank');
+        }
 
     } catch(e) {
-        console.error(e);
-        showToast('Error al preparar envío', 'error');
+        if (e.name !== 'AbortError') {
+            console.error(e);
+            showToast('Error al preparar envío', 'error');
+        }
     } finally {
         if (btnWA) { btnWA.style.pointerEvents = ''; btnWA.innerHTML = '💬 Enviar'; }
     }
+}
+
+// Genera el PDF y lo devuelve como Blob (sin descargar)
+async function generarPDFBlob(id) {
+    const insp = inspecciones.find(i => String(i.id) === String(id));
+    if (!insp) return null;
+    const { data: detalles } = await supabaseClient.from('detalle_inspeccion').select('*').eq('inspeccion_id', id);
+    const formData = {
+        vehiculo: { fecha: insp.fecha, placa: insp.placa, cliente: insp.cliente, mecanico: insp.mecanico, marca: insp.marca, modelo: insp.modelo, anio: insp.anio },
+        interiorExterior: {}, parteInferior: {}, neumaticos: {}, motor: {}, frenos: {},
+        observaciones: insp.observaciones || ''
+    };
+    const seccionMap = { 'Interior/Exterior': 'interiorExterior', 'Parte Inferior': 'parteInferior', 'Neumáticos': 'neumaticos', 'Motor': 'motor', 'Frenos': 'frenos' };
+    if (detalles) detalles.forEach(d => { const k = seccionMap[d.seccion]; if (k) formData[k][d.item] = d.estado; });
+    return await buildPDFBlob(formData);
+}
+
+// Genera el ZIP de fotos y lo devuelve como Blob (sin descargar)
+async function generarZipBlob(id) {
+    const fotos = fotosCache[id] || [];
+    if (fotos.length === 0 || !window.JSZip) return null;
+    const insp = inspecciones.find(i => String(i.id) === String(id));
+    const zip = new window.JSZip();
+    const carpeta = zip.folder(`Fotos_${insp?.placa || id}`);
+    for (const foto of fotos) {
+        const resp = await fetch(foto.url);
+        carpeta.file(foto.name, await resp.blob());
+    }
+    return await zip.generateAsync({ type: 'blob' });
 }
 
 // ===================== GENERAR PDF =====================
