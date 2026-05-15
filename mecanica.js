@@ -27,7 +27,7 @@ if (document.readyState === 'loading') {
 async function fetchInspecciones() {
     const loader = document.getElementById('loader');
     if (loader) loader.textContent = "Iniciando conexión a base de datos...";
-    
+
     if (!supabaseClient) {
         if (loader) {
             loader.textContent = "Error: La librería de la base de datos (Supabase) no se pudo cargar.";
@@ -60,7 +60,7 @@ async function fetchInspecciones() {
 function renderList() {
     const loader = document.getElementById('loader');
     if (loader) loader.style.display = 'none';
-    
+
     const container = document.getElementById('listContainer');
     const emptyState = document.getElementById('emptyState');
     const totalCount = document.getElementById('totalCount');
@@ -76,7 +76,7 @@ function renderList() {
     }
 
     if (emptyState) emptyState.style.display = 'none';
-    
+
     if (container) {
         container.innerHTML = inspecciones.map(insp => {
             let fechaFormat = insp.fecha;
@@ -92,7 +92,7 @@ function renderList() {
                 try {
                     const dt = new Date(insp.created_at);
                     horaFormat = dt.toLocaleTimeString('es-GT', { hour: '2-digit', minute: '2-digit', hour12: true });
-                } catch(e) { horaFormat = ''; }
+                } catch (e) { horaFormat = ''; }
             }
 
             return `
@@ -149,61 +149,102 @@ async function enviarWhatsApp(id) {
     const btnWA = document.getElementById(`btnWA_${id}`);
     if (btnWA) { btnWA.style.pointerEvents = 'none'; btnWA.innerHTML = '⏳ Preparando...'; }
 
-    const mensaje = `Hola ${insp.cliente || ''},\n\n` +
+    const mensaje =
+        `Hola ${insp.cliente || ''},\n\n` +
         `Te compartimos el reporte de inspección mecánica de tu vehículo *${insp.marca} ${insp.modelo}* (Placa: *${insp.placa}*).\n\n` +
         `*Sus Amigos Detailer's Center* ✨`;
 
+    const archivos = [];
+
     try {
-        // 1. Generar PDF como blob
         if (btnWA) btnWA.innerHTML = '⏳ Generando PDF...';
         const pdfBlob = await generarPDFBlob(id);
+        const pdfName = `Inspeccion_${insp.placa || 'SP'}_${insp.fecha || 'SF'}.pdf`;
 
-        // 2. Generar ZIP si hay fotos
         if (!fotosCache[id]) await loadFotoCount(id);
         const fotos = fotosCache[id] || [];
-        let zipBlob = null;
-        if (fotos.length > 0) {
-            if (btnWA) btnWA.innerHTML = '⏳ Empaquetando fotos...';
-            zipBlob = await generarZipBlob(id);
+
+        if (fotos.length > 0 && window.JSZip) {
+            if (btnWA) btnWA.innerHTML = '⏳ Empaquetando archivos...';
+            const zip = new window.JSZip();
+            const baseName = `Reporte_${insp.placa || id}_${insp.fecha || ''}`;
+            const carpeta = zip.folder(baseName);
+            
+            // Metemos el PDF adentro del ZIP
+            if (pdfBlob) carpeta.file(pdfName, pdfBlob);
+            
+            // Metemos las fotos adentro de una subcarpeta
+            const carpetaFotos = carpeta.folder('Fotos');
+            for (const foto of fotos) {
+                try {
+                    const resp = await fetch(foto.url);
+                    carpetaFotos.file(foto.name, await resp.blob());
+                } catch(e) { console.warn("Error descargando foto para el zip", e); }
+            }
+            
+            const zipBlob = await zip.generateAsync({ type: 'blob' });
+            archivos.push(new File([zipBlob], `${baseName}.zip`, { type: 'application/zip' }));
+        } else if (pdfBlob) {
+            // Si no hay fotos, mandamos solo el PDF
+            archivos.push(new File([pdfBlob], pdfName, { type: 'application/pdf' }));
         }
 
-        // 3. Construir lista de archivos para compartir
-        const archivos = [];
-        if (pdfBlob) {
-            archivos.push(new File([pdfBlob],
-                `Inspeccion_${insp.placa || 'SP'}_${insp.fecha || 'SF'}.pdf`,
-                { type: 'application/pdf' }));
-        }
-        if (zipBlob) {
-            archivos.push(new File([zipBlob],
-                `Fotos_${insp.placa || id}_${insp.fecha || ''}.zip`,
-                { type: 'application/zip' }));
-        }
+        if (btnWA) btnWA.innerHTML = '⏳ Abriendo WhatsApp...';
 
-        // 4. Intentar Web Share API (funciona en móvil y algunos escritorios)
-        const puedeCompartirArchivos = navigator.share && navigator.canShare && archivos.length > 0 && navigator.canShare({ files: archivos });
-        const puedeCompartirTexto = navigator.share;
+        const esHTTPS = location.protocol === 'https:';
+        const tieneShare = typeof navigator.share === 'function';
+        const tieneCanShare = typeof navigator.canShare === 'function';
 
-        if (puedeCompartirArchivos) {
-            await navigator.share({ title: 'Inspección Mecánica', text: mensaje, files: archivos });
-        } else if (puedeCompartirTexto) {
-            // Compartir texto + descargar archivos manualmente
-            archivos.forEach(f => { const a = document.createElement('a'); a.href = URL.createObjectURL(f); a.download = f.name; a.click(); URL.revokeObjectURL(a.href); });
-            await navigator.share({ title: 'Inspección Mecánica', text: mensaje });
-        } else {
-            // Fallback escritorio: descargar archivos + abrir wa.me
-            archivos.forEach(f => { const a = document.createElement('a'); a.href = URL.createObjectURL(f); a.download = f.name; a.click(); URL.revokeObjectURL(a.href); });
-            const nota = archivos.length > 0 ? `\nSe descargaron los archivos (${archivos.map(f=>f.name).join(', ')}) — adjúntalos en WhatsApp.\n\n` : '\n\n';
-            window.open(`https://wa.me/?text=${encodeURIComponent(mensaje + nota)}`, '_blank');
+        let compartidoConArchivos = false;
+
+        // Intentar compartir con archivos de forma nativa (iOS/Android)
+        if (esHTTPS && tieneShare && tieneCanShare && archivos.length > 0) {
+            try {
+                if (navigator.canShare({ files: archivos })) {
+                    await navigator.share({ title: 'Inspección Mecánica', text: mensaje, files: archivos });
+                    compartidoConArchivos = true;
+                }
+            } catch (shareErr) {
+                if (shareErr.name === 'AbortError') return; // Usuario canceló
+                console.warn('Share nativo falló:', shareErr.message);
+            }
         }
 
-    } catch(e) {
+        // Si falló el share nativo o estamos en PC, descargar y abrir web
+        if (!compartidoConArchivos) {
+            for (const f of archivos) {
+                const a = document.createElement('a');
+                a.href = URL.createObjectURL(f);
+                a.download = f.name;
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                URL.revokeObjectURL(a.href);
+                await new Promise(r => setTimeout(r, 300));
+            }
+
+            const notaDescarga = archivos.length > 0
+                ? `\n\nℹ️ El archivo (${archivos[0].name}) se descargó en tu dispositivo. Por favor adjúntalo en el chat.`
+                : '';
+
+            if (esHTTPS && tieneShare) {
+                try {
+                    await navigator.share({ title: 'Inspección', text: mensaje + notaDescarga });
+                } catch (e) {
+                    if (e.name !== 'AbortError') window.open(`https://wa.me/?text=${encodeURIComponent(mensaje + notaDescarga)}`, '_blank');
+                }
+            } else {
+                window.open(`https://wa.me/?text=${encodeURIComponent(mensaje + notaDescarga)}`, '_blank');
+            }
+        }
+
+    } catch (e) {
         if (e.name !== 'AbortError') {
-            console.error(e);
-            showToast('Error al preparar envío', 'error');
+            console.error('Error en envío:', e);
+            showToast('Error: ' + (e.message || 'desconocido'), 'error');
         }
     } finally {
-        if (btnWA) { btnWA.style.pointerEvents = ''; btnWA.innerHTML = '💬 Enviar'; }
+        if (btnWA) { btnWA.style.pointerEvents = 'auto'; btnWA.innerHTML = '💬 Enviar'; }
     }
 }
 
@@ -382,33 +423,36 @@ async function buildPDFBlob(formData) {
     const doc = new jsPDF('p', 'mm', 'letter');
     const W = doc.internal.pageSize.getWidth(), H = doc.internal.pageSize.getHeight(), margin = 16;
     let y = 0;
-    const gold = [212,175,55], darkBg = [22,22,22], white = [255,255,255], lightGray = [200,200,200];
-    const green = [39,174,96], orange = [243,156,18], red = [231,76,60];
-    function addPageBg() { doc.setFillColor(...darkBg); doc.rect(0,0,W,H,'F'); }
-    function checkPage(n) { if (y+n>H-20) { doc.addPage(); addPageBg(); y=20; } }
-    const logoImg = await new Promise(resolve => { const img=new Image(); img.crossOrigin='Anonymous'; img.onload=()=>resolve(img); img.onerror=()=>resolve(null); img.src='logo.jpg'; });
-    addPageBg(); doc.setFillColor(...gold); doc.rect(0,38,W,1.5,'F');
-    let tx=margin; if(logoImg){doc.addImage(logoImg,'JPEG',margin,10,24,24);tx=margin+30;}
-    doc.setTextColor(...gold); doc.setFontSize(20); doc.setFont('helvetica','bold'); doc.text('INSPECCIÓN MECÁNICA',tx,18);
-    doc.setFontSize(10); doc.setFont('helvetica','normal'); doc.setTextColor(...lightGray); doc.text("Sus Amigos Detailer's Center",tx,26);
-    doc.setTextColor(...gold); doc.setFontSize(10); doc.text('Fecha: '+(formData.vehiculo.fecha||''),W-margin,18,{align:'right'});
-    y=48; doc.setFontSize(12); doc.setFont('helvetica','bold'); doc.setTextColor(...gold); doc.text('DATOS DEL VEHÍCULO',margin,y); y+=2;
-    doc.setDrawColor(...gold); doc.setLineWidth(0.4); doc.line(margin,y,W-margin,y); y+=7;
-    const v=formData.vehiculo, campos=[['Placa',v.placa],['Cliente',v.cliente],['Mecánico',v.mecanico],['Marca',v.marca],['Modelo',v.modelo],['Año',v.anio]];
-    doc.setFontSize(9); const colW=(W-margin*2)/3;
-    campos.forEach((c,i)=>{ const col=i%3,x=margin+col*colW; doc.setFont('helvetica','normal'); doc.setTextColor(...lightGray); doc.text(c[0]+':',x,y); doc.setFont('helvetica','bold'); doc.setTextColor(...white); doc.text(String(c[1]||'—'),x+22,y); if(col===2)y+=7; });
-    if(campos.length%3!==0)y+=7; y+=4;
-    const eLabel={'buen_estado':'Buen estado','atencion_futura':'Atención futura','atencion_inmediata':'Atención inmediata'};
-    const eColor={'buen_estado':green,'atencion_futura':orange,'atencion_inmediata':red};
-    [{ titulo:'INTERIOR / EXTERIOR',datos:formData.interiorExterior },{ titulo:'PARTE INFERIOR',datos:formData.parteInferior },{ titulo:'NEUMÁTICOS',datos:formData.neumaticos },{ titulo:'MOTOR',datos:formData.motor },{ titulo:'FRENOS',datos:formData.frenos }].forEach(sec=>{
-        const items=Object.entries(sec.datos||{}); if(!items.length)return;
-        checkPage(12+items.length*7); doc.setFontSize(11); doc.setFont('helvetica','bold'); doc.setTextColor(...gold); doc.text(sec.titulo,margin,y); y+=2;
-        doc.setDrawColor(...gold); doc.setLineWidth(0.3); doc.line(margin,y,W-margin,y); y+=6; doc.setFontSize(9);
-        items.forEach(([item,estado])=>{ checkPage(8); doc.setFillColor(30,30,30); doc.roundedRect(margin,y-4,W-margin*2,6.5,1,1,'F'); doc.setFont('helvetica','normal'); doc.setTextColor(...lightGray); doc.text(item,margin+3,y);
-            if(estado&&eLabel[estado]){const c=eColor[estado];doc.setFont('helvetica','bold');doc.setTextColor(...c);doc.setFillColor(...c);doc.circle(W-margin-50,y-1.2,1.5,'F');doc.text(eLabel[estado],W-margin-46,y);}
-            else{doc.setFont('helvetica','italic');doc.setTextColor(100,100,100);doc.text('Sin evaluar',W-margin-46,y);} y+=7; }); y+=5; });
-    if(formData.observaciones&&formData.observaciones.trim()){checkPage(25);doc.setFontSize(11);doc.setFont('helvetica','bold');doc.setTextColor(...gold);doc.text('OBSERVACIONES',margin,y);y+=2;doc.setDrawColor(...gold);doc.line(margin,y,W-margin,y);y+=6;doc.setFontSize(9);doc.setFont('helvetica','normal');doc.setTextColor(...lightGray);doc.splitTextToSize(formData.observaciones,W-margin*2-4).forEach(l=>{checkPage(6);doc.text(l,margin+2,y);y+=5;});y+=5;}
-    const tp=doc.internal.getNumberOfPages(); for(let p=1;p<=tp;p++){doc.setPage(p);doc.setFillColor(...gold);doc.rect(0,H-14,W,0.5,'F');doc.setFontSize(7);doc.setTextColor(...lightGray);doc.text("Sus Amigos Detailer's Center — Inspección Mecánica",margin,H-6);doc.setTextColor(...gold);doc.text(`Página ${p} de ${tp}`,W-margin,H-6,{align:'right'});}
+    const gold = [212, 175, 55], darkBg = [22, 22, 22], white = [255, 255, 255], lightGray = [200, 200, 200];
+    const green = [39, 174, 96], orange = [243, 156, 18], red = [231, 76, 60];
+    function addPageBg() { doc.setFillColor(...darkBg); doc.rect(0, 0, W, H, 'F'); }
+    function checkPage(n) { if (y + n > H - 20) { doc.addPage(); addPageBg(); y = 20; } }
+    const logoImg = await new Promise(resolve => { const img = new Image(); img.crossOrigin = 'Anonymous'; img.onload = () => resolve(img); img.onerror = () => resolve(null); img.src = 'logo.jpg'; });
+    addPageBg(); doc.setFillColor(...gold); doc.rect(0, 38, W, 1.5, 'F');
+    let tx = margin; if (logoImg) { doc.addImage(logoImg, 'JPEG', margin, 10, 24, 24); tx = margin + 30; }
+    doc.setTextColor(...gold); doc.setFontSize(20); doc.setFont('helvetica', 'bold'); doc.text('INSPECCIÓN MECÁNICA', tx, 18);
+    doc.setFontSize(10); doc.setFont('helvetica', 'normal'); doc.setTextColor(...lightGray); doc.text("Sus Amigos Detailer's Center", tx, 26);
+    doc.setTextColor(...gold); doc.setFontSize(10); doc.text('Fecha: ' + (formData.vehiculo.fecha || ''), W - margin, 18, { align: 'right' });
+    y = 48; doc.setFontSize(12); doc.setFont('helvetica', 'bold'); doc.setTextColor(...gold); doc.text('DATOS DEL VEHÍCULO', margin, y); y += 2;
+    doc.setDrawColor(...gold); doc.setLineWidth(0.4); doc.line(margin, y, W - margin, y); y += 7;
+    const v = formData.vehiculo, campos = [['Placa', v.placa], ['Cliente', v.cliente], ['Mecánico', v.mecanico], ['Marca', v.marca], ['Modelo', v.modelo], ['Año', v.anio]];
+    doc.setFontSize(9); const colW = (W - margin * 2) / 3;
+    campos.forEach((c, i) => { const col = i % 3, x = margin + col * colW; doc.setFont('helvetica', 'normal'); doc.setTextColor(...lightGray); doc.text(c[0] + ':', x, y); doc.setFont('helvetica', 'bold'); doc.setTextColor(...white); doc.text(String(c[1] || '—'), x + 22, y); if (col === 2) y += 7; });
+    if (campos.length % 3 !== 0) y += 7; y += 4;
+    const eLabel = { 'buen_estado': 'Buen estado', 'atencion_futura': 'Atención futura', 'atencion_inmediata': 'Atención inmediata' };
+    const eColor = { 'buen_estado': green, 'atencion_futura': orange, 'atencion_inmediata': red };
+    [{ titulo: 'INTERIOR / EXTERIOR', datos: formData.interiorExterior }, { titulo: 'PARTE INFERIOR', datos: formData.parteInferior }, { titulo: 'NEUMÁTICOS', datos: formData.neumaticos }, { titulo: 'MOTOR', datos: formData.motor }, { titulo: 'FRENOS', datos: formData.frenos }].forEach(sec => {
+        const items = Object.entries(sec.datos || {}); if (!items.length) return;
+        checkPage(12 + items.length * 7); doc.setFontSize(11); doc.setFont('helvetica', 'bold'); doc.setTextColor(...gold); doc.text(sec.titulo, margin, y); y += 2;
+        doc.setDrawColor(...gold); doc.setLineWidth(0.3); doc.line(margin, y, W - margin, y); y += 6; doc.setFontSize(9);
+        items.forEach(([item, estado]) => {
+            checkPage(8); doc.setFillColor(30, 30, 30); doc.roundedRect(margin, y - 4, W - margin * 2, 6.5, 1, 1, 'F'); doc.setFont('helvetica', 'normal'); doc.setTextColor(...lightGray); doc.text(item, margin + 3, y);
+            if (estado && eLabel[estado]) { const c = eColor[estado]; doc.setFont('helvetica', 'bold'); doc.setTextColor(...c); doc.setFillColor(...c); doc.circle(W - margin - 50, y - 1.2, 1.5, 'F'); doc.text(eLabel[estado], W - margin - 46, y); }
+            else { doc.setFont('helvetica', 'italic'); doc.setTextColor(100, 100, 100); doc.text('Sin evaluar', W - margin - 46, y); } y += 7;
+        }); y += 5;
+    });
+    if (formData.observaciones && formData.observaciones.trim()) { checkPage(25); doc.setFontSize(11); doc.setFont('helvetica', 'bold'); doc.setTextColor(...gold); doc.text('OBSERVACIONES', margin, y); y += 2; doc.setDrawColor(...gold); doc.line(margin, y, W - margin, y); y += 6; doc.setFontSize(9); doc.setFont('helvetica', 'normal'); doc.setTextColor(...lightGray); doc.splitTextToSize(formData.observaciones, W - margin * 2 - 4).forEach(l => { checkPage(6); doc.text(l, margin + 2, y); y += 5; }); y += 5; }
+    const tp = doc.internal.getNumberOfPages(); for (let p = 1; p <= tp; p++) { doc.setPage(p); doc.setFillColor(...gold); doc.rect(0, H - 14, W, 0.5, 'F'); doc.setFontSize(7); doc.setTextColor(...lightGray); doc.text("Sus Amigos Detailer's Center — Inspección Mecánica", margin, H - 6); doc.setTextColor(...gold); doc.text(`Página ${p} de ${tp}`, W - margin, H - 6, { align: 'right' }); }
     return doc.output('blob');
 }
 
@@ -523,7 +567,7 @@ async function loadFotos(id) {
         }));
         updateFotoBadge(id, fotos.length);
         renderFotoGrid(id);
-    } catch(e) {
+    } catch (e) {
         if (grid) grid.innerHTML = '<div class="foto-empty" style="color:#ff4d6d">⚠️ ' + (e.message || e) + '</div>';
     }
 }
@@ -558,13 +602,13 @@ async function uploadFotos(files) {
     let uploaded = 0;
     for (const file of Array.from(files)) {
         const ext = file.name.split('.').pop().toLowerCase();
-        const fileName = `foto_${Date.now()}_${Math.random().toString(36).slice(2,6)}.${ext}`;
+        const fileName = `foto_${Date.now()}_${Math.random().toString(36).slice(2, 6)}.${ext}`;
         const path = `${fotoTargetId}/${fileName}`;
         try {
             const { error } = await supabaseClient.storage.from(BUCKET).upload(path, file, { upsert: false });
             if (!error) uploaded++;
             else console.error('Upload error:', error.message);
-        } catch(e) { console.error(e); }
+        } catch (e) { console.error(e); }
     }
     if (label) label.style.opacity = '1';
     const inp = document.getElementById('fotoInput');
@@ -611,7 +655,7 @@ async function descargarZip(id) {
         a.click();
         URL.revokeObjectURL(a.href);
         showToast('✅ ZIP descargado', 'success');
-    } catch(e) {
+    } catch (e) {
         showToast('Error al crear ZIP', 'error');
     } finally {
         if (btn) { btn.disabled = false; btn.innerHTML = '🗜️ Descargar ZIP de Fotos'; }
@@ -631,5 +675,5 @@ async function loadFotoCount(id) {
             url: supabaseClient.storage.from(BUCKET).getPublicUrl(`${id}/${f.name}`).data.publicUrl
         }));
         updateFotoBadge(id, fotos.length);
-    } catch(e) { /* silent */ }
+    } catch (e) { /* silent */ }
 }
