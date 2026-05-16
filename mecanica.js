@@ -258,7 +258,7 @@ async function appendFotosToPDF(doc, W, H, margin, gold, darkBg, lightGray, foto
             doc.setDrawColor(...gold); doc.setLineWidth(0.4); doc.line(margin, 22, W - margin, 22);
             
             const maxWidth = W - margin * 2;
-            const maxHeight = H - 40; 
+            const maxHeight = H - 60; // Mayor margen para no tocar el pie de página
             
             let imgW = img.width;
             let imgH = img.height;
