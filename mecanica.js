@@ -203,17 +203,19 @@ async function enviarWhatsApp(id) {
             }
 
             const notaDescarga = archivos.length > 0
-                ? `\n\nℹ️ El archivo (${archivos[0].name}) se descargó en tu dispositivo. Por favor adjúntalo en el chat.`
+                ? `\n\nℹ️ El archivo PDF se descargó en tu dispositivo. Por favor adjúntalo en el chat.`
                 : '';
+
+            const textoCodificado = encodeURIComponent(mensaje + notaDescarga);
 
             if (esHTTPS && tieneShare) {
                 try {
                     await navigator.share({ title: 'Inspección', text: mensaje + notaDescarga });
                 } catch (e) {
-                    if (e.name !== 'AbortError') window.open(`https://wa.me/?text=${encodeURIComponent(mensaje + notaDescarga)}`, '_blank');
+                    if (e.name !== 'AbortError') mostrarOpcionesWhatsApp(textoCodificado);
                 }
             } else {
-                window.open(`https://wa.me/?text=${encodeURIComponent(mensaje + notaDescarga)}`, '_blank');
+                mostrarOpcionesWhatsApp(textoCodificado);
             }
         }
 
@@ -225,6 +227,74 @@ async function enviarWhatsApp(id) {
     } finally {
         if (btnWA) { btnWA.style.pointerEvents = 'auto'; btnWA.innerHTML = '💬 Enviar'; }
     }
+}
+
+function mostrarOpcionesWhatsApp(textoCodificado) {
+    const overlay = document.createElement('div');
+    overlay.style.position = 'fixed';
+    overlay.style.top = '0'; overlay.style.left = '0';
+    overlay.style.width = '100vw'; overlay.style.height = '100vh';
+    overlay.style.backgroundColor = 'rgba(0,0,0,0.8)';
+    overlay.style.display = 'flex';
+    overlay.style.alignItems = 'center'; overlay.style.justifyContent = 'center';
+    overlay.style.zIndex = '99999';
+
+    const modal = document.createElement('div');
+    modal.style.backgroundColor = '#1a1a1a';
+    modal.style.padding = '24px';
+    modal.style.borderRadius = '12px';
+    modal.style.textAlign = 'center';
+    modal.style.border = '1px solid #d4af37';
+    modal.style.width = '90%';
+    modal.style.maxWidth = '320px';
+    modal.style.boxShadow = '0 10px 25px rgba(0,0,0,0.5)';
+    
+    modal.innerHTML = `
+        <h3 style="color:#d4af37; margin-top:0; font-family:sans-serif;">Abrir en WhatsApp</h3>
+        <p style="color:#ccc; font-size:14px; margin-bottom:20px; font-family:sans-serif;">El archivo PDF ya se descargó. Elige desde qué aplicación deseas enviar el mensaje:</p>
+        <button id="btnWaNormal" style="background:#25D366; color:#fff; border:none; padding:12px; margin-bottom:10px; border-radius:8px; cursor:pointer; width:100%; font-weight:bold; font-size:15px; display:flex; align-items:center; justify-content:center; gap:8px;">
+            WhatsApp Normal
+        </button>
+        <button id="btnWaBusiness" style="background:#128C7E; color:#fff; border:none; padding:12px; margin-bottom:10px; border-radius:8px; cursor:pointer; width:100%; font-weight:bold; font-size:15px; display:flex; align-items:center; justify-content:center; gap:8px;">
+            WhatsApp Business
+        </button>
+        <button id="btnWaWeb" style="background:#273443; color:#fff; border:none; padding:12px; margin-bottom:10px; border-radius:8px; cursor:pointer; width:100%; font-weight:bold; font-size:15px; display:flex; align-items:center; justify-content:center; gap:8px;">
+            🖥️ Web (PC)
+        </button>
+        <button id="btnWaCancel" style="background:transparent; color:#d4af37; border:1px solid #d4af37; padding:12px; margin-top:15px; border-radius:8px; cursor:pointer; width:100%; font-weight:bold; font-size:15px;">
+            Cancelar
+        </button>
+    `;
+    
+    overlay.appendChild(modal);
+    document.body.appendChild(overlay);
+
+    const removeModal = () => { if (document.body.contains(overlay)) document.body.removeChild(overlay); };
+
+    document.getElementById('btnWaNormal').onclick = () => {
+        window.open(`whatsapp://send?text=${textoCodificado}`, '_blank');
+        removeModal();
+    };
+    
+    document.getElementById('btnWaBusiness').onclick = () => {
+        const isAndroid = /Android/i.test(navigator.userAgent);
+        if (isAndroid) {
+            window.open(`intent://send?text=${textoCodificado}#Intent;package=com.whatsapp.w4b;scheme=whatsapp;end;`, '_blank');
+        } else {
+            // iOS u otros sistemas (usamos link universal o scheme de business para iOS si aplica)
+            window.open(`wa-business://send?text=${textoCodificado}`, '_self');
+            // Por si falla en iOS, abrimos web fallback 
+            setTimeout(() => { window.open(`https://wa.me/?text=${textoCodificado}`, '_blank'); }, 500);
+        }
+        removeModal();
+    };
+    
+    document.getElementById('btnWaWeb').onclick = () => {
+        window.open(`https://web.whatsapp.com/send?text=${textoCodificado}`, '_blank');
+        removeModal();
+    };
+
+    document.getElementById('btnWaCancel').onclick = removeModal;
 }
 
 async function appendFotosToPDF(doc, W, H, margin, gold, darkBg, lightGray, fotos) {
