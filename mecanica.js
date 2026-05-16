@@ -157,35 +157,14 @@ async function enviarWhatsApp(id) {
     const archivos = [];
 
     try {
-        if (btnWA) btnWA.innerHTML = '⏳ Generando PDF...';
-        const pdfBlob = await generarPDFBlob(id);
-        const pdfName = `Inspeccion_${insp.placa || 'SP'}_${insp.fecha || 'SF'}.pdf`;
-
         if (!fotosCache[id]) await loadFotoCount(id);
         const fotos = fotosCache[id] || [];
 
-        if (fotos.length > 0 && window.JSZip) {
-            if (btnWA) btnWA.innerHTML = '⏳ Empaquetando archivos...';
-            const zip = new window.JSZip();
-            const baseName = `Reporte_${insp.placa || id}_${insp.fecha || ''}`;
-            const carpeta = zip.folder(baseName);
-            
-            // Metemos el PDF adentro del ZIP
-            if (pdfBlob) carpeta.file(pdfName, pdfBlob);
-            
-            // Metemos las fotos adentro de una subcarpeta
-            const carpetaFotos = carpeta.folder('Fotos');
-            for (const foto of fotos) {
-                try {
-                    const resp = await fetch(foto.url);
-                    carpetaFotos.file(foto.name, await resp.blob());
-                } catch(e) { console.warn("Error descargando foto para el zip", e); }
-            }
-            
-            const zipBlob = await zip.generateAsync({ type: 'blob' });
-            archivos.push(new File([zipBlob], `${baseName}.zip`, { type: 'application/zip' }));
-        } else if (pdfBlob) {
-            // Si no hay fotos, mandamos solo el PDF
+        if (btnWA) btnWA.innerHTML = '⏳ Generando PDF...';
+        const pdfBlob = await generarPDFBlob(id, fotos);
+        const pdfName = `Inspeccion_${insp.placa || 'SP'}_${insp.fecha || 'SF'}.pdf`;
+
+        if (pdfBlob) {
             archivos.push(new File([pdfBlob], pdfName, { type: 'application/pdf' }));
         }
 
@@ -248,8 +227,59 @@ async function enviarWhatsApp(id) {
     }
 }
 
+async function appendFotosToPDF(doc, W, H, margin, gold, darkBg, lightGray, fotos) {
+    if (!fotos || fotos.length === 0) return;
+    function addPageBg() { doc.setFillColor(...darkBg); doc.rect(0, 0, W, H, 'F'); }
+    
+    for (let i = 0; i < fotos.length; i++) {
+        const foto = fotos[i];
+        try {
+            const response = await fetch(foto.url);
+            const blob = await response.blob();
+            const base64 = await new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                reader.onloadend = () => resolve(reader.result);
+                reader.onerror = reject;
+                reader.readAsDataURL(blob);
+            });
+            
+            const img = new Image();
+            await new Promise((resolve, reject) => {
+                img.onload = resolve;
+                img.onerror = reject;
+                img.src = base64;
+            });
+            
+            doc.addPage();
+            addPageBg();
+            
+            doc.setFontSize(12); doc.setFont('helvetica', 'bold'); doc.setTextColor(...gold);
+            doc.text(`EVIDENCIA FOTOGRÁFICA (${i + 1}/${fotos.length})`, margin, 20);
+            doc.setDrawColor(...gold); doc.setLineWidth(0.4); doc.line(margin, 22, W - margin, 22);
+            
+            const maxWidth = W - margin * 2;
+            const maxHeight = H - 40; 
+            
+            let imgW = img.width;
+            let imgH = img.height;
+            const ratio = Math.min(maxWidth / imgW, maxHeight / imgH);
+            
+            imgW = imgW * ratio;
+            imgH = imgH * ratio;
+            
+            const x = (W - imgW) / 2;
+            const y = 30; 
+            
+            const format = base64.includes('image/png') ? 'PNG' : 'JPEG';
+            doc.addImage(base64, format, x, y, imgW, imgH);
+        } catch (err) {
+            console.error("Error al cargar foto en PDF:", err);
+        }
+    }
+}
+
 // Genera el PDF y lo devuelve como Blob (sin descargar)
-async function generarPDFBlob(id) {
+async function generarPDFBlob(id, fotos = []) {
     const insp = inspecciones.find(i => String(i.id) === String(id));
     if (!insp) return null;
     const { data: detalles } = await supabaseClient.from('detalle_inspeccion').select('*').eq('inspeccion_id', id);
@@ -260,7 +290,7 @@ async function generarPDFBlob(id) {
     };
     const seccionMap = { 'Interior/Exterior': 'interiorExterior', 'Parte Inferior': 'parteInferior', 'Neumáticos': 'neumaticos', 'Motor': 'motor', 'Frenos': 'frenos' };
     if (detalles) detalles.forEach(d => { const k = seccionMap[d.seccion]; if (k) formData[k][d.item] = d.estado; });
-    return await buildPDFBlob(formData);
+    return await buildPDFBlob(formData, fotos);
 }
 
 // Genera el ZIP de fotos y lo devuelve como Blob (sin descargar)
@@ -291,6 +321,9 @@ async function descargarPDF(id) {
             .from('detalle_inspeccion').select('*').eq('inspeccion_id', id);
         if (error) throw error;
 
+        if (!fotosCache[id]) await loadFotoCount(id);
+        const fotos = fotosCache[id] || [];
+
         const formData = {
             vehiculo: { fecha: insp.fecha, placa: insp.placa, cliente: insp.cliente, mecanico: insp.mecanico, marca: insp.marca, modelo: insp.modelo, anio: insp.anio },
             interiorExterior: {}, parteInferior: {}, neumaticos: {}, motor: {}, frenos: {},
@@ -305,7 +338,7 @@ async function descargarPDF(id) {
         if (detalles) {
             detalles.forEach(d => { const k = seccionMap[d.seccion]; if (k) formData[k][d.item] = d.estado; });
         }
-        await buildPDF(formData);
+        await buildPDF(formData, fotos);
     } catch (err) {
         console.error("Error al generar PDF:", err);
         showToast('Error al generar PDF', 'error');
@@ -314,7 +347,7 @@ async function descargarPDF(id) {
     }
 }
 
-async function buildPDF(formData) {
+async function buildPDF(formData, fotos = []) {
     if (!window.jspdf || !window.jspdf.jsPDF) { showToast('Error: librería PDF no cargó.', 'error'); return; }
     const { jsPDF } = window.jspdf;
     const doc = new jsPDF('p', 'mm', 'letter');
@@ -404,6 +437,8 @@ async function buildPDF(formData) {
         y += 5;
     }
 
+    await appendFotosToPDF(doc, W, H, margin, gold, darkBg, lightGray, fotos);
+
     const totalPages = doc.internal.getNumberOfPages();
     for (let p = 1; p <= totalPages; p++) {
         doc.setPage(p); doc.setFillColor(...gold); doc.rect(0, H - 14, W, 0.5, 'F');
@@ -417,7 +452,7 @@ async function buildPDF(formData) {
 }
 
 // buildPDFBlob: igual que buildPDF pero devuelve Blob en lugar de descargar
-async function buildPDFBlob(formData) {
+async function buildPDFBlob(formData, fotos = []) {
     if (!window.jspdf || !window.jspdf.jsPDF) return null;
     const { jsPDF } = window.jspdf;
     const doc = new jsPDF('p', 'mm', 'letter');
@@ -452,6 +487,9 @@ async function buildPDFBlob(formData) {
         }); y += 5;
     });
     if (formData.observaciones && formData.observaciones.trim()) { checkPage(25); doc.setFontSize(11); doc.setFont('helvetica', 'bold'); doc.setTextColor(...gold); doc.text('OBSERVACIONES', margin, y); y += 2; doc.setDrawColor(...gold); doc.line(margin, y, W - margin, y); y += 6; doc.setFontSize(9); doc.setFont('helvetica', 'normal'); doc.setTextColor(...lightGray); doc.splitTextToSize(formData.observaciones, W - margin * 2 - 4).forEach(l => { checkPage(6); doc.text(l, margin + 2, y); y += 5; }); y += 5; }
+    
+    await appendFotosToPDF(doc, W, H, margin, gold, darkBg, lightGray, fotos);
+
     const tp = doc.internal.getNumberOfPages(); for (let p = 1; p <= tp; p++) { doc.setPage(p); doc.setFillColor(...gold); doc.rect(0, H - 14, W, 0.5, 'F'); doc.setFontSize(7); doc.setTextColor(...lightGray); doc.text("Sus Amigos Detailer's Center — Inspección Mecánica", margin, H - 6); doc.setTextColor(...gold); doc.text(`Página ${p} de ${tp}`, W - margin, H - 6, { align: 'right' }); }
     return doc.output('blob');
 }
