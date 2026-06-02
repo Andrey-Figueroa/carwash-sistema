@@ -536,7 +536,7 @@ async function buildPDFBlob(formData, fotos = []) {
     addPageBg(); doc.setFillColor(...gold); doc.rect(0, 38, W, 1.5, 'F');
     let tx = margin; if (logoImg) { doc.addImage(logoImg, 'JPEG', margin, 10, 24, 24); tx = margin + 30; }
     doc.setTextColor(...gold); doc.setFontSize(20); doc.setFont('helvetica', 'bold'); doc.text('INSPECCIÓN MECÁNICA', tx, 18);
-    doc.setFontSize(10); doc.setFont('helvetica', 'normal'); doc.setTextColor(...lightGray); doc.text("Sus Amigos Detailer's Center", tx, 26);
+    doc.setFontSize(10); doc.setFont('helvetica', 'normal'); doc.setTextColor(...lightGray); doc.text("Sus Amigos Centro de Servicios", tx, 26);
     doc.setTextColor(...gold); doc.setFontSize(10); doc.text('Fecha: ' + (formData.vehiculo.fecha || ''), W - margin, 18, { align: 'right' });
     y = 48; doc.setFontSize(12); doc.setFont('helvetica', 'bold'); doc.setTextColor(...gold); doc.text('DATOS DEL VEHÍCULO', margin, y); y += 2;
     doc.setDrawColor(...gold); doc.setLineWidth(0.4); doc.line(margin, y, W - margin, y); y += 7;
