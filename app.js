@@ -492,7 +492,7 @@ async function generatePDF() {
   doc.setFontSize(10);
   doc.setFont('helvetica', 'normal');
   doc.setTextColor(...lightGray);
-  doc.text('Sus Amigos Detailer\'s Center', textStartX, 26);
+  doc.text('Sus Amigos Centro de Servicios', textStartX, 26);
 
   // Fecha arriba a la derecha
   doc.setTextColor(...gold);
@@ -642,7 +642,7 @@ async function generatePDF() {
     doc.rect(0, H - 14, W, 0.5, 'F');
     doc.setFontSize(7);
     doc.setTextColor(...lightGray);
-    doc.text('Sus Amigos Detailer\'s Center — Inspección Mecánica', margin, H - 6);
+    doc.text('Sus Amigos Centro de Servicios — Inspección Mecánica', margin, H - 6);
     doc.setTextColor(...gold);
     doc.text(`Página ${p} de ${totalPages}`, W - margin, H - 6, { align: 'right' });
   }
