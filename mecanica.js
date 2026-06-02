@@ -152,7 +152,7 @@ async function enviarWhatsApp(id) {
     const mensaje =
         `Hola ${insp.cliente || ''},\n\n` +
         `Te compartimos el reporte de inspección mecánica de tu vehículo *${insp.marca} ${insp.modelo}* (Placa: *${insp.placa}*).\n\n` +
-        `*Sus Amigos Detailer's Center* ✨`;
+        `*Sus Amigos Centro de Servicios* ✨`;
 
     const archivos = [];
 
@@ -443,7 +443,7 @@ async function buildPDF(formData, fotos = []) {
     doc.setTextColor(...gold); doc.setFontSize(20); doc.setFont('helvetica', 'bold');
     doc.text('INSPECCIÓN MECÁNICA', textStartX, 18);
     doc.setFontSize(10); doc.setFont('helvetica', 'normal'); doc.setTextColor(...lightGray);
-    doc.text("Sus Amigos Detailer's Center", textStartX, 26);
+    doc.text("Sus Amigos Centro de Servicios", textStartX, 26);
     doc.setTextColor(...gold); doc.setFontSize(10);
     doc.text('Fecha: ' + (formData.vehiculo.fecha || ''), W - margin, 18, { align: 'right' });
 
@@ -513,7 +513,7 @@ async function buildPDF(formData, fotos = []) {
     for (let p = 1; p <= totalPages; p++) {
         doc.setPage(p); doc.setFillColor(...gold); doc.rect(0, H - 14, W, 0.5, 'F');
         doc.setFontSize(7); doc.setTextColor(...lightGray);
-        doc.text("Sus Amigos Detailer's Center — Inspección Mecánica", margin, H - 6);
+        doc.text("Sus Amigos Centro de Servicios — Inspección Mecánica", margin, H - 6);
         doc.setTextColor(...gold); doc.text(`Página ${p} de ${totalPages}`, W - margin, H - 6, { align: 'right' });
     }
 
@@ -560,7 +560,7 @@ async function buildPDFBlob(formData, fotos = []) {
     
     await appendFotosToPDF(doc, W, H, margin, gold, darkBg, lightGray, fotos);
 
-    const tp = doc.internal.getNumberOfPages(); for (let p = 1; p <= tp; p++) { doc.setPage(p); doc.setFillColor(...gold); doc.rect(0, H - 14, W, 0.5, 'F'); doc.setFontSize(7); doc.setTextColor(...lightGray); doc.text("Sus Amigos Detailer's Center — Inspección Mecánica", margin, H - 6); doc.setTextColor(...gold); doc.text(`Página ${p} de ${tp}`, W - margin, H - 6, { align: 'right' }); }
+    const tp = doc.internal.getNumberOfPages(); for (let p = 1; p <= tp; p++) { doc.setPage(p); doc.setFillColor(...gold); doc.rect(0, H - 14, W, 0.5, 'F'); doc.setFontSize(7); doc.setTextColor(...lightGray); doc.text("Sus Amigos Centro de Servicios — Inspección Mecánica", margin, H - 6); doc.setTextColor(...gold); doc.text(`Página ${p} de ${tp}`, W - margin, H - 6, { align: 'right' }); }
     return doc.output('blob');
 }
 
